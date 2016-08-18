@@ -1,0 +1,539 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */; };
+		BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1C1D6612D700D83F34 /* ViewController.swift */; };
+		BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B1E1D6612D700D83F34 /* Main.storyboard */; };
+		BFDF0B221D6612D700D83F34 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B211D6612D700D83F34 /* Assets.xcassets */; };
+		BFDF0B251D6612D700D83F34 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B231D6612D700D83F34 /* LaunchScreen.storyboard */; };
+		BFDF0B301D6612D700D83F34 /* ChalkBoardSudokuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */; };
+		BFDF0B461D6615D400D83F34 /* Write_001.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3A1D6615D400D83F34 /* Write_001.aiff */; };
+		BFDF0B471D6615D400D83F34 /* Write_002.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3B1D6615D400D83F34 /* Write_002.aiff */; };
+		BFDF0B481D6615D400D83F34 /* Write_003.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3C1D6615D400D83F34 /* Write_003.aiff */; };
+		BFDF0B491D6615D400D83F34 /* Write_004.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3D1D6615D400D83F34 /* Write_004.aiff */; };
+		BFDF0B4A1D6615D400D83F34 /* Write_005.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3E1D6615D400D83F34 /* Write_005.aiff */; };
+		BFDF0B4B1D6615D400D83F34 /* Write_006.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B3F1D6615D400D83F34 /* Write_006.aiff */; };
+		BFDF0B4C1D6615D400D83F34 /* Write_007.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B401D6615D400D83F34 /* Write_007.aiff */; };
+		BFDF0B4D1D6615D400D83F34 /* Write_008.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B411D6615D400D83F34 /* Write_008.aiff */; };
+		BFDF0B4E1D6615D400D83F34 /* Write_009.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B421D6615D400D83F34 /* Write_009.aiff */; };
+		BFDF0B4F1D6615D400D83F34 /* Mistake_001.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B431D6615D400D83F34 /* Mistake_001.aiff */; };
+		BFDF0B501D6615D400D83F34 /* RubOut_001.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B441D6615D400D83F34 /* RubOut_001.aiff */; };
+		BFDF0B511D6615D400D83F34 /* Triumph_001.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B451D6615D400D83F34 /* Triumph_001.aiff */; };
+		BFDF0B551D66160D00D83F34 /* PreferencesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B531D66160D00D83F34 /* PreferencesHandler.swift */; };
+		BFDF0B561D66160D00D83F34 /* GameStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */; };
+		BFDF0B5B1D66168600D83F34 /* Ideas.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B591D66168600D83F34 /* Ideas.rtf */; };
+		BFDF0B5C1D66168600D83F34 /* Notes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B5A1D66168600D83F34 /* Notes.rtf */; };
+		BFDF0B611D6616C900D83F34 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5D1D6616C900D83F34 /* Cell.swift */; };
+		BFDF0B621D6616C900D83F34 /* GameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */; };
+		BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5F1D6616C900D83F34 /* CellImages.swift */; };
+		BFDF0B641D6616C900D83F34 /* GameBoardImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */; };
+		BFDF0B681D6616F500D83F34 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B661D6616F500D83F34 /* Preferences.swift */; };
+		BFDF0B691D6616F500D83F34 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B671D6616F500D83F34 /* Preferences.xib */; };
+		BFDF0B6B1D66170F00D83F34 /* TrackSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */; };
+		BFDF0B6E1D66179400D83F34 /* Enumeration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6C1D66179400D83F34 /* Enumeration.swift */; };
+		BFDF0B6F1D66179400D83F34 /* Struct.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6D1D66179400D83F34 /* Struct.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BFDF0B2C1D6612D700D83F34 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDF0B0F1D6612D700D83F34 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BFDF0B161D6612D700D83F34;
+			remoteInfo = ChalkBoardSudoku;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChalkBoardSudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BFDF0B1C1D6612D700D83F34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BFDF0B1F1D6612D700D83F34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BFDF0B211D6612D700D83F34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BFDF0B241D6612D700D83F34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BFDF0B261D6612D700D83F34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFDF0B2B1D6612D700D83F34 /* ChalkBoardSudokuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChalkBoardSudokuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChalkBoardSudokuTests.swift; sourceTree = "<group>"; };
+		BFDF0B311D6612D700D83F34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFDF0B3A1D6615D400D83F34 /* Write_001.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_001.aiff; sourceTree = "<group>"; };
+		BFDF0B3B1D6615D400D83F34 /* Write_002.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_002.aiff; sourceTree = "<group>"; };
+		BFDF0B3C1D6615D400D83F34 /* Write_003.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_003.aiff; sourceTree = "<group>"; };
+		BFDF0B3D1D6615D400D83F34 /* Write_004.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_004.aiff; sourceTree = "<group>"; };
+		BFDF0B3E1D6615D400D83F34 /* Write_005.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_005.aiff; sourceTree = "<group>"; };
+		BFDF0B3F1D6615D400D83F34 /* Write_006.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_006.aiff; sourceTree = "<group>"; };
+		BFDF0B401D6615D400D83F34 /* Write_007.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_007.aiff; sourceTree = "<group>"; };
+		BFDF0B411D6615D400D83F34 /* Write_008.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_008.aiff; sourceTree = "<group>"; };
+		BFDF0B421D6615D400D83F34 /* Write_009.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Write_009.aiff; sourceTree = "<group>"; };
+		BFDF0B431D6615D400D83F34 /* Mistake_001.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Mistake_001.aiff; sourceTree = "<group>"; };
+		BFDF0B441D6615D400D83F34 /* RubOut_001.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = RubOut_001.aiff; sourceTree = "<group>"; };
+		BFDF0B451D6615D400D83F34 /* Triumph_001.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = Triumph_001.aiff; sourceTree = "<group>"; };
+		BFDF0B531D66160D00D83F34 /* PreferencesHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesHandler.swift; sourceTree = "<group>"; };
+		BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameStateHandler.swift; sourceTree = "<group>"; };
+		BFDF0B591D66168600D83F34 /* Ideas.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Ideas.rtf; sourceTree = "<group>"; };
+		BFDF0B5A1D66168600D83F34 /* Notes.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Notes.rtf; sourceTree = "<group>"; };
+		BFDF0B5D1D6616C900D83F34 /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
+		BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoard.swift; sourceTree = "<group>"; };
+		BFDF0B5F1D6616C900D83F34 /* CellImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellImages.swift; sourceTree = "<group>"; };
+		BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoardImages.swift; sourceTree = "<group>"; };
+		BFDF0B661D6616F500D83F34 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Preferences.swift; path = ../Preferences.swift; sourceTree = "<group>"; };
+		BFDF0B671D6616F500D83F34 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Preferences.xib; path = ../Preferences.xib; sourceTree = "<group>"; };
+		BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackSolution.swift; path = ChalkBoardSudoku/TrackSolution.swift; sourceTree = "<group>"; };
+		BFDF0B6C1D66179400D83F34 /* Enumeration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enumeration.swift; path = ../Enumeration.swift; sourceTree = "<group>"; };
+		BFDF0B6D1D66179400D83F34 /* Struct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Struct.swift; path = ../Struct.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BFDF0B141D6612D700D83F34 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BFDF0B281D6612D700D83F34 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BFDF0B0E1D6612D700D83F34 = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B651D6616D400D83F34 /* Classes */,
+				BFDF0B581D66167B00D83F34 /* Docs */,
+				BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */,
+				BFDF0B2E1D6612D700D83F34 /* ChalkBoardSudokuTests */,
+				BFDF0B571D66163B00D83F34 /* Protocol Handlers */,
+				BFDF0B181D6612D700D83F34 /* Products */,
+				BFDF0B521D6615DF00D83F34 /* Sounds */,
+			);
+			sourceTree = "<group>";
+		};
+		BFDF0B181D6612D700D83F34 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */,
+				BFDF0B2B1D6612D700D83F34 /* ChalkBoardSudokuTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B6C1D66179400D83F34 /* Enumeration.swift */,
+				BFDF0B6D1D66179400D83F34 /* Struct.swift */,
+				BFDF0B661D6616F500D83F34 /* Preferences.swift */,
+				BFDF0B671D6616F500D83F34 /* Preferences.xib */,
+				BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */,
+				BFDF0B1C1D6612D700D83F34 /* ViewController.swift */,
+				BFDF0B1E1D6612D700D83F34 /* Main.storyboard */,
+				BFDF0B211D6612D700D83F34 /* Assets.xcassets */,
+				BFDF0B231D6612D700D83F34 /* LaunchScreen.storyboard */,
+				BFDF0B261D6612D700D83F34 /* Info.plist */,
+			);
+			path = ChalkBoardSudoku;
+			sourceTree = "<group>";
+		};
+		BFDF0B2E1D6612D700D83F34 /* ChalkBoardSudokuTests */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */,
+				BFDF0B311D6612D700D83F34 /* Info.plist */,
+			);
+			path = ChalkBoardSudokuTests;
+			sourceTree = "<group>";
+		};
+		BFDF0B521D6615DF00D83F34 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B3A1D6615D400D83F34 /* Write_001.aiff */,
+				BFDF0B3B1D6615D400D83F34 /* Write_002.aiff */,
+				BFDF0B3C1D6615D400D83F34 /* Write_003.aiff */,
+				BFDF0B3D1D6615D400D83F34 /* Write_004.aiff */,
+				BFDF0B3E1D6615D400D83F34 /* Write_005.aiff */,
+				BFDF0B3F1D6615D400D83F34 /* Write_006.aiff */,
+				BFDF0B401D6615D400D83F34 /* Write_007.aiff */,
+				BFDF0B411D6615D400D83F34 /* Write_008.aiff */,
+				BFDF0B421D6615D400D83F34 /* Write_009.aiff */,
+				BFDF0B431D6615D400D83F34 /* Mistake_001.aiff */,
+				BFDF0B441D6615D400D83F34 /* RubOut_001.aiff */,
+				BFDF0B451D6615D400D83F34 /* Triumph_001.aiff */,
+			);
+			name = Sounds;
+			sourceTree = "<group>";
+		};
+		BFDF0B571D66163B00D83F34 /* Protocol Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B531D66160D00D83F34 /* PreferencesHandler.swift */,
+				BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */,
+			);
+			name = "Protocol Handlers";
+			sourceTree = "<group>";
+		};
+		BFDF0B581D66167B00D83F34 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B591D66168600D83F34 /* Ideas.rtf */,
+				BFDF0B5A1D66168600D83F34 /* Notes.rtf */,
+			);
+			name = Docs;
+			sourceTree = "<group>";
+		};
+		BFDF0B651D6616D400D83F34 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B5D1D6616C900D83F34 /* Cell.swift */,
+				BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */,
+				BFDF0B5F1D6616C900D83F34 /* CellImages.swift */,
+				BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */,
+				BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BFDF0B161D6612D700D83F34 /* ChalkBoardSudoku */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFDF0B341D6612D700D83F34 /* Build configuration list for PBXNativeTarget "ChalkBoardSudoku" */;
+			buildPhases = (
+				BFDF0B131D6612D700D83F34 /* Sources */,
+				BFDF0B141D6612D700D83F34 /* Frameworks */,
+				BFDF0B151D6612D700D83F34 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ChalkBoardSudoku;
+			productName = ChalkBoardSudoku;
+			productReference = BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BFDF0B2A1D6612D700D83F34 /* ChalkBoardSudokuTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFDF0B371D6612D700D83F34 /* Build configuration list for PBXNativeTarget "ChalkBoardSudokuTests" */;
+			buildPhases = (
+				BFDF0B271D6612D700D83F34 /* Sources */,
+				BFDF0B281D6612D700D83F34 /* Frameworks */,
+				BFDF0B291D6612D700D83F34 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BFDF0B2D1D6612D700D83F34 /* PBXTargetDependency */,
+			);
+			name = ChalkBoardSudokuTests;
+			productName = ChalkBoardSudokuTests;
+			productReference = BFDF0B2B1D6612D700D83F34 /* ChalkBoardSudokuTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDF0B0F1D6612D700D83F34 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Graham Watson";
+				TargetAttributes = {
+					BFDF0B161D6612D700D83F34 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					BFDF0B2A1D6612D700D83F34 = {
+						CreatedOnToolsVersion = 7.3.1;
+						TestTargetID = BFDF0B161D6612D700D83F34;
+					};
+				};
+			};
+			buildConfigurationList = BFDF0B121D6612D700D83F34 /* Build configuration list for PBXProject "ChalkBoardSudoku" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BFDF0B0E1D6612D700D83F34;
+			productRefGroup = BFDF0B181D6612D700D83F34 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BFDF0B161D6612D700D83F34 /* ChalkBoardSudoku */,
+				BFDF0B2A1D6612D700D83F34 /* ChalkBoardSudokuTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BFDF0B151D6612D700D83F34 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFDF0B511D6615D400D83F34 /* Triumph_001.aiff in Resources */,
+				BFDF0B251D6612D700D83F34 /* LaunchScreen.storyboard in Resources */,
+				BFDF0B4A1D6615D400D83F34 /* Write_005.aiff in Resources */,
+				BFDF0B491D6615D400D83F34 /* Write_004.aiff in Resources */,
+				BFDF0B4D1D6615D400D83F34 /* Write_008.aiff in Resources */,
+				BFDF0B4B1D6615D400D83F34 /* Write_006.aiff in Resources */,
+				BFDF0B461D6615D400D83F34 /* Write_001.aiff in Resources */,
+				BFDF0B221D6612D700D83F34 /* Assets.xcassets in Resources */,
+				BFDF0B481D6615D400D83F34 /* Write_003.aiff in Resources */,
+				BFDF0B5B1D66168600D83F34 /* Ideas.rtf in Resources */,
+				BFDF0B501D6615D400D83F34 /* RubOut_001.aiff in Resources */,
+				BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */,
+				BFDF0B4F1D6615D400D83F34 /* Mistake_001.aiff in Resources */,
+				BFDF0B4E1D6615D400D83F34 /* Write_009.aiff in Resources */,
+				BFDF0B5C1D66168600D83F34 /* Notes.rtf in Resources */,
+				BFDF0B471D6615D400D83F34 /* Write_002.aiff in Resources */,
+				BFDF0B691D6616F500D83F34 /* Preferences.xib in Resources */,
+				BFDF0B4C1D6615D400D83F34 /* Write_007.aiff in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BFDF0B291D6612D700D83F34 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BFDF0B131D6612D700D83F34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFDF0B6F1D66179400D83F34 /* Struct.swift in Sources */,
+				BFDF0B641D6616C900D83F34 /* GameBoardImages.swift in Sources */,
+				BFDF0B551D66160D00D83F34 /* PreferencesHandler.swift in Sources */,
+				BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */,
+				BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */,
+				BFDF0B6B1D66170F00D83F34 /* TrackSolution.swift in Sources */,
+				BFDF0B611D6616C900D83F34 /* Cell.swift in Sources */,
+				BFDF0B561D66160D00D83F34 /* GameStateHandler.swift in Sources */,
+				BFDF0B621D6616C900D83F34 /* GameBoard.swift in Sources */,
+				BFDF0B6E1D66179400D83F34 /* Enumeration.swift in Sources */,
+				BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */,
+				BFDF0B681D6616F500D83F34 /* Preferences.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BFDF0B271D6612D700D83F34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFDF0B301D6612D700D83F34 /* ChalkBoardSudokuTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BFDF0B2D1D6612D700D83F34 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BFDF0B161D6612D700D83F34 /* ChalkBoardSudoku */;
+			targetProxy = BFDF0B2C1D6612D700D83F34 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BFDF0B1E1D6612D700D83F34 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFDF0B1F1D6612D700D83F34 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BFDF0B231D6612D700D83F34 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFDF0B241D6612D700D83F34 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BFDF0B321D6612D700D83F34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BFDF0B331D6612D700D83F34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BFDF0B351D6612D700D83F34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = ChalkBoardSudoku/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.Shiny-Idea.ChalkBoardSudoku";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		BFDF0B361D6612D700D83F34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = ChalkBoardSudoku/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.Shiny-Idea.ChalkBoardSudoku";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		BFDF0B381D6612D700D83F34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ChalkBoardSudokuTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.Shiny-Idea.ChalkBoardSudokuTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChalkBoardSudoku.app/ChalkBoardSudoku";
+			};
+			name = Debug;
+		};
+		BFDF0B391D6612D700D83F34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ChalkBoardSudokuTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.Shiny-Idea.ChalkBoardSudokuTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChalkBoardSudoku.app/ChalkBoardSudoku";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BFDF0B121D6612D700D83F34 /* Build configuration list for PBXProject "ChalkBoardSudoku" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFDF0B321D6612D700D83F34 /* Debug */,
+				BFDF0B331D6612D700D83F34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BFDF0B341D6612D700D83F34 /* Build configuration list for PBXNativeTarget "ChalkBoardSudoku" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFDF0B351D6612D700D83F34 /* Debug */,
+				BFDF0B361D6612D700D83F34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		BFDF0B371D6612D700D83F34 /* Build configuration list for PBXNativeTarget "ChalkBoardSudokuTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFDF0B381D6612D700D83F34 /* Debug */,
+				BFDF0B391D6612D700D83F34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDF0B0F1D6612D700D83F34 /* Project object */;
+}
