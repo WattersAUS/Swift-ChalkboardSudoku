@@ -535,6 +535,30 @@ class ViewController: UIViewController {
         return
     }
     
+    //
+    // set a coord to the image of the selected number/state
+    //
+    func setCoordToStateImage(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int, state: Int) {
+        switch state {
+        case imgStates.Origin.rawValue:
+            self.setCoordToOriginImage(coord, number: number)
+            break
+        case imgStates.Selected.rawValue:
+            self.setCoordToSelectImage(coord, number: number)
+            break
+        case imgStates.Delete.rawValue:
+            self.setCoordToDeleteImage(coord, number: number)
+            break
+        case imgStates.Inactive.rawValue:
+            self.setCoordToInactiveImage(coord, number: number)
+            break
+        default:
+            self.setCoordToOriginImage(coord, number: number)
+            break
+        }
+        return
+    }
+
     //----------------------------------------------------------------------------
     // user presses the 'Start' or 'Reset' button
     //----------------------------------------------------------------------------
@@ -673,6 +697,23 @@ class ViewController: UIViewController {
                     }
                 }
             }
+        }
+        return
+    }
+    
+    //
+    // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
+    //
+    func redrawCurrentCoordImage(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) {
+        let number: Int = self.sudokuBoard.getNumberFromGameBoard(coord)
+        if number == 0 {
+            self.setCellToBlankImage(coord)
+        } else {
+            var imgState: Int = self.displayBoard.gameImages[coord.row][coord.column].getImageState(coord.cellRow, column: coord.cellColumn)
+            if imgState == -1 {
+                imgState = imgStates.Origin.rawValue
+            }
+            self.displayBoard.gameImages[coord.row][coord.column].setImage(coord.cellRow, column: coord.cellColumn, imageToSet: self.imageLibrary[imgState][self.userPrefs.characterSetInUse][number - 1], imageState: imgState)
         }
         return
     }
@@ -1503,47 +1544,6 @@ class ViewController: UIViewController {
     }
     
     //
-    // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
-    //
-    func redrawCurrentCoordImage(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) {
-        let number: Int = self.sudokuBoard.getNumberFromGameBoard(coord)
-        if number == 0 {
-            self.setCellToBlankImage(coord)
-        } else {
-            var imgState: Int = self.displayBoard.gameImages[coord.row][coord.column].getImageState(coord.cellRow, column: coord.cellColumn)
-            if imgState == -1 {
-                imgState = imgStates.Origin.rawValue
-            }
-            self.displayBoard.gameImages[coord.row][coord.column].setImage(coord.cellRow, column: coord.cellColumn, imageToSet: self.imageLibrary[imgState][self.userPrefs.characterSetInUse][number - 1], imageState: imgState)
-        }
-        return
-    }
-    
-    //
-    // set a coord to the image of the selected number/state
-    //
-    func setCoordToStateImage(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int, state: Int) {
-        switch state {
-        case imgStates.Origin.rawValue:
-            self.setCoordToOriginImage(coord, number: number)
-            break
-        case imgStates.Selected.rawValue:
-            self.setCoordToSelectImage(coord, number: number)
-            break
-        case imgStates.Delete.rawValue:
-            self.setCoordToDeleteImage(coord, number: number)
-            break
-        case imgStates.Inactive.rawValue:
-            self.setCoordToInactiveImage(coord, number: number)
-            break
-        default:
-            self.setCoordToOriginImage(coord, number: number)
-            break
-        }
-        return
-    }
-    
-    //
     // set numbers on the control panel to whatever 'state' is stored (used when we swap char sets)
     //
     func setControlPanelToCurrentImageValue(coord: (row: Int, column: Int)) {
@@ -1587,10 +1587,6 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // translate game to/from GameStateHandler
     //----------------------------------------------------------------------------
-    func loadGameState() {
-        return
-    }
-    
     //
     // Game cells linked to the solution tracker
     //
