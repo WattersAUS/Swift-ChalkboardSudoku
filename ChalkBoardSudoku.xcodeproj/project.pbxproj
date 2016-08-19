@@ -109,11 +109,9 @@
 		BFDF0B0E1D6612D700D83F34 = {
 			isa = PBXGroup;
 			children = (
-				BFDF0B651D6616D400D83F34 /* Classes */,
 				BFDF0B581D66167B00D83F34 /* Docs */,
 				BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */,
 				BFDF0B2E1D6612D700D83F34 /* ChalkBoardSudokuTests */,
-				BFDF0B571D66163B00D83F34 /* Protocol Handlers */,
 				BFDF0B181D6612D700D83F34 /* Products */,
 				BFDF0B521D6615DF00D83F34 /* Sounds */,
 			);
@@ -131,6 +129,8 @@
 		BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */ = {
 			isa = PBXGroup;
 			children = (
+				BFDF0B651D6616D400D83F34 /* Classes */,
+				BFDF0B571D66163B00D83F34 /* Protocol Handlers */,
 				BFDF0B6C1D66179400D83F34 /* Enumeration.swift */,
 				BFDF0B6D1D66179400D83F34 /* Struct.swift */,
 				BFDF0B661D6616F500D83F34 /* Preferences.swift */,
@@ -180,6 +180,7 @@
 				BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */,
 			);
 			name = "Protocol Handlers";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		BFDF0B581D66167B00D83F34 /* Docs */ = {
@@ -201,6 +202,7 @@
 				BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */,
 			);
 			name = Classes;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -524,6 +526,7 @@
 				BFDF0B361D6612D700D83F34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BFDF0B371D6612D700D83F34 /* Build configuration list for PBXNativeTarget "ChalkBoardSudokuTests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +535,7 @@
 				BFDF0B391D6612D700D83F34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

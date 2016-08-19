@@ -787,7 +787,13 @@ class ViewController: UIViewController {
         if self.boardPosition.row == -1 {
             self.controlPanelPosition = self.userSelectedControlPanelFirst(posn, previousPosn: self.controlPanelPosition)
         } else {
-            self.controlPanelPosition = self.userSelectBoardBeforeControlPanel(posn, previousPosn: self.controlPanelPosition, boardPosn: self.boardPosition)
+            //
+            // user placing / removing is a one off deal, so reset positions when done
+            //
+            if self.userSelectBoardBeforeControlPanel(posn, previousPosn: self.controlPanelPosition, boardPosn: self.boardPosition) == true {
+                self.boardPosition = (-1, -1, -1, -1)
+            }
+            self.controlPanelPosition = (-1, -1)
         }
         return
     }
@@ -883,35 +889,41 @@ class ViewController: UIViewController {
     //
     // we have an active board position selected before the user used the control panel
     //
-    func userSelectBoardBeforeControlPanel(currentPosn: (row: Int, column: Int), previousPosn: (row: Int, column: Int), boardPosn: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> (row: Int, column: Int) {
+    func userSelectBoardBeforeControlPanel(currentPosn: (row: Int, column: Int), previousPosn: (row: Int, column: Int), boardPosn: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
         let index: Int = (currentPosn.row * 2) + currentPosn.column
         switch index {
         case 0..<9:
+            //
             // place the selected number on the board if we can put it there
+            //
             if self.sudokuBoard.isNumberValidOnGameBoard(boardPosn, number: index + 1) == false {
                 self.playErrorSound()
-                return (-1, -1)
+                return false
             }
+            //
+            // if already have a number there, clear it!
+            //
             if self.sudokuBoard.isGameBoardCellUsed(boardPosn) == true {
                 self.sudokuBoard.clearLocationOnGameBoard(boardPosn)
             }
+            //
+            // place the number, if we can
+            //
             if self.sudokuBoard.setNumberOnGameBoard(boardPosn, number: index + 1) == false {
                 self.playErrorSound()
-            } else {
-                self.setCoordToOriginImage(boardPosn, number: index + 1)
-                self.userSolution.addCoordinate(boardPosn)
-                self.userGame.incrementGamePlayerMovesMade()
-                self.playPlacementSound(index + 1)
-                self.boardPosition = (-1, -1, -1, -1)
-                if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
-                    self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
-                    if self.sudokuBoard.isGameCompleted() {
-                        self.userCompletesGame()
-                    }
-                    return (-1, -1)
+                return false
+            }
+            self.setCoordToOriginImage(boardPosn, number: index + 1)
+            self.userSolution.addCoordinate(boardPosn)
+            self.userGame.incrementGamePlayerMovesMade()
+            self.playPlacementSound(index + 1)
+            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
+                self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
+                if self.sudokuBoard.isGameCompleted() {
+                    self.userCompletesGame()
                 }
             }
-            break;
+            break
         case 9:
             let number: Int = self.sudokuBoard.getNumberFromGameBoard(boardPosn)
             if number > 0 {
@@ -920,8 +932,9 @@ class ViewController: UIViewController {
                 self.setCellToBlankImage(boardPosn)
                 self.userSolution.removeCoordinate(boardPosn)
                 self.userGame.incrementGamePlayerMovesDeleted()
-                self.boardPosition = (-1, -1, -1, -1)
+                //
                 // may need to reactivate 'inactive' control panel posn
+                //
                 self.resetInactiveNumberOnBoard(number)
             }
             break
@@ -929,7 +942,7 @@ class ViewController: UIViewController {
             // this should never happen
             break
         }
-        return currentPosn
+        return true
     }
     
     //----------------------------------------------------------------------------
@@ -992,7 +1005,7 @@ class ViewController: UIViewController {
     }
     
     //
-    // sets up and allows touches to be detected on SudokuBoard view only
+    // allowing touches to be detected on SudokuBoard view only
     //
     func initialiseSudokuBoardUIViewToAcceptTouch(view: UIView) {
         let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.detectedSudokuBoardUIViewTapped(_:)))
