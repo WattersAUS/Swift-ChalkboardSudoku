@@ -522,7 +522,7 @@ class ViewController: UIViewController {
         for cell: BoardCell in self.userGame.currentGame.originCells {
             self.sudokuBoard.setNumberOnOriginBoard((cell.row, cell.col, cell.crow, cell.ccol), number: cell.value)
         }
-        // now copy the game progress values on top of the origin, and dont forget the solution
+        // now copy the game progress values on top of the origin, and dont forget the solution tracker
         self.sudokuBoard.initialiseGameBoard()
         for cell: BoardCell in self.userGame.currentGame.gameCells {
             let coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int) = (cell.row, cell.col, cell.crow, cell.ccol)
@@ -618,8 +618,8 @@ class ViewController: UIViewController {
         self.userSolution.clearCoordinates()
         self.displayBoard.setImageStates(imgStates.Origin.rawValue)
         self.updateSudokuBoardDisplay()
-        self.controlPanelPosition = (-1, -1)
-        self.boardPosition = (-1, -1, -1, -1)
+        self.resetControlPanelPosition()
+        self.resetBoardPosition()
         self.resetGameTimer()
         self.startGameTimer()
         self.userGame.setGameInPlay(true)
@@ -785,15 +785,15 @@ class ViewController: UIViewController {
             return
         }
         if self.boardPosition.row == -1 {
-            self.controlPanelPosition = self.userSelectedControlPanelFirst(posn, previousPosn: self.controlPanelPosition)
+            self.setControlPanelPosition(self.userSelectedControlPanelFirst(posn, previousPosn: self.controlPanelPosition))
         } else {
             //
             // user placing / removing is a one off deal, so reset positions when done
             //
             if self.userSelectBoardBeforeControlPanel(posn, previousPosn: self.controlPanelPosition, boardPosn: self.boardPosition) == true {
-                self.boardPosition = (-1, -1, -1, -1)
+                self.resetBoardPosition()
             }
-            self.controlPanelPosition = (-1, -1)
+            self.resetControlPanelPosition()
         }
         return
     }
@@ -809,66 +809,76 @@ class ViewController: UIViewController {
         return(-1, -1)
     }
     
-    //
-    // the user came straight to the control panel and hasn't selected a board position yet
-    //
+    //----------------------------------------------------------------------------
+    // the user came straight to the control panel no board posn set
+    //----------------------------------------------------------------------------
     func userSelectedControlPanelFirst(currentPosn: (row: Int, column: Int), previousPosn: (row: Int, column: Int)) -> (row: Int, column: Int) {
         let index: Int = (currentPosn.row * 2) + currentPosn.column
-        let currentState: Int = self.controlPanelImages.getImageState(currentPosn.row, column: currentPosn.column)
-        var pIndex: Int = -1
         if previousPosn.row != -1 {
-            pIndex = (previousPosn.row * 2) + previousPosn.column
-        }
-        // has the user selected the same control panel posn in succession
-        if index == pIndex {
-            switch index {
-            case 0..<9:
-                if currentState == imgStates.Selected.rawValue {
-                    if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
-                        self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
-                    } else {
-                        self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
-                    }
-                    self.unsetSelectNumbersOnBoard()
-                    return (-1, -1)
-                }
-                self.setControlPanelToSelectedImageValue((index / 2, column: index % 2))
-                self.setSelectNumbersOnBoard(index)
-                break
-            case 9:
-                if currentState == imgStates.Delete.rawValue {
-                    self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
-                    self.unsetDeleteNumbersOnBoard()
-                    return(-1, -1)
-                } else {
-                    self.setControlPanelToDeleteImageValue((index / 2, column: index % 2))
-                    self.setDeleteLocationsOnBoard(self.userSolution.getCoordinatesInSolution())
-                }
-                break
-            default:
-                break
-            }
-            return(currentPosn)
-        }
-        // cleanup from previous selected ctrl panel posn
-        switch pIndex {
-        case 0..<9:
-            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(pIndex + 1) == true {
-                self.setControlPanelToInactiveImageValue((pIndex / 2, column: pIndex % 2))
+            let pIndex = (previousPosn.row * 2) + previousPosn.column
+            if index != pIndex {
+                //
+                // revert previous selected ctrl panel posn and numbers set
+                //
+                self.resetControlPanelImage(pIndex)
+                self.unsetSelectNumbersOnBoard()
+                self.unsetDeleteNumbersOnBoard()
             } else {
-                self.setControlPanelToOriginImageValue((pIndex / 2, column: pIndex % 2))
+                let currentState: Int = self.controlPanelImages.getImageState(currentPosn.row, column: currentPosn.column)
+            
+            
+            
+            
+                switch index {
+                case 0..<9:
+                    if currentState == imgStates.Selected.rawValue {
+                        if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
+                            self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
+                        } else {
+                            self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
+                        }
+                        self.unsetSelectNumbersOnBoard()
+                        return (-1, -1)
+                    }
+                    self.setControlPanelToSelectedImageValue((index / 2, column: index % 2))
+                    self.setSelectNumbersOnBoard(index)
+                    break
+                case 9:
+                    if currentState == imgStates.Delete.rawValue {
+                        self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
+                        self.unsetDeleteNumbersOnBoard()
+                        return (-1, -1)
+                    } else {
+                        self.setControlPanelToDeleteImageValue((index / 2, column: index % 2))
+                        self.setDeleteLocationsOnBoard(self.userSolution.getCoordinatesInSolution())
+                    }
+                    break
+                default:
+                    break
+                }
+                return (currentPosn)
+            
+            
+            
+            
+            
+                if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
+                    self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
+                    self.setUserUsedNumberCompletion(index + 1)
+                    if self.sudokuBoard.isGameCompleted() {
+                        self.userCompletesGame()
+                    }
+                } else {
+                    //self.setCoordToOriginImage(coord, number: index + 1)
+                }
+
+            
+            
             }
-            self.unsetSelectNumbersOnBoard()
-            break
-        case 9:
-            self.setControlPanelToOriginImageValue((pIndex / 2, column: pIndex % 2))
-            self.unsetDeleteNumbersOnBoard()
-            break
-        default:
-            // if we have a highlighted number (prob) from a hint, reset it!
-            self.unsetSelectNumbersOnBoard()
-            break
         }
+
+        
+            
         // process the current posn
         switch index {
         case 0..<9:
@@ -913,15 +923,20 @@ class ViewController: UIViewController {
                 self.playErrorSound()
                 return false
             }
-            self.setCoordToOriginImage(boardPosn, number: index + 1)
             self.userSolution.addCoordinate(boardPosn)
             self.userGame.incrementGamePlayerMovesMade()
             self.playPlacementSound(index + 1)
+            self.setUserRowCompletion(boardPosn)
+            self.setUserColumnCompletion(boardPosn)
+            self.setUserCellCompletion(boardPosn)
             if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
                 self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
+                self.setUserUsedNumberCompletion(index + 1)
                 if self.sudokuBoard.isGameCompleted() {
                     self.userCompletesGame()
                 }
+            } else {
+                self.setCoordToOriginImage(boardPosn, number: index + 1)
             }
             break
         case 9:
@@ -948,7 +963,6 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // Handle the board display, setup event handler and detect taps in the board
     //----------------------------------------------------------------------------
-    
     //
     // build the initial board display, we only do this once!
     //
@@ -1059,28 +1073,28 @@ class ViewController: UIViewController {
                 self.setCellToBlankImage(posn)
                 self.userSolution.removeCoordinate(posn)
                 self.userGame.incrementGamePlayerMovesDeleted()
-                self.boardPosition = (-1, -1, -1, -1)
+                self.resetBoardPosition()
                 return
             }
             if self.sudokuBoard.setNumberOnGameBoard(posn, number: index + 1) == false {
                 self.playErrorSound()
+                return
+            }
+            self.userSolution.addCoordinate(posn)
+            self.userGame.incrementGamePlayerMovesMade()
+            // do we need to make number 'inactive'?
+            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == false {
+                self.setCoordToSelectImage(posn, number: index + 1)
+                self.playPlacementSound(index + 1)
             } else {
-                self.userSolution.addCoordinate(posn)
-                self.userGame.incrementGamePlayerMovesMade()
-                // do we need to make number 'inactive'?
-                if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == false {
-                    self.setCoordToSelectImage(posn, number: index + 1)
-                    self.playPlacementSound(index + 1)
-                } else {
-                    self.setCoordToOriginImage(posn, number: index + 1)
-                    self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
-                    self.unsetSelectNumbersOnBoard()
-                    self.controlPanelPosition = (-1, -1)
-                    self.playPlacementSound(index + 1)
-                    // have we completed the game
-                    if self.sudokuBoard.isGameCompleted() {
-                        self.userCompletesGame()
-                    }
+                self.setCoordToOriginImage(posn, number: index + 1)
+                self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
+                self.unsetSelectNumbersOnBoard()
+                self.resetControlPanelPosition()
+                self.playPlacementSound(index + 1)
+                // have we completed the game
+                if self.sudokuBoard.isGameCompleted() {
+                    self.userCompletesGame()
                 }
             }
         case 9:
@@ -1097,13 +1111,13 @@ class ViewController: UIViewController {
             self.setCellToBlankImage(posn)
             self.userSolution.removeCoordinate(posn)
             self.userGame.incrementGamePlayerMovesDeleted()
-            self.boardPosition = (-1, -1, -1, -1)
+            self.resetBoardPosition()
             // may need to reactivate 'inactive' control panel posn
             self.resetInactiveNumberOnBoard(number)
             // if we have exhausted all 'delete' options, then reset the control panel icon, and selected ctrl panel posn
             if self.displayBoard.getLocationsOfImages(imgStates.Delete.rawValue).count == 0 {
                 self.setControlPanelToSelectedImageValue((index / 2, column: index % 2))
-                self.controlPanelPosition = (-1, -1)
+                self.resetControlPanelPosition()
             }
             break
         default:
@@ -1132,54 +1146,41 @@ class ViewController: UIViewController {
     // place users hint on the board, if we can
     //
     func placeUserHintOnBoard(position: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) {
-        if self.sudokuBoard.isGameBoardCellUsed(position) == true {
+        let number: Int = self.sudokuBoard.getNumberFromSolutionBoard(position)
+        if self.sudokuBoard.isGameBoardCellUsed(position) == true || self.sudokuBoard.setNumberOnGameBoard(position, number: number) == false {
             self.playErrorSound()
-        } else {
-            let number: Int = self.sudokuBoard.getNumberFromSolutionBoard(position)
-            if self.sudokuBoard.setNumberOnGameBoard(position, number: number) == false {
-                self.playErrorSound()
-            } else {
-                // we need to clear any selected numbers on the board and any reset control panel icons if selected
+            return
+        }
+        //
+        // add the number to the solution
+        //
+        self.userSolution.addCoordinate(position)
+        self.userGame.incrementGamePlayerMovesMade()
+        self.playPlacementSound(number)
+        self.giveHint = false
+        //
+        // reset control panel if needed
+        //
+        if self.controlPanelPosition.row != -1 {
+            self.resetControlPanelImage((self.controlPanelPosition.row * 2) + self.controlPanelPosition.column)
+            self.resetControlPanelPosition()
+        }
+        //
+        // placing the number might complete a row/col/cell
+        //
+        if self.setUserRowCompletion(position) == false && self.setUserColumnCompletion(position) == false && self.setUserCellCompletion(position) == false {
+            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(number) == false {
+                self.setCoordToSelectImage(position, number: number)
                 self.unsetDeleteNumbersOnBoard()
                 self.unsetSelectNumbersOnBoard()
-                if self.controlPanelPosition.row != -1 {
-                    let index: Int = (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column
-                    switch index {
-                    case 0..<9:
-                        if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
-                            self.setControlPanelToInactiveImageValue(self.controlPanelPosition)
-                        } else {
-                            self.setControlPanelToOriginImageValue(self.controlPanelPosition)
-                        }
-                        break
-                    case 9:
-                        self.setControlPanelToOriginImageValue(self.controlPanelPosition)
-                        break
-                    default:
-                        break
-                    }
-                    self.controlPanelPosition = (-1, -1)
-                }
-                // then we can add the number
-                self.userSolution.addCoordinate(position)
-                self.userGame.incrementGamePlayerMovesMade()
-                // do we need to make number 'inactive'?
-                if self.sudokuBoard.isNumberFullyUsedOnGameBoard(number) == false {
-                    self.setCoordToSelectImage(position, number: number)
-                    self.playPlacementSound(number)
-                } else {
-                    self.setCoordToOriginImage(position, number: number)
-                    self.setControlPanelToInactiveImageValue(((number - 1) / 2, column: (number - 1) % 2))
-                    self.unsetSelectNumbersOnBoard()
-                    self.controlPanelPosition = (-1, -1)
-                    self.playPlacementSound(number)
-                    // have we completed the game
-                    if self.sudokuBoard.isGameCompleted() {
-                        self.userCompletesGame()
-                    }
+            } else {
+                self.setCoordToOriginImage(position, number: number)
+                self.unsetDeleteNumbersOnBoard()
+                self.unsetSelectNumbersOnBoard()
+                if self.sudokuBoard.isGameCompleted() {
+                    self.userCompletesGame()
                 }
             }
-            self.giveHint = false
         }
         return
     }
@@ -1215,17 +1216,15 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // routines to make numbers inactive/active if all are completed on board
     //----------------------------------------------------------------------------
-    
     func resetInactiveNumberOnBoard(number: Int) {
         let index: Int = number - 1
         self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
         return
     }
     
-    
-    //
+    //----------------------------------------------------------------------------
     // detect if the user has selected within a designated image view
-    //
+    //----------------------------------------------------------------------------
     func isTapWithinImage(location: CGPoint, image: UIImageView) -> Bool {
         if (location.x >= image.frame.origin.x) && (location.x <= (image.frame.origin.x + image.frame.width)) {
             if (location.y >= image.frame.origin.y) && (location.y <= (image.frame.origin.y + image.frame.height)) {
@@ -1288,33 +1287,17 @@ class ViewController: UIViewController {
                     // need to clear any ctrl posn and board cells already highlighted
                     //
                     if self.controlPanelPosition.row != -1 {
-                        let index: Int = (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column
-                        switch index {
-                        case 0..<9:
-                            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
-                                self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
-                            } else {
-                                self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
-                            }
-                            self.unsetSelectNumbersOnBoard()
-                            break
-                        case 9:
-                            self.setControlPanelToOriginImageValue((index / 2, column: index % 2))
-                            self.unsetDeleteNumbersOnBoard()
-                            break
-                        default:
-                            // if we have a highlighted number (prob) from a hint, reset it!
-                            self.unsetSelectNumbersOnBoard()
-                            break
-                        }
+                        self.resetControlPanelImage((self.controlPanelPosition.row * 2) + self.controlPanelPosition.column)
                     }
+                    self.unsetSelectNumbersOnBoard()
+                    self.unsetDeleteNumbersOnBoard()
                     //
                     // highlight the incorrect numbers and the 'bin' as though the user had done it!
                     //
                     self.setControlPanelToDeleteImageValue((4, column: 1))
-                    self.controlPanelPosition = (4, 1)
+                    self.setControlPanelPosition((4,1))
                     self.setDeleteLocationsOnBoard(incorrectPlacements)
-                    self.boardPosition = (-1, -1, -1, -1)
+                    self.resetBoardPosition()
                 }
                 alertController.addAction(useHighlightAction)
             }
@@ -1324,7 +1307,8 @@ class ViewController: UIViewController {
     }
     
     //
-    // If they have a 'selected' number highlighted use that!, then failover to a random hint
+    // If they have a 'selected' number highlighted use that!
+    // then failover to a random hint
     //
     func addHintToBoard() -> Bool {
         var optionsToRemove: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
@@ -1338,11 +1322,15 @@ class ViewController: UIViewController {
                 optionsToRemove = self.sudokuBoard.getFreeLocationsForNumberOnGameBoard(index + 1)
             }
         }
-        // if we found none to remove (shouldn't happen though) escape cleanly
+        //
+        // if we found none to remove, escape cleanly (shouldn't happen though)
+        //
         if optionsToRemove.count == 0 {
             return false
         }
+        //
         // choose a random hint
+        //
         let posnToRemove: Int = Int(arc4random_uniform(UInt32(optionsToRemove.count)))
         let number: Int = self.sudokuBoard.getNumberFromSolutionBoard(optionsToRemove[posnToRemove])
         if self.sudokuBoard.setNumberOnGameBoard(optionsToRemove[posnToRemove], number: number) {
@@ -1356,7 +1344,7 @@ class ViewController: UIViewController {
                 self.setCoordToOriginImage(optionsToRemove[posnToRemove], number: number)
                 self.setControlPanelToInactiveImageValue(((number - 1) / 2, column: (number - 1) % 2))
                 self.unsetSelectNumbersOnBoard()
-                self.controlPanelPosition = (-1, -1)
+                self.resetControlPanelPosition()
                 self.playPlacementSound(number)
                 // have we completed the game
                 if self.sudokuBoard.isGameCompleted() {
@@ -1450,7 +1438,6 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // all image setting routines live here!
     //----------------------------------------------------------------------------
-    
     func unsetDeleteNumbersOnBoard() {
         let locations: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = self.displayBoard.getLocationsOfImages(imgStates.Delete.rawValue)
         self.unsetDeleteLocationsOnBoard(locations)
@@ -1671,6 +1658,88 @@ class ViewController: UIViewController {
             }
         }
         return cells
+    }
+
+    //----------------------------------------------------------------------------
+    // has the user completed a row, col, cell or even fully used a number
+    //----------------------------------------------------------------------------
+    func setUserRowCompletion(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
+        let locations: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = self.sudokuBoard.getCorrectLocationsFromCompletedRowOnGameBoard(coord)
+        if locations.isEmpty == true {
+            return false
+        }
+        for coord in locations {
+            self.setCoordToInactiveImage(coord, number: self.sudokuBoard.getNumberFromGameBoard(coord))
+        }
+        return true
+    }
+
+    func setUserColumnCompletion(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
+        let locations: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = self.sudokuBoard.getCorrectLocationsFromCompletedColumnOnGameBoard(coord)
+        if locations.isEmpty == true {
+            return false
+        }
+        for coord in locations {
+                self.setCoordToInactiveImage(coord, number: self.sudokuBoard.getNumberFromGameBoard(coord))
+        }
+        return true
+    }
+    
+    func setUserCellCompletion(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
+        let locations: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = self.sudokuBoard.getCorrectLocationsFromCompletedCellOnGameBoard(coord)
+        if locations.isEmpty == true {
+            return false
+        }
+        for coord in locations {
+            self.setCoordToInactiveImage(coord, number: self.sudokuBoard.getNumberFromGameBoard(coord))
+        }
+        return true
+    }
+    
+    func setUserUsedNumberCompletion(number: Int) -> Bool {
+        let locations: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = self.sudokuBoard.getCorrectLocationsFromCompletedNumberOnGameBoard(number)
+        if locations.isEmpty == true {
+            return false
+        }
+        for coord in locations {
+            self.setCoordToInactiveImage(coord, number: number)
+        }
+        return true
+    }
+    
+    //----------------------------------------------------------------------------
+    // reset the control panel image and position / board position
+    //----------------------------------------------------------------------------
+    func resetControlPanelImage(index: Int) {
+        guard (0..<10) ~= index else {
+            return
+        }
+        let coord: (row: Int, column: Int) = (index / 2, column: index % 2)
+        if index == 9 {
+            self.setControlPanelToOriginImageValue(coord)
+        } else {
+            if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) {
+                self.setControlPanelToInactiveImageValue(coord)
+            } else {
+                self.setControlPanelToOriginImageValue(coord)
+            }
+        }
+        return
+    }
+    
+    func setControlPanelPosition(coord: (row: Int, column: Int)) {
+        self.controlPanelPosition = coord
+        return
+    }
+    
+    func resetControlPanelPosition() {
+        self.controlPanelPosition = (-1, -1)
+        return
+    }
+
+    func resetBoardPosition() {
+        self.boardPosition = (-1, -1, -1, -1)
+        return
     }
     
 }

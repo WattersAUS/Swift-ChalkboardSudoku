@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF61D68713F00B9290D /* NumberGrid.swift */; };
+		BF036EF91D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */; };
+		BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFB1D68845A00B9290D /* SudokuCell.swift */; };
+		BF036EFE1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */; };
 		BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */; };
 		BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1C1D6612D700D83F34 /* ViewController.swift */; };
 		BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B1E1D6612D700D83F34 /* Main.storyboard */; };
@@ -51,6 +55,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BF036EF61D68713F00B9290D /* NumberGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberGrid.swift; sourceTree = "<group>"; };
+		BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChalkBoardSudokuNumberGridTests.swift; sourceTree = "<group>"; };
+		BF036EFB1D68845A00B9290D /* SudokuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuCell.swift; sourceTree = "<group>"; };
+		BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChalkBoardSudokuSudokuCellTests.swift; sourceTree = "<group>"; };
 		BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChalkBoardSudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDF0B1C1D6612D700D83F34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -106,6 +114,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF0EF69A1D673B0A00BBDD04 /* Defaults */ = {
+			isa = PBXGroup;
+			children = (
+				BFDF0B6C1D66179400D83F34 /* Enumeration.swift */,
+				BFDF0B6D1D66179400D83F34 /* Struct.swift */,
+			);
+			name = Defaults;
+			sourceTree = "<group>";
+		};
 		BFDF0B0E1D6612D700D83F34 = {
 			isa = PBXGroup;
 			children = (
@@ -113,7 +130,6 @@
 				BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */,
 				BFDF0B2E1D6612D700D83F34 /* ChalkBoardSudokuTests */,
 				BFDF0B181D6612D700D83F34 /* Products */,
-				BFDF0B521D6615DF00D83F34 /* Sounds */,
 			);
 			sourceTree = "<group>";
 		};
@@ -129,10 +145,9 @@
 		BFDF0B191D6612D700D83F34 /* ChalkBoardSudoku */ = {
 			isa = PBXGroup;
 			children = (
+				BF0EF69A1D673B0A00BBDD04 /* Defaults */,
 				BFDF0B651D6616D400D83F34 /* Classes */,
 				BFDF0B571D66163B00D83F34 /* Protocol Handlers */,
-				BFDF0B6C1D66179400D83F34 /* Enumeration.swift */,
-				BFDF0B6D1D66179400D83F34 /* Struct.swift */,
 				BFDF0B661D6616F500D83F34 /* Preferences.swift */,
 				BFDF0B671D6616F500D83F34 /* Preferences.xib */,
 				BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */,
@@ -141,6 +156,7 @@
 				BFDF0B211D6612D700D83F34 /* Assets.xcassets */,
 				BFDF0B231D6612D700D83F34 /* LaunchScreen.storyboard */,
 				BFDF0B261D6612D700D83F34 /* Info.plist */,
+				BFDF0B521D6615DF00D83F34 /* Sounds */,
 			);
 			path = ChalkBoardSudoku;
 			sourceTree = "<group>";
@@ -148,8 +164,10 @@
 		BFDF0B2E1D6612D700D83F34 /* ChalkBoardSudokuTests */ = {
 			isa = PBXGroup;
 			children = (
-				BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */,
 				BFDF0B311D6612D700D83F34 /* Info.plist */,
+				BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */,
+				BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */,
+				BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */,
 			);
 			path = ChalkBoardSudokuTests;
 			sourceTree = "<group>";
@@ -171,6 +189,7 @@
 				BFDF0B451D6615D400D83F34 /* Triumph_001.aiff */,
 			);
 			name = Sounds;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		BFDF0B571D66163B00D83F34 /* Protocol Handlers */ = {
@@ -200,6 +219,8 @@
 				BFDF0B5F1D6616C900D83F34 /* CellImages.swift */,
 				BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */,
 				BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */,
+				BF036EF61D68713F00B9290D /* NumberGrid.swift */,
+				BF036EFB1D68845A00B9290D /* SudokuCell.swift */,
 			);
 			name = Classes;
 			path = ..;
@@ -330,6 +351,8 @@
 				BFDF0B611D6616C900D83F34 /* Cell.swift in Sources */,
 				BFDF0B561D66160D00D83F34 /* GameStateHandler.swift in Sources */,
 				BFDF0B621D6616C900D83F34 /* GameBoard.swift in Sources */,
+				BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */,
+				BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */,
 				BFDF0B6E1D66179400D83F34 /* Enumeration.swift in Sources */,
 				BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */,
 				BFDF0B681D6616F500D83F34 /* Preferences.swift in Sources */,
@@ -340,6 +363,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF036EFE1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift in Sources */,
+				BF036EF91D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift in Sources */,
 				BFDF0B301D6612D700D83F34 /* ChalkBoardSudokuTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

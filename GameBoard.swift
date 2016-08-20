@@ -366,7 +366,7 @@ class GameBoard: NSObject, NSCopying {
     // get a number from the board the user is completing
     //
     func getNumberFromGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Int {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return 0
         }
         return self.gameBoardCells[coord.row][coord.column].getNumberAtCellPosition(coord.cellRow, column: coord.cellColumn)
@@ -376,7 +376,7 @@ class GameBoard: NSObject, NSCopying {
     // get a number from the origin board
     //
     func getNumberFromOriginBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Int {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return 0
         }
         return self.originBoardCells[coord.row][coord.column].getNumberAtCellPosition(coord.cellRow, column: coord.cellColumn)
@@ -386,7 +386,7 @@ class GameBoard: NSObject, NSCopying {
     // get a number from the solution board
     //
     func getNumberFromSolutionBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Int {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return 0
         }
         return self.solutionBoardCells[coord.row][coord.column].getNumberAtCellPosition(coord.cellRow, column: coord.cellColumn)
@@ -396,7 +396,7 @@ class GameBoard: NSObject, NSCopying {
     // is the location an 'origin' posn, we'll use this to work out if the user can interact with that position
     //
     func isOriginBoardCellUsed(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         return (self.originBoardCells[coord.row][coord.column].getNumberAtCellPosition(coord.cellRow, column: coord.cellColumn) == 0) ? false : true
@@ -406,7 +406,7 @@ class GameBoard: NSObject, NSCopying {
     // is the location on the game board used
     //
     func isGameBoardCellUsed(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         return (self.gameBoardCells[coord.row][coord.column].getNumberAtCellPosition(coord.cellRow, column: coord.cellColumn) == 0) ? false : true
@@ -416,7 +416,7 @@ class GameBoard: NSObject, NSCopying {
     // can the number exist in this position in the game
     //
     func isNumberValidOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         if self.gameBoardCells[coord.row][coord.column].isNumberUsedInCell(number) == true {
@@ -429,7 +429,7 @@ class GameBoard: NSObject, NSCopying {
     // populate a position on the 'boards'
     //
     func setNumberOnSolutionBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         if self.solutionBoardCells[coord.row][coord.column].isNumberUsedInCell(number) == true {
@@ -440,7 +440,7 @@ class GameBoard: NSObject, NSCopying {
     }
     
     func setNumberOnOriginBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         if self.originBoardCells[coord.row][coord.column].isNumberUsedInCell(number) == true {
@@ -451,7 +451,7 @@ class GameBoard: NSObject, NSCopying {
     }
     
     func setNumberOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int), number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return false
         }
         if self.gameBoardCells[coord.row][coord.column].isNumberUsedInCell(number) == true {
@@ -471,7 +471,7 @@ class GameBoard: NSObject, NSCopying {
     // remove a number from the board
     //
     func clearLocationOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return
         }
         self.gameBoardCells[coord.row][coord.column].clearNumberAtCellPosition(coord.cellRow, column: coord.cellColumn)
@@ -569,10 +569,7 @@ class GameBoard: NSObject, NSCopying {
     // when a cell is completed and correct, used to set cell contents to 'inactive'
     //
     func getCorrectLocationsFromCompletedCellOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] {
-        guard self.coordBoundsCheck(coord) == true else {
-            return []
-        }
-        if self.gameBoardCells[coord.row][coord.column].isCellCompleted() == false {
+        guard self.coordBoundsCheck(coord) && self.gameBoardCells[coord.row][coord.column].isCellCompleted() else {
             return []
         }
         var returnCoords: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
@@ -591,7 +588,7 @@ class GameBoard: NSObject, NSCopying {
     // as above but for a column
     //
     func getCorrectLocationsFromCompletedColumnOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return []
         }
         var returnCoords: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
@@ -610,7 +607,7 @@ class GameBoard: NSObject, NSCopying {
     // now for the row
     //
     func getCorrectLocationsFromCompletedRowOnGameBoard(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] {
-        guard self.coordBoundsCheck(coord) == true else {
+        guard self.coordBoundsCheck(coord) else {
             return []
         }
         var returnCoords: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
@@ -621,6 +618,23 @@ class GameBoard: NSObject, NSCopying {
                 }
                 returnCoords.append((coord.row, bCol, coord.cellRow, cCol))
             }
+        }
+        return returnCoords
+    }
+
+    //
+    // and for number
+    //
+    func getCorrectLocationsFromCompletedNumberOnGameBoard(number: Int) -> [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] {
+        guard self.isNumberFullyUsedOnGameBoard(number) else {
+            return []
+        }
+        var returnCoords: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
+        for location: (row: Int, column: Int, cellRow: Int, cellColumn: Int) in self.getLocationsOfNumberOnGameBoard(number) {
+            if self.getNumberFromGameBoard(location) != self.getNumberFromSolutionBoard(location) {
+                return []
+            }
+            returnCoords.append(location)
         }
         return returnCoords
     }
