@@ -8,9 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF61D68713F00B9290D /* NumberGrid.swift */; };
-		BF036EF91D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */; };
 		BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFB1D68845A00B9290D /* SudokuCell.swift */; };
-		BF036EFE1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */; };
+		BF7658501D699D40007C249F /* SudokuGameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF76584F1D699D40007C249F /* SudokuGameBoard.swift */; };
 		BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */; };
 		BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1C1D6612D700D83F34 /* ViewController.swift */; };
 		BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B1E1D6612D700D83F34 /* Main.storyboard */; };
@@ -33,8 +32,6 @@
 		BFDF0B561D66160D00D83F34 /* GameStateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */; };
 		BFDF0B5B1D66168600D83F34 /* Ideas.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B591D66168600D83F34 /* Ideas.rtf */; };
 		BFDF0B5C1D66168600D83F34 /* Notes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B5A1D66168600D83F34 /* Notes.rtf */; };
-		BFDF0B611D6616C900D83F34 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5D1D6616C900D83F34 /* Cell.swift */; };
-		BFDF0B621D6616C900D83F34 /* GameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */; };
 		BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B5F1D6616C900D83F34 /* CellImages.swift */; };
 		BFDF0B641D6616C900D83F34 /* GameBoardImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */; };
 		BFDF0B681D6616F500D83F34 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B661D6616F500D83F34 /* Preferences.swift */; };
@@ -56,9 +53,8 @@
 
 /* Begin PBXFileReference section */
 		BF036EF61D68713F00B9290D /* NumberGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberGrid.swift; sourceTree = "<group>"; };
-		BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChalkBoardSudokuNumberGridTests.swift; sourceTree = "<group>"; };
 		BF036EFB1D68845A00B9290D /* SudokuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuCell.swift; sourceTree = "<group>"; };
-		BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChalkBoardSudokuSudokuCellTests.swift; sourceTree = "<group>"; };
+		BF76584F1D699D40007C249F /* SudokuGameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuGameBoard.swift; sourceTree = "<group>"; };
 		BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChalkBoardSudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDF0B1C1D6612D700D83F34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -85,8 +81,6 @@
 		BFDF0B541D66160D00D83F34 /* GameStateHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameStateHandler.swift; sourceTree = "<group>"; };
 		BFDF0B591D66168600D83F34 /* Ideas.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Ideas.rtf; sourceTree = "<group>"; };
 		BFDF0B5A1D66168600D83F34 /* Notes.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Notes.rtf; sourceTree = "<group>"; };
-		BFDF0B5D1D6616C900D83F34 /* Cell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
-		BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoard.swift; sourceTree = "<group>"; };
 		BFDF0B5F1D6616C900D83F34 /* CellImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellImages.swift; sourceTree = "<group>"; };
 		BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameBoardImages.swift; sourceTree = "<group>"; };
 		BFDF0B661D6616F500D83F34 /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Preferences.swift; path = ../Preferences.swift; sourceTree = "<group>"; };
@@ -166,8 +160,6 @@
 			children = (
 				BFDF0B311D6612D700D83F34 /* Info.plist */,
 				BFDF0B2F1D6612D700D83F34 /* ChalkBoardSudokuTests.swift */,
-				BF036EF81D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift */,
-				BF036EFD1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift */,
 			);
 			path = ChalkBoardSudokuTests;
 			sourceTree = "<group>";
@@ -214,13 +206,12 @@
 		BFDF0B651D6616D400D83F34 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				BFDF0B5D1D6616C900D83F34 /* Cell.swift */,
-				BFDF0B5E1D6616C900D83F34 /* GameBoard.swift */,
 				BFDF0B5F1D6616C900D83F34 /* CellImages.swift */,
 				BFDF0B601D6616C900D83F34 /* GameBoardImages.swift */,
 				BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */,
 				BF036EF61D68713F00B9290D /* NumberGrid.swift */,
 				BF036EFB1D68845A00B9290D /* SudokuCell.swift */,
+				BF76584F1D699D40007C249F /* SudokuGameBoard.swift */,
 			);
 			name = Classes;
 			path = ..;
@@ -348,9 +339,8 @@
 				BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */,
 				BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */,
 				BFDF0B6B1D66170F00D83F34 /* TrackSolution.swift in Sources */,
-				BFDF0B611D6616C900D83F34 /* Cell.swift in Sources */,
 				BFDF0B561D66160D00D83F34 /* GameStateHandler.swift in Sources */,
-				BFDF0B621D6616C900D83F34 /* GameBoard.swift in Sources */,
+				BF7658501D699D40007C249F /* SudokuGameBoard.swift in Sources */,
 				BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */,
 				BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */,
 				BFDF0B6E1D66179400D83F34 /* Enumeration.swift in Sources */,
@@ -363,8 +353,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF036EFE1D68AA9600B9290D /* ChalkBoardSudokuSudokuCellTests.swift in Sources */,
-				BF036EF91D68785800B9290D /* ChalkBoardSudokuNumberGridTests.swift in Sources */,
 				BFDF0B301D6612D700D83F34 /* ChalkBoardSudokuTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

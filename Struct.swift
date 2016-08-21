@@ -8,6 +8,19 @@
 
 import Foundation
 
+struct Coordinate {
+    var row:        Int = 0
+    var column:     Int = 0
+    var cell:       (row: Int, column: Int) = (0,0)
+    
+    init(row: Int, column: Int, cell: (row: Int, column: Int)) {
+        self.row         = row
+        self.column      = column
+        self.cell.row    = cell.row
+        self.cell.column = cell.column
+    }
+}
+
 struct BoardCell {
     var row:   Int = 0
     var col:   Int = 0

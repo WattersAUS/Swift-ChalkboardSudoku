@@ -12,7 +12,7 @@ class NumberGrid: NSObject, NSCopying {
     
     private var number: [[Int]] = []
     private var coords: [(row: Int, column: Int)] = []
-    private var size: (rows: Int, columns: Int)
+    private var size:   (rows: Int, columns: Int)
     
     init (size: (rows: Int, columns: Int)) {
         self.size.rows = size.rows

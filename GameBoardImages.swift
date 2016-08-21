@@ -57,21 +57,21 @@ class GameBoardImages {
     //
     // get locations 'state', used for save routine
     //
-    func getImageState(coord: (row: Int, column: Int, cellRow: Int, cellColumn: Int)) -> Int {
-        return self.gameImages[coord.row][coord.column].getImageState(coord.cellRow, column: coord.cellColumn)
+    func getImageState(coord: Coordinate) -> Int {
+        return self.gameImages[coord.row][coord.column].getImageState(coord.cell.row, column: coord.cell.column)
     }
     
     //
     // we use this to pass back to the ViewController an array of images selected by the user when selecting a control panel 'number'
     //
-    func getLocationsOfImages(imageState: Int) -> [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] {
-        var returnCoords: [(row: Int, column: Int, cellRow: Int, cellColumn: Int)] = []
+    func getLocationsOfImages(imageState: Int) -> [Coordinate] {
+        var returnCoords: [Coordinate] = []
         for boardRow: Int in 0 ..< self.boardRows {
             for boardColumn: Int in 0 ..< self.boardColumns {
                 let images: [(cellRow: Int, cellColumn: Int)] = self.gameImages[boardRow][boardColumn].getLocationsOfCellsStateEqualTo(imageState)
                 if images.isEmpty == false {
                     for coord in images {
-                        returnCoords.append((boardRow, boardColumn, coord.cellRow, coord.cellColumn))
+                        returnCoords.append(Coordinate(row: boardRow, column: boardColumn, cell: (row: coord.cellRow, column: coord.cellColumn)))
                     }
                 }
             }

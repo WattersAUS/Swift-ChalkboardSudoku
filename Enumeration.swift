@@ -29,9 +29,9 @@ enum imageSet: Int {
 }
 
 //
-// external difficulty (used everywhere except in the Game Board Class)
+// external difficulty (used everywhere except in the SudokuGameBoard class)
 //
-enum gameDiff: Int {
+enum sudokuDifficulty: Int {
     case Easy   = 0
     case Medium = 1
     case Hard   = 2
