@@ -20,23 +20,24 @@ class GameBoardImages {
         if setSize != 3 {
             setSize = 3
         }
-        self.allocateImageArray(setSize, columns: setSize)
-        return
-    }
-
-    private func allocateImageArray(rows: Int, columns: Int) {
-        self.boardRows = rows
-        self.boardColumns = columns
-        for row: Int in 0 ..< rows {
-            var rowOfCells: [CellImages] = [CellImages(rows: rows, columns: columns)]
-            for column: Int in 0 ..< columns {
-                self.boardCoordinates.append((row, column))
-                if column > 0 {
-                    rowOfCells.append(CellImages(rows: rows, columns: columns))
+        
+        func allocateImageArray(rows: Int, columns: Int) {
+            self.boardRows = rows
+            self.boardColumns = columns
+            for row: Int in 0 ..< rows {
+                var rowOfCells: [CellImages] = [CellImages(rows: rows, columns: columns)]
+                for column: Int in 0 ..< columns {
+                    self.boardCoordinates.append((row, column))
+                    if column > 0 {
+                        rowOfCells.append(CellImages(rows: rows, columns: columns))
+                    }
                 }
+                self.gameImages.append(rowOfCells)
             }
-            self.gameImages.append(rowOfCells)
+            return
         }
+        
+        allocateImageArray(setSize, columns: setSize)
         return
     }
 
