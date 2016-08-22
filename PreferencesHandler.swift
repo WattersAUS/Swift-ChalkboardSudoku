@@ -16,7 +16,7 @@ import Foundation
 protocol PreferencesDelegate: class {
     // what we use to populate the pref dialog
     var characterSetInUse:          Int { get set }
-    var difficultySet: sudokuDifficulty { get set }
+    var difficultySet:              Int { get set }
     var gameModeInUse:              Int { get set }
     var soundOn:                   Bool { get set }
     var hintsOn:                   Bool { get set }
@@ -27,7 +27,7 @@ protocol PreferencesDelegate: class {
 
 class PreferencesHandler: NSObject, PreferencesDelegate {
     var characterSetInUse:          Int = 0
-    var difficultySet: sudokuDifficulty = sudokuDifficulty.Medium
+    var difficultySet:              Int = 0
     var gameModeInUse:              Int = 0
     var soundOn:                   Bool = true
     var hintsOn:                   Bool = false
@@ -45,26 +45,14 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
         let difficulty: Int = self.userDefaults.integerForKey("difficulty")
         if difficulty != 0 {
             self.characterSetInUse = self.userDefaults.integerForKey("charset")
-            switch difficulty {
-            case 0:
-                self.difficultySet = sudokuDifficulty.Easy
-                break
-            case 1:
-                self.difficultySet = sudokuDifficulty.Medium
-                break
-            case 2:
-                self.difficultySet = sudokuDifficulty.Hard
-                break
-            default:
-                self.difficultySet = sudokuDifficulty.Medium
-            }
+            self.difficultySet     = difficulty
             self.gameModeInUse     = self.userDefaults.integerForKey("gamemode")
             self.soundOn           = self.userDefaults.boolForKey("sound")
             self.hintsOn           = self.userDefaults.boolForKey("hint")
         } else {
             // store for the first time
             self.characterSetInUse = imageSet.Default.rawValue
-            self.difficultySet     = sudokuDifficulty.Medium
+            self.difficultySet     = sudokuDifficulty.Medium.rawValue
             self.gameModeInUse     = gameMode.Normal.rawValue
             self.soundOn           = true
             self.hintsOn           = false
@@ -76,10 +64,10 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
         self.saveFunctions = [ self.savePreferences ]
         return
     }
-
+    
     func savePreferences() -> (Void) {
         self.userDefaults.setInteger(self.characterSetInUse, forKey: "charset")
-        self.userDefaults.setInteger(self.difficultySet.rawValue, forKey: "difficulty")
+        self.userDefaults.setInteger(self.difficultySet, forKey: "difficulty")
         self.userDefaults.setInteger(self.gameModeInUse, forKey: "gamemode")
         self.userDefaults.setBool(self.soundOn, forKey: "sound")
         self.userDefaults.setBool(self.hintsOn, forKey: "hint")

@@ -177,7 +177,8 @@ class SudokuCell: NumberGrid {
     }
     
     func getLocationOfNumber(number: Int) -> (row: Int, column: Int) {
-        return self.getLocationsOfNumber(number)[0]
+        let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(number)
+        return (locations.count == 0) ? (-1, -1) : locations[0]
     }
     
     //

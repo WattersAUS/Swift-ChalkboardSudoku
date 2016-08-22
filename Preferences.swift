@@ -13,13 +13,18 @@ class Preferences: UIViewController {
     weak var prefs: PreferencesDelegate?
     weak var state: GameStateDelegate?
 
+    //
+    // prefs
+    //
     @IBOutlet weak var characterSet: UISegmentedControl!
     @IBOutlet weak var setDifficulty: UISegmentedControl!
     @IBOutlet weak var gameMode: UISegmentedControl!
     @IBOutlet weak var useSound: UISwitch!
     @IBOutlet weak var allowHints: UISwitch!
     
+    //
     // now the game stats
+    //
     @IBOutlet weak var startedGames: UITextField!
     @IBOutlet weak var completedGames: UITextField!
     @IBOutlet weak var totalTimePlayed: UITextField!
@@ -27,12 +32,16 @@ class Preferences: UIViewController {
     @IBOutlet weak var totalMovesMade: UITextField!
     @IBOutlet weak var totalMovesDeleted: UITextField!
     
+    //
+    // ** remember we re-map difficulty from 1 -> 3 to 0 -> 2 **
+    // ** and reverse when we leave the dialog                **
+    //
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // get the current state of the prefs
-        // self.prefs = self.
         self.characterSet.selectedSegmentIndex  = (prefs?.characterSetInUse)!
-        self.setDifficulty.selectedSegmentIndex = (prefs?.difficultySet)!
+        self.setDifficulty.selectedSegmentIndex = (prefs?.difficultySet)! - 1
         self.gameMode.selectedSegmentIndex      = (prefs?.gameModeInUse)!
         self.useSound.on                        = (prefs?.soundOn)!
         self.allowHints.on                      = (prefs?.hintsOn)!
@@ -62,11 +71,10 @@ class Preferences: UIViewController {
     */
     
     @IBAction func dismissDialog(sender: UIButton) {
-        // now go call the function to redraw the board in the background if needed
-        prefs?.difficultySet = self.setDifficulty.selectedSegmentIndex
+        prefs?.difficultySet = self.setDifficulty.selectedSegmentIndex + 1
         prefs?.gameModeInUse = self.gameMode.selectedSegmentIndex
-        prefs?.soundOn = self.useSound.on
-        prefs?.hintsOn = self.allowHints.on
+        prefs?.soundOn       = self.useSound.on
+        prefs?.hintsOn       = self.allowHints.on
         if prefs?.characterSetInUse != self.characterSet.selectedSegmentIndex {
             prefs?.characterSetInUse = self.characterSet.selectedSegmentIndex
             for redrawFunction: (Void) -> () in (prefs?.drawFunctions)! {
