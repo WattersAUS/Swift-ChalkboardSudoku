@@ -22,12 +22,13 @@ struct Coordinate {
 }
 
 struct BoardCell {
-    var row:   Int = 0
-    var col:   Int = 0
-    var crow:  Int = 0
-    var ccol:  Int = 0
-    var value: Int = 0
-    var state: Int = 0
+    var row:    Int          = 0
+    var col:    Int          = 0
+    var crow:   Int          = 0
+    var ccol:   Int          = 0
+    var value:  Int          = 0
+    var image:  imageStates  = imageStates.Blank
+    var active: activeStates = activeStates.Blank
 }
 
 struct GameState {

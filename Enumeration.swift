@@ -105,11 +105,12 @@ enum saveGameDictionary: String {
 // define dictionary keys for cell storage
 //
 enum cellDictionary: String {
-    case row   = "row"
-    case col   = "col"
-    case crow  = "crow"
-    case ccol  = "ccol"
-    case value = "value"
-    case state = "state"
-    case board = "board"
+    case row    = "row"
+    case col    = "col"
+    case crow   = "crow"
+    case ccol   = "ccol"
+    case value  = "value"
+    case image  = "image"
+    case active = "active"
+    case board  = "board"
 }

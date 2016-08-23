@@ -78,6 +78,21 @@ class CellImages {
         }
         return true
     }
+
+    //----------------------------------------------------------------------------
+    // Get sizes
+    //----------------------------------------------------------------------------
+    func getSize() -> (rows: Int, columns: Int) {
+        return size
+    }
+    
+    func getColumns() -> Int {
+        return self.size.columns
+    }
+    
+    func getRows() -> Int {
+        return self.size.rows
+    }
     
     //----------------------------------------------------------------------------
     // Get / set image and active states

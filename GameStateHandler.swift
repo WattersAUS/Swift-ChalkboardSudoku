@@ -86,8 +86,11 @@ class GameStateHandler: NSObject, GameStateDelegate {
             case cellDictionary.value.rawValue:
                 cell.value = value
                 break
-            case cellDictionary.state.rawValue:
-                cell.state = value
+            case cellDictionary.image.rawValue:
+                cell.image = self.translateIntToImagesState(value)
+                break
+            case cellDictionary.active.rawValue:
+                cell.active = self.translateIntToActiveState(value)
                 break
             default:
                 break
@@ -95,7 +98,67 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
         return cell
     }
+    
+    private func translateIntToActiveState(state: Int) -> activeStates {
+        switch state {
+        case activeStates.Blank.rawValue:
+            return activeStates.Blank
+        case activeStates.Active.rawValue:
+            return activeStates.Active
+        case activeStates.Inactive.rawValue:
+            return activeStates.Inactive
+        default:
+            return activeStates.Blank
+        }
+    }
 
+    private func translateActiveStateToInt(state: activeStates) -> Int {
+        switch state {
+        case activeStates.Blank:
+            return activeStates.Blank.rawValue
+        case activeStates.Active:
+            return activeStates.Active.rawValue
+        case activeStates.Inactive:
+            return activeStates.Inactive.rawValue
+        }
+    }
+    
+    private func translateIntToImagesState(state: Int) -> imageStates {
+        switch state {
+        case imageStates.Blank.rawValue:
+            return imageStates.Blank
+        case imageStates.Origin.rawValue:
+            return imageStates.Origin
+        case imageStates.Selected.rawValue:
+            return imageStates.Selected
+        case imageStates.Delete.rawValue:
+            return imageStates.Delete
+        case imageStates.Inactive.rawValue:
+            return imageStates.Inactive
+        case imageStates.Highlight.rawValue:
+            return imageStates.Highlight
+        default:
+            return imageStates.Blank
+        }
+    }
+    
+    private func translateImageStateToInt(state: imageStates) -> Int {
+        switch state {
+        case imageStates.Blank:
+            return imageStates.Blank.rawValue
+        case imageStates.Origin:
+            return imageStates.Origin.rawValue
+        case imageStates.Selected:
+            return imageStates.Selected.rawValue
+        case imageStates.Delete:
+            return imageStates.Delete.rawValue
+        case imageStates.Inactive:
+            return imageStates.Inactive.rawValue
+        case imageStates.Highlight:
+            return imageStates.Highlight.rawValue
+        }
+    }
+    
     func updateGameSaveObjects() {
         self.updateGameSaveValue(saveGameDictionary.GamesStarted.rawValue,          value: self.currentGame.startedGames)
         self.updateGameSaveValue(saveGameDictionary.GamesCompleted.rawValue,        value: self.currentGame.completedGames)
@@ -114,17 +177,41 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.updateGameSaveValue(saveGameDictionary.GameMovesDeleted.rawValue,      value: self.currentGame.gameMovesDeleted)
         var cellArray: [AnyObject] = []
         for cell: BoardCell in self.currentGame.gameCells {
-            cellArray.append([cellDictionary.row.rawValue: cell.row, cellDictionary.col.rawValue: cell.col, cellDictionary.crow.rawValue: cell.crow, cellDictionary.ccol.rawValue: cell.ccol, cellDictionary.value.rawValue: cell.value, cellDictionary.state.rawValue: cell.state])
+            cellArray.append([
+                cellDictionary.row.rawValue:    cell.row,
+                cellDictionary.col.rawValue:    cell.col,
+                cellDictionary.crow.rawValue:   cell.crow,
+                cellDictionary.ccol.rawValue:   cell.ccol,
+                cellDictionary.value.rawValue:  cell.value,
+                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
+                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
+            ])
         }
         self.updateGameSaveValue(saveGameDictionary.GameBoard.rawValue,         value: cellArray)
         cellArray.removeAll()
         for cell: BoardCell in self.currentGame.originCells {
-            cellArray.append([cellDictionary.row.rawValue: cell.row, cellDictionary.col.rawValue: cell.col, cellDictionary.crow.rawValue: cell.crow, cellDictionary.ccol.rawValue: cell.ccol, cellDictionary.value.rawValue: cell.value, cellDictionary.state.rawValue: cell.state])
+            cellArray.append([
+                cellDictionary.row.rawValue:    cell.row,
+                cellDictionary.col.rawValue:    cell.col,
+                cellDictionary.crow.rawValue:   cell.crow,
+                cellDictionary.ccol.rawValue:   cell.ccol,
+                cellDictionary.value.rawValue:  cell.value,
+                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
+                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
+            ])
         }
         self.updateGameSaveValue(saveGameDictionary.OriginBoard.rawValue,       value: cellArray)
         cellArray.removeAll()
         for cell: BoardCell in self.currentGame.solutionCells {
-            cellArray.append([cellDictionary.row.rawValue: cell.row, cellDictionary.col.rawValue: cell.col, cellDictionary.crow.rawValue: cell.crow, cellDictionary.ccol.rawValue: cell.ccol, cellDictionary.value.rawValue: cell.value, cellDictionary.state.rawValue: cell.state])
+            cellArray.append([
+                cellDictionary.row.rawValue:    cell.row,
+                cellDictionary.col.rawValue:    cell.col,
+                cellDictionary.crow.rawValue:   cell.crow,
+                cellDictionary.ccol.rawValue:   cell.ccol,
+                cellDictionary.value.rawValue:  cell.value,
+                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
+                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
+            ])
         }
         self.updateGameSaveValue(saveGameDictionary.SolutionBoard.rawValue,     value: cellArray)
         return

@@ -12,8 +12,7 @@ class GameBoardImages {
     
     var gameImages: [[CellImages]] = []
     var boardCoordinates: [(row: Int, column: Int)] = []
-    var boardRows: Int = 0
-    var boardColumns: Int = 0
+    private var size: (rows: Int, columns: Int) = (0,0)
     
     init (size: Int = 3) {
         var setSize: Int = size
@@ -22,17 +21,17 @@ class GameBoardImages {
         }
         
         func allocateImageArray(rows: Int, columns: Int) {
-            self.boardRows = rows
-            self.boardColumns = columns
+            self.size.rows = rows
+            self.size.columns = columns
             for row: Int in 0 ..< rows {
-                var rowOfCells: [CellImages] = [CellImages(rows: rows, columns: columns)]
+                var cells: [CellImages] = [CellImages(size: (rows, columns))]
                 for column: Int in 0 ..< columns {
                     self.boardCoordinates.append((row, column))
                     if column > 0 {
-                        rowOfCells.append(CellImages(rows: rows, columns: columns))
+                        cells.append(CellImages(size: (rows, columns)))
                     }
                 }
-                self.gameImages.append(rowOfCells)
+                self.gameImages.append(cells)
             }
             return
         }
@@ -40,44 +39,70 @@ class GameBoardImages {
         allocateImageArray(setSize, columns: setSize)
         return
     }
+    
+    //----------------------------------------------------------------------------
+    // Get sizes
+    //----------------------------------------------------------------------------
+    func getSize() -> (rows: Int, columns: Int) {
+        return size
+    }
+    
+    func getColumns() -> Int {
+        return self.size.columns
+    }
+    
+    func getRows() -> Int {
+        return self.size.rows
+    }
 
-    //
-    // on a board reset we need to 'clear' states of all images
-    //
-    func setImageStates(toImageState: Int) {
-        for boardRow: Int in 0 ..< self.boardRows {
-            for boardColumn: Int in 0 ..< self.boardColumns {
-                for location: (cellRow:Int, cellColumn: Int) in self.gameImages[boardRow][boardColumn].getLocationsOfCellsStateNotEqualTo(toImageState) {
-                    self.gameImages[boardRow][boardColumn].setImageState(location.cellRow, column: location.cellColumn, imageState: toImageState)
+    //----------------------------------------------------------------------------
+    // Get / Set 'active' state (is there an image) and image types
+    //----------------------------------------------------------------------------
+    func getImageState(coord: Coordinate) -> imageStates {
+        return self.gameImages[coord.row][coord.column].getImageState((coord.cell.row, coord.cell.column))
+    }
+    
+    func setImageStates(setState: imageStates) {
+        for row: Int in 0 ..< self.size.rows {
+            for column: Int in 0 ..< self.size.columns {
+                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfImageStateEqualTo(setState) {
+                    self.gameImages[row][column].setImageState((location), imageState: setState)
                 }
             }
         }
         return
     }
     
-    //
-    // get locations 'state', used for save routine
-    //
-    func getImageState(coord: Coordinate) -> Int {
-        return self.gameImages[coord.row][coord.column].getImageState(coord.cell.row, column: coord.cell.column)
+    func setActiveStates(setState: activeStates) {
+        for row: Int in 0 ..< self.size.rows {
+            for column: Int in 0 ..< self.size.columns {
+                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfActiveStateEqualTo(setState) {
+                    self.gameImages[row][column].setActiveState((location), activeState: setState)
+                }
+            }
+        }
+        return
     }
     
+    //----------------------------------------------------------------------------
+    // Get / Set 'active' state (is there an image) and image types
+    //----------------------------------------------------------------------------
     //
     // we use this to pass back to the ViewController an array of images selected by the user when selecting a control panel 'number'
     //
-    func getLocationsOfImages(imageState: Int) -> [Coordinate] {
-        var returnCoords: [Coordinate] = []
-        for boardRow: Int in 0 ..< self.boardRows {
-            for boardColumn: Int in 0 ..< self.boardColumns {
-                let images: [(cellRow: Int, cellColumn: Int)] = self.gameImages[boardRow][boardColumn].getLocationsOfCellsStateEqualTo(imageState)
+    func getLocationsOfImages(imageState: imageStates) -> [Coordinate] {
+        var coords: [Coordinate] = []
+        for row: Int in 0 ..< self.size.rows {
+            for column: Int in 0 ..< self.size.columns {
+                let images: [(row: Int, column: Int)] = self.gameImages[row][column].getLocationsOfImageStateEqualTo(imageState)
                 if images.isEmpty == false {
                     for coord in images {
-                        returnCoords.append(Coordinate(row: boardRow, column: boardColumn, cell: (row: coord.cellRow, column: coord.cellColumn)))
+                        coords.append(Coordinate(row: row, column: column, cell: (row: coord.row, column: coord.column)))
                     }
                 }
             }
         }
-        return(returnCoords)
+        return(coords)
     }
     
 }
