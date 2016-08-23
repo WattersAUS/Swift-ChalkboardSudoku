@@ -9,6 +9,12 @@
 import Foundation
 
 //
+// what version of the game are we
+//
+enum gameBuild: Int {
+    case Version   = 1
+}
+//
 // states we'l use during display/game
 //
 enum imageStates: Int {
@@ -81,6 +87,7 @@ enum gameMode: Int {
 // what we'll save from the current game to maintain state when app is closed/re-opened (JSON)
 //
 enum saveGameDictionary: String {
+    case ApplicationVersion    = "APPLICATIONVERSION"
     case GamesStarted          = "GAMESSTARTED"
     case GamesCompleted        = "GAMESCOMPLETED"
     case TotalTimePlayed       = "TOTALTIMEPLAYED"

@@ -43,6 +43,7 @@ struct GameState {
     var slowestGame:                   Int = 0
     // now game state vars that will change for the game instance
     // game defaults ie char set are stored via NSUserDefaults
+    var applicationVersion:            Int = 0
     var gameInPlay:                   Bool = false
     var penaltyValue:                  Int = 0
     var penaltyIncrementValue:         Int = 0

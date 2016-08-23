@@ -11,6 +11,7 @@ import AVFoundation
 
 class ViewController: UIViewController {
     
+    var applicationVersion: Int = 100
     var debug: Int = 1
     var boardDimensions: Int = 3
     //var gameDifficulty: Int = gameDiff.Medium.rawValue
@@ -314,9 +315,15 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     override func viewDidLoad() {
         super.viewDidLoad()
+        //
         // Do any additional setup after loading the view, typically from a nib.
+        //
+        self.applicationVersion = 100
+        //
+        // now carry on
+        //
         self.userPrefs = PreferencesHandler(redrawFunctions: [])
-        self.userGame = GameStateHandler()
+        self.userGame = GameStateHandler(applicationVersion: self.applicationVersion)
         self.sudokuBoard = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(self.userPrefs.difficultySet))
         self.displayBoard = GameBoardImages(size: self.boardDimensions)
         self.controlPanelImages = CellImages(size: (5, 2))
