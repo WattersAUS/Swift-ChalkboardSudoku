@@ -49,7 +49,7 @@ class TrackSolution: NSObject {
     // only add the coord if in bounds of the board we're tracking, and it hasn't already been added
     //
     func addCoordinate(coord: Coordinate) -> Int {
-        guard self.coordBoundsCheck(coord) && self.getCoordinateIndex(coord) > -1 else {
+        guard self.coordBoundsCheck(coord) && self.getCoordinateIndex(coord) == -1 else {
             return -1
         }
         coords.append(coord)

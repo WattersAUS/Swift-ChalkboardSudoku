@@ -94,6 +94,10 @@ class SudokuCell: NumberGrid {
     //
     // public functions - row/column level operations
     //
+    func getNumberUsage() -> [Bool] {
+        return self.used
+    }
+    
     func getRowNumbers(row: Int) -> [Int] {
         guard (0..<self.getRows()) ~= row else {
             return []
@@ -161,6 +165,13 @@ class SudokuCell: NumberGrid {
         }
         let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(0)
         return (locations.count == 0) ? (-1, -1) : locations[Int(arc4random_uniform(UInt32(locations.count)))]
+    }
+    
+    func getUnusedLocations() -> [(row: Int, column: Int)] {
+        guard !self.isCellCompleted() else {
+            return []
+        }
+        return self.getLocationsOfNumber(0)
     }
     
     func getRandomUsedLocation() -> (row: Int, column: Int) {

@@ -539,7 +539,8 @@ class ViewController: UIViewController {
     
     func createNewBoard() {
         self.sudokuBoard.clear()
-        self.sudokuBoard.buildSudokuSolution()
+//        self.sudokuBoard.buildSudokuSolution()
+        self.sudokuBoard.buildSudokuSolution2()
         if self.debug == 1 {
             print(self.sudokuBoard.printSudokuSolution())
         }
@@ -555,7 +556,7 @@ class ViewController: UIViewController {
         self.sudokuBoard.clear()
         // copy the saved boards into the sudokuBoard object
         for cell: BoardCell in self.userGame.currentGame.solutionCells {
-            self.sudokuBoard.setNumberOnSolutionBoard(Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
+            self.sudokuBoard.setNumberOnSolution(Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
         for cell: BoardCell in self.userGame.currentGame.originCells {
             self.sudokuBoard.setNumberOnOriginBoard(Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
@@ -635,7 +636,8 @@ class ViewController: UIViewController {
                 self.resetControlPanelSelection()
                 self.sudokuBoard.clear()
                 self.sudokuBoard.setDifficulty(self.mapDifficulty(self.userPrefs.difficultySet))
-                self.sudokuBoard.buildSudokuSolution()
+                //self.sudokuBoard.buildSudokuSolution()
+                self.sudokuBoard.buildSudokuSolution2()
                 if self.debug == 1 {
                     print(self.sudokuBoard.printSudokuSolution())
                 }
@@ -954,9 +956,6 @@ class ViewController: UIViewController {
             self.userSolution.addCoordinate(boardPosn)
             self.userGame.incrementGamePlayerMovesMade()
             self.playPlacementSound(index + 1)
-            self.setUserRowCompletion(boardPosn)
-            self.setUserColumnCompletion(boardPosn)
-            self.setUserCellCompletion(boardPosn)
             if self.sudokuBoard.isNumberFullyUsedInGame(index + 1) == true {
                 self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
                 self.setUserUsedNumberCompletion(index + 1)
@@ -1110,7 +1109,9 @@ class ViewController: UIViewController {
             }
             self.userSolution.addCoordinate(posn)
             self.userGame.incrementGamePlayerMovesMade()
+            //
             // do we need to make number 'inactive'?
+            //
             if self.sudokuBoard.isNumberFullyUsedInGame(index + 1) == false {
                 self.setCoordToSelectImage(posn, number: index + 1)
                 self.playPlacementSound(index + 1)
@@ -1196,7 +1197,7 @@ class ViewController: UIViewController {
         //
         // placing the number might complete a row/col/cell
         //
-        if self.setUserRowCompletion(location) == false && self.setUserColumnCompletion(location) == false && self.setUserCellCompletion(location) == false {
+//        if self.setUserRowCompletion(location) == false && self.setUserColumnCompletion(location) == false && self.setUserCellCompletion(location) == false {
             if self.sudokuBoard.isNumberFullyUsedInGame(number) == false {
                 self.setCoordToSelectImage(location, number: number)
                 self.unsetDeleteNumbersOnBoard()
@@ -1209,7 +1210,7 @@ class ViewController: UIViewController {
                     self.userCompletesGame()
                 }
             }
-        }
+//        }
         return
     }
     
@@ -1432,7 +1433,8 @@ class ViewController: UIViewController {
             self.resetControlPanelSelection()
             self.sudokuBoard.clear()
             self.sudokuBoard.setDifficulty(self.mapDifficulty(self.userPrefs.difficultySet))
-            self.sudokuBoard.buildSudokuSolution()
+            //self.sudokuBoard.buildSudokuSolution()
+            self.sudokuBoard.buildSudokuSolution2()
             if self.debug == 1 {
                 print(self.sudokuBoard.printSudokuSolution())
             }
@@ -1620,8 +1622,7 @@ class ViewController: UIViewController {
     //
     func getCurrentGameBoardState() -> [BoardCell] {
         var cells: [BoardCell] = []
-        let coordsInGame: [Coordinate] = self.userSolution.getCoordinatesInSolution()
-        for coord in coordsInGame {
+        for coord in self.userSolution.getCoordinatesInSolution() {
             let number: Int = self.sudokuBoard.getNumberFromGame(coord)
             var cell: BoardCell = BoardCell()
             cell.row   = coord.row

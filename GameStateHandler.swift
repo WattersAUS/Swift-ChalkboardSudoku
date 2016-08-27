@@ -61,14 +61,6 @@ class GameStateHandler: NSObject, GameStateDelegate {
     }
     
     //-------------------------------------------------------------------------------
-    // load/save to/from internal 'currentgame' state and save dictionary 'gameSave'
-    //-------------------------------------------------------------------------------
-    private func updateGameSaveValue(keyValue: String, value: AnyObject) {
-        self.gameSave[keyValue] = value
-        return
-    }
-    
-    //-------------------------------------------------------------------------------
     // to generate the 'text' names for the JSON file
     //-------------------------------------------------------------------------------
     private func translateCellFromDictionary(dictCell: [String: Int]) -> BoardCell {
@@ -166,6 +158,9 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
     }
     
+    //-------------------------------------------------------------------------------
+    // move between the enum values for image and active states to the Int value
+    //-------------------------------------------------------------------------------
     func updateGameSaveObjects() {
         self.updateGameSaveValue(saveGameDictionary.GamesStarted.rawValue,          value: self.currentGame.startedGames)
         self.updateGameSaveValue(saveGameDictionary.GamesCompleted.rawValue,        value: self.currentGame.completedGames)
@@ -224,34 +219,13 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.updateGameSaveValue(saveGameDictionary.SolutionBoard.rawValue,     value: cellArray)
         return
     }
-
+    
     //-------------------------------------------------------------------------------
-    // pick out the JSON 'keys/value' when we load the game
+    // load/save to/from internal 'currentgame' state and save dictionary 'gameSave'
     //-------------------------------------------------------------------------------
-    private func getGameStateValue(keyValue: saveGameDictionary) -> AnyObject {
-        return self.gameSave[keyValue.rawValue]!
-    }
-    
-    private func getGameStateValue(keyValue: saveGameDictionary, obj: AnyObject) -> AnyObject {
-        return (self.gameSave.indexForKey(keyValue.rawValue) == nil) ? self.defaultGameStateValue(obj) : self.gameSave[keyValue.rawValue]!
-    }
-    
-    private func getValue(keyValue: saveGameDictionary) -> AnyObject {
-        return self.gameSave[keyValue.rawValue]!
-    }
-    
-    private func defaultGameStateValue(obj: AnyObject) -> AnyObject {
-        switch obj {
-        case is Bool:
-            return false
-        case is Int:
-            return 0
-        case is String:
-            return ""
-        default:
-            break
-        }
-        return ""
+    private func updateGameSaveValue(keyValue: String, value: AnyObject) {
+        self.gameSave[keyValue] = value
+        return
     }
     
     func loadGameSaveObjects() {
@@ -282,7 +256,39 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
         return
     }
-
+    
+    //-------------------------------------------------------------------------------
+    // pick out the dictionary 'keys/value' when we load the game
+    // if we don't yet hve a value return a default (when we might add a new entry)
+    //-------------------------------------------------------------------------------
+    
+    // **** NEEDS SOME WORK!!!! think about the cell array entry here ...need their own routine????
+    
+    private func getGameStateValue(keyValue: saveGameDictionary) -> AnyObject {
+        return (self.gameSave.indexForKey(keyValue.rawValue) == nil) ? [:] : self.gameSave[keyValue.rawValue]!
+    }
+    
+    private func getGameStateValue(keyValue: saveGameDictionary, obj: AnyObject) -> AnyObject {
+        return (self.gameSave.indexForKey(keyValue.rawValue) == nil) ? self.defaultGameStateValue(obj) : self.gameSave[keyValue.rawValue]!
+    }
+    
+    private func getValue(keyValue: saveGameDictionary) -> AnyObject {
+        return self.gameSave[keyValue.rawValue]!
+    }
+    
+    private func defaultGameStateValue(obj: AnyObject) -> AnyObject {
+        switch obj {
+        case is Bool:
+            return false
+        case is Int:
+            return 0
+        case is String:
+            return ""
+        default:
+            return ""
+        }
+    }
+    
     //-------------------------------------------------------------------------------
     // update/access to internal 'currentgame' and the outside world
     //-------------------------------------------------------------------------------

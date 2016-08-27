@@ -41,7 +41,7 @@ class NumberGrid: NSObject, NSCopying {
     //
     func boundsCheck(coord: (row: Int, column: Int)) -> Bool {
         guard (0..<self.size.rows) ~= coord.row &&
-            (0..<self.size.columns) ~= coord.column
+              (0..<self.size.columns) ~= coord.column
         else {
             return false
         }

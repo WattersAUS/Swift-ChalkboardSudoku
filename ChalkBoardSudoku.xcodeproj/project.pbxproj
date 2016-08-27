@@ -10,6 +10,7 @@
 		BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF61D68713F00B9290D /* NumberGrid.swift */; };
 		BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFB1D68845A00B9290D /* SudokuCell.swift */; };
 		BF7658501D699D40007C249F /* SudokuGameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF76584F1D699D40007C249F /* SudokuGameBoard.swift */; };
+		BFB497E11D6F958D00C2C43F /* Placement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB497E01D6F958D00C2C43F /* Placement.swift */; };
 		BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */; };
 		BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1C1D6612D700D83F34 /* ViewController.swift */; };
 		BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B1E1D6612D700D83F34 /* Main.storyboard */; };
@@ -55,6 +56,7 @@
 		BF036EF61D68713F00B9290D /* NumberGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberGrid.swift; sourceTree = "<group>"; };
 		BF036EFB1D68845A00B9290D /* SudokuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuCell.swift; sourceTree = "<group>"; };
 		BF76584F1D699D40007C249F /* SudokuGameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuGameBoard.swift; sourceTree = "<group>"; };
+		BFB497E01D6F958D00C2C43F /* Placement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Placement.swift; sourceTree = "<group>"; };
 		BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChalkBoardSudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDF0B1C1D6612D700D83F34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				BF036EF61D68713F00B9290D /* NumberGrid.swift */,
 				BF036EFB1D68845A00B9290D /* SudokuCell.swift */,
 				BF76584F1D699D40007C249F /* SudokuGameBoard.swift */,
+				BFB497E01D6F958D00C2C43F /* Placement.swift */,
 			);
 			name = Classes;
 			path = ..;
@@ -334,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFDF0B6F1D66179400D83F34 /* Struct.swift in Sources */,
+				BFB497E11D6F958D00C2C43F /* Placement.swift in Sources */,
 				BFDF0B641D6616C900D83F34 /* GameBoardImages.swift in Sources */,
 				BFDF0B551D66160D00D83F34 /* PreferencesHandler.swift in Sources */,
 				BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */,
