@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF61D68713F00B9290D /* NumberGrid.swift */; };
 		BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFB1D68845A00B9290D /* SudokuCell.swift */; };
+		BF5D4B7B1D7563F6007D776E /* GameHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5D4B7A1D7563F6007D776E /* GameHistory.swift */; };
 		BF7658501D699D40007C249F /* SudokuGameBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF76584F1D699D40007C249F /* SudokuGameBoard.swift */; };
 		BFB497E11D6F958D00C2C43F /* Placement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB497E01D6F958D00C2C43F /* Placement.swift */; };
+		BFB497E51D74290F00C2C43F /* CreateBoard_001.aiff in Resources */ = {isa = PBXBuildFile; fileRef = BFB497E41D74290F00C2C43F /* CreateBoard_001.aiff */; };
 		BFDF0B1B1D6612D700D83F34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */; };
 		BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B1C1D6612D700D83F34 /* ViewController.swift */; };
 		BFDF0B201D6612D700D83F34 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDF0B1E1D6612D700D83F34 /* Main.storyboard */; };
@@ -55,8 +57,10 @@
 /* Begin PBXFileReference section */
 		BF036EF61D68713F00B9290D /* NumberGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberGrid.swift; sourceTree = "<group>"; };
 		BF036EFB1D68845A00B9290D /* SudokuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuCell.swift; sourceTree = "<group>"; };
+		BF5D4B7A1D7563F6007D776E /* GameHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameHistory.swift; sourceTree = "<group>"; };
 		BF76584F1D699D40007C249F /* SudokuGameBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuGameBoard.swift; sourceTree = "<group>"; };
 		BFB497E01D6F958D00C2C43F /* Placement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Placement.swift; sourceTree = "<group>"; };
+		BFB497E41D74290F00C2C43F /* CreateBoard_001.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = CreateBoard_001.aiff; sourceTree = "<group>"; };
 		BFDF0B171D6612D700D83F34 /* ChalkBoardSudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChalkBoardSudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDF0B1A1D6612D700D83F34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDF0B1C1D6612D700D83F34 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 		BFDF0B521D6615DF00D83F34 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				BFB497E41D74290F00C2C43F /* CreateBoard_001.aiff */,
 				BFDF0B3A1D6615D400D83F34 /* Write_001.aiff */,
 				BFDF0B3B1D6615D400D83F34 /* Write_002.aiff */,
 				BFDF0B3C1D6615D400D83F34 /* Write_003.aiff */,
@@ -215,6 +220,7 @@
 				BF036EFB1D68845A00B9290D /* SudokuCell.swift */,
 				BF76584F1D699D40007C249F /* SudokuGameBoard.swift */,
 				BFB497E01D6F958D00C2C43F /* Placement.swift */,
+				BF5D4B7A1D7563F6007D776E /* GameHistory.swift */,
 			);
 			name = Classes;
 			path = ..;
@@ -319,6 +325,7 @@
 				BFDF0B471D6615D400D83F34 /* Write_002.aiff in Resources */,
 				BFDF0B691D6616F500D83F34 /* Preferences.xib in Resources */,
 				BFDF0B4C1D6615D400D83F34 /* Write_007.aiff in Resources */,
+				BFB497E51D74290F00C2C43F /* CreateBoard_001.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +347,7 @@
 				BFB497E11D6F958D00C2C43F /* Placement.swift in Sources */,
 				BFDF0B641D6616C900D83F34 /* GameBoardImages.swift in Sources */,
 				BFDF0B551D66160D00D83F34 /* PreferencesHandler.swift in Sources */,
+				BF5D4B7B1D7563F6007D776E /* GameHistory.swift in Sources */,
 				BFDF0B631D6616C900D83F34 /* CellImages.swift in Sources */,
 				BFDF0B1D1D6612D700D83F34 /* ViewController.swift in Sources */,
 				BFDF0B6B1D66170F00D83F34 /* TrackSolution.swift in Sources */,

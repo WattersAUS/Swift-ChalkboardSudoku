@@ -10,9 +10,9 @@ import Foundation
 
 class GameBoardImages {
     
-    var gameImages: [[CellImages]] = []
-    var boardCoordinates: [(row: Int, column: Int)] = []
-    private var size: (rows: Int, columns: Int) = (0,0)
+    var gameImages: [[CellImages]]                  = []
+    //var boardCoordinates: [(row: Int, column: Int)] = []
+    private var size: (rows: Int, columns: Int)     = (0,0)
     
     init (size: Int = 3) {
         var setSize: Int = size
@@ -23,10 +23,10 @@ class GameBoardImages {
         func allocateImageArray(rows: Int, columns: Int) {
             self.size.rows = rows
             self.size.columns = columns
-            for row: Int in 0 ..< rows {
+            for _: Int in 0 ..< rows {
                 var cells: [CellImages] = [CellImages(size: (rows, columns))]
                 for column: Int in 0 ..< columns {
-                    self.boardCoordinates.append((row, column))
+                    //self.boardCoordinates.append((row, column))
                     if column > 0 {
                         cells.append(CellImages(size: (rows, columns)))
                     }
@@ -55,6 +55,22 @@ class GameBoardImages {
         return self.size.rows
     }
 
+    //----------------------------------------------------------------------------
+    // clear down the images in the object, used on new game / restart
+    //----------------------------------------------------------------------------
+    func clearImageStates() {
+        for row: Int in 0 ..< self.size.rows {
+            for column: Int in 0 ..< self.size.columns {
+                for crow: Int in 0 ..< self.size.rows {
+                    for ccol: Int in 0 ..< self.size.columns {
+                        self.gameImages[row][column].clearImage((crow, ccol))
+                    }
+                }
+            }
+        }
+        return
+    }
+    
     //----------------------------------------------------------------------------
     // Get / Set 'active' state (is there an image) and image types
     //----------------------------------------------------------------------------

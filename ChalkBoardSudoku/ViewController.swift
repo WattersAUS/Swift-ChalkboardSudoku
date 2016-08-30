@@ -277,6 +277,7 @@ class ViewController: UIViewController {
     //
     // sound handling
     //
+    var createBoardSound: AVAudioPlayer!
     var userPlacementSounds: [AVAudioPlayer!] = []
     var userErrorSound: AVAudioPlayer!
     var userRuboutSound: AVAudioPlayer!
@@ -301,11 +302,6 @@ class ViewController: UIViewController {
     var timerDisplay: Bool!
     
     //
-    // time added to timer on using hint during game
-    //
-    //var penaltyStart: Int = 10
-    
-    //
     // state of game (so we can save if we get told the app is to close)
     //
     var userGame: GameStateHandler!
@@ -318,29 +314,32 @@ class ViewController: UIViewController {
         //
         // Do any additional setup after loading the view, typically from a nib.
         //
-        self.applicationVersion = 100
-        //
-        // now carry on
-        //
+        self.applicationVersion = 101
         self.userPrefs = PreferencesHandler(redrawFunctions: [])
         self.userGame = GameStateHandler(applicationVersion: self.applicationVersion)
         self.sudokuBoard = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(self.userPrefs.difficultySet))
         self.displayBoard = GameBoardImages(size: self.boardDimensions)
         self.controlPanelImages = CellImages(size: (5, 2))
         self.userSolution = TrackSolution(row: self.boardDimensions, column: self.boardDimensions, cellRow: self.boardDimensions, cellColumn: self.boardDimensions)
+        //
         // now setup displays
+        //
         self.setupSudokuBoardDisplay()
         self.setupControlPanelDisplay()
-        // setup the timer but dont let game time start yet
+        //
+        // setup the timer but dont let game time start yet (not in a game yet)
+        //
         self.initialiseGameTimer()
         self.stopGameTimer()
-        // load sounds
         self.initialiseGameSounds()
-        // set Hint override to off
         self.giveHint = false
-        // add the function call backs for redraws used exiting pref panel
+        //
+        // add the function call backs for board redraws used when exiting pref panel in case the char set is changed
+        //
         self.userPrefs.drawFunctions = [self.updateControlPanelDisplay, self.updateSudokuBoardDisplay]
-        // register routine for app transiting to b/g
+        //
+        // register routines for app transiting to b/g (used in saving game state etc)
+        //
         self.setupApplicationNotifications()
         return
     }
@@ -401,6 +400,10 @@ class ViewController: UIViewController {
     // load/play sounds
     //----------------------------------------------------------------------------
     func initialiseGameSounds() {
+        self.createBoardSound = self.loadSound("CreateBoard_001.aiff")
+        self.userErrorSound   = self.loadSound("Mistake_001.aiff")
+        self.userRuboutSound  = self.loadSound("RubOut_001.aiff")
+        self.userVictorySound = self.loadSound("Triumph_001.aiff")
         self.userPlacementSounds.append(self.loadSound("Write_001.aiff"))
         self.userPlacementSounds.append(self.loadSound("Write_002.aiff"))
         self.userPlacementSounds.append(self.loadSound("Write_003.aiff"))
@@ -410,9 +413,6 @@ class ViewController: UIViewController {
         self.userPlacementSounds.append(self.loadSound("Write_007.aiff"))
         self.userPlacementSounds.append(self.loadSound("Write_008.aiff"))
         self.userPlacementSounds.append(self.loadSound("Write_009.aiff"))
-        self.userErrorSound = self.loadSound("Mistake_001.aiff")
-        self.userRuboutSound = self.loadSound("RubOut_001.aiff")
-        self.userVictorySound = self.loadSound("Triumph_001.aiff")
         return
     }
     
@@ -424,6 +424,14 @@ class ViewController: UIViewController {
             return nil
         }
         return value
+    }
+    
+    func playCreateSound() {
+        guard self.createBoardSound != nil && self.userPrefs.soundOn == true else {
+            return
+        }
+        self.createBoardSound.play()
+        return
     }
     
     func playErrorSound() {
@@ -490,7 +498,7 @@ class ViewController: UIViewController {
     
     func updateGameTime() {
         if self.timerActive == true {
-            self.userGame.incrementTotalGameTimePlayed(1)
+            self.userGame.incrementTotalGameTimePlayed(self.mapDifficulty(self.userPrefs.difficultySet), increment: 1)
             if self.timerDisplay == true {
                 let time: Int = self.userGame.incrementCurrentGameTimePlayed(1)
                 self.gameTimer.text = String(format: "%02d", time / 60) + ":" + String(format: "%02d", time % 60)
@@ -503,7 +511,7 @@ class ViewController: UIViewController {
     // penalty timer additions
     //----------------------------------------------------------------------------
     func addPenaltyToGameTime() {
-        self.userGame.incrementTotalGameTimePlayed(self.userGame.getGamePenaltyTime())
+        self.userGame.incrementTotalGameTimePlayed(self.mapDifficulty(self.userPrefs.difficultySet), increment: self.userGame.getGamePenaltyTime())
         self.userGame.incrementCurrentGameTimePlayed(self.userGame.getGamePenaltyTime())
         self.userGame.incrementGamePenaltyTime(self.userGame.incrementGamePenaltyIncrementTime(1))
         return
@@ -521,7 +529,7 @@ class ViewController: UIViewController {
     }
     
     //----------------------------------------------------------------------------
-    // does the user want to continue their last game?
+    // does the user want to continue their last game or not?
     //----------------------------------------------------------------------------
     func askUserToContinueGame() {
         let alertController = UIAlertController(title: "Continue Game", message: "Do you want to continue playing the inprogress game?", preferredStyle: .Alert)
@@ -538,9 +546,8 @@ class ViewController: UIViewController {
     }
     
     func createNewBoard() {
-        self.sudokuBoard.clear()
-//        self.sudokuBoard.buildSudokuSolution()
-        self.sudokuBoard.buildSudokuSolution2()
+        self.playCreateSound()
+        self.sudokuBoard.generateSolution(self.mapDifficulty(self.userPrefs.difficultySet))
         if self.debug == 1 {
             print(self.sudokuBoard.printSudokuSolution())
         }
@@ -633,11 +640,9 @@ class ViewController: UIViewController {
             }
             alertController.addAction(resetAction)
             let restartAction = UIAlertAction(title: "New Puzzle!", style: .Default) { (action:UIAlertAction!) in
+                self.playCreateSound()
                 self.resetControlPanelSelection()
-                self.sudokuBoard.clear()
-                self.sudokuBoard.setDifficulty(self.mapDifficulty(self.userPrefs.difficultySet))
-                //self.sudokuBoard.buildSudokuSolution()
-                self.sudokuBoard.buildSudokuSolution2()
+                self.sudokuBoard.generateSolution(self.mapDifficulty(self.userPrefs.difficultySet))
                 if self.debug == 1 {
                     print(self.sudokuBoard.printSudokuSolution())
                 }
@@ -656,7 +661,7 @@ class ViewController: UIViewController {
     func finalPreparationForGameStart() {
         self.sudokuBoard.initialiseGame()
         self.userSolution.clearCoordinates()
-        self.displayBoard.setImageStates(imageStates.Origin)
+        self.displayBoard.clearImageStates()
         self.updateSudokuBoardDisplay()
         self.resetControlPanelPosition()
         self.resetBoardPosition()
@@ -667,7 +672,7 @@ class ViewController: UIViewController {
         self.userGame.resetGamePenaltyIncrementTime(self.setInitialPenaltyIncrement().rawValue)
         self.userGame.resetGamePlayerMovesMade()
         self.userGame.resetGamePlayerMovesDeleted()
-        self.userGame.incrementStartedGames()
+        self.userGame.incrementStartedGames(self.mapDifficulty(self.userPrefs.difficultySet))
         self.userGame.setGameCells(self.getCurrentGameBoardState())
         self.userGame.setOriginCells(self.getCurrentOriginBoardState())
         self.userGame.setSolutionCells(self.getCurrentSolutionBoardState())
@@ -700,7 +705,7 @@ class ViewController: UIViewController {
     // clear any selection the user might have left in the control panel
     //
     func resetControlPanelSelection() {
-        for location: (row: Int, column: Int) in self.controlPanelImages.getLocationsOfImageStateEqualTo(imageStates.Origin) {
+        for location: (row: Int, column: Int) in self.controlPanelImages.getLocationsOfImageStateNotEqualTo(imageStates.Origin) {
             let index: Int = (location.row * 2) + location.column
             self.controlPanelImages.setImage((location), imageToSet: self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][index], imageState: imageStates.Origin)
         }
@@ -887,29 +892,11 @@ class ViewController: UIViewController {
                     break
                 }
                 return (currentPosn)
-            
-            
-            //  **** NEEDS WORK AND INVESTIGATION ****
-            
-//            
-//                if self.sudokuBoard.isNumberFullyUsedOnGameBoard(index + 1) == true {
-//                    self.setControlPanelToInactiveImageValue((index / 2, column: index % 2))
-//                    self.setUserUsedNumberCompletion(index + 1)
-//                    if self.sudokuBoard.isGameCompleted() {
-//                        self.userCompletesGame()
-//                    }
-//                } else {
-//                    //self.setCoordToOriginImage(coord, number: index + 1)
-//                }
-
-            
-            
             }
         }
-
-        
-            
+        //
         // process the current posn
+        //
         switch index {
         case 0..<9:
             self.setControlPanelToSelectedImageValue((index / 2, column: index % 2))
@@ -990,9 +977,8 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // Handle the board display, setup event handler and detect taps in the board
     //----------------------------------------------------------------------------
-    //
     // build the initial board display, we only do this once!
-    //
+    //----------------------------------------------------------------------------
     func setupSudokuBoardDisplay() {
         let originX: CGFloat = self.view.bounds.origin.x + self.kMainViewMargin
         let originY: CGFloat = self.kMainViewMargin
@@ -1197,20 +1183,18 @@ class ViewController: UIViewController {
         //
         // placing the number might complete a row/col/cell
         //
-//        if self.setUserRowCompletion(location) == false && self.setUserColumnCompletion(location) == false && self.setUserCellCompletion(location) == false {
-            if self.sudokuBoard.isNumberFullyUsedInGame(number) == false {
-                self.setCoordToSelectImage(location, number: number)
-                self.unsetDeleteNumbersOnBoard()
-                self.unsetSelectNumbersOnBoard()
-            } else {
-                self.setCoordToOriginImage(location, number: number)
-                self.unsetDeleteNumbersOnBoard()
-                self.unsetSelectNumbersOnBoard()
-                if self.sudokuBoard.isGameCompleted() {
-                    self.userCompletesGame()
-                }
+        if self.sudokuBoard.isNumberFullyUsedInGame(number) == false {
+            self.setCoordToSelectImage(location, number: number)
+            self.unsetDeleteNumbersOnBoard()
+            self.unsetSelectNumbersOnBoard()
+        } else {
+            self.setCoordToOriginImage(location, number: number)
+            self.unsetDeleteNumbersOnBoard()
+            self.unsetSelectNumbersOnBoard()
+            if self.sudokuBoard.isGameCompleted() {
+                self.userCompletesGame()
             }
-//        }
+        }
         return
     }
     
@@ -1408,7 +1392,7 @@ class ViewController: UIViewController {
         // set up a customised message for the user
         //
         var completedMsg: String = ""
-        if self.userGame.setCurrentFastestPlayerTime() == true {
+        if self.userGame.setFastestPlayerTime(self.mapDifficulty(self.userPrefs.difficultySet)) == true {
             completedMsg.appendContentsOf("Wow! You have just set your fastest time of " + self.timeInText(self.userGame.getCurrentGameTimePlayed()) + ", do")
         } else {
             completedMsg.appendContentsOf("Do")
@@ -1417,9 +1401,9 @@ class ViewController: UIViewController {
         //
         // save things about the game we care about
         //
-        self.userGame.incrementTotalPlayerMovesMade(self.userGame.getGamePlayerMovesMade())
-        self.userGame.incrementTotalPlayerMovesDeleted(self.userGame.getGamePlayerMovesDeleted())
-        self.userGame.incrementCompletedGames()
+        self.userGame.incrementTotalPlayerMovesMade(self.mapDifficulty(self.userPrefs.difficultySet), increment: self.userGame.getGamePlayerMovesMade())
+        self.userGame.incrementTotalPlayerMovesDeleted(self.mapDifficulty(self.userPrefs.difficultySet), increment: self.userGame.getGamePlayerMovesDeleted())
+        self.userGame.incrementCompletedGames(self.mapDifficulty(self.userPrefs.difficultySet))
         self.userGame.setGameInPlay(false)
         //
         // go again?
@@ -1430,16 +1414,7 @@ class ViewController: UIViewController {
         }
         alertController.addAction(cancelAction)
         let restartAction = UIAlertAction(title: "New Puzzle!", style: .Default) { (action:UIAlertAction!) in
-            self.resetControlPanelSelection()
-            self.sudokuBoard.clear()
-            self.sudokuBoard.setDifficulty(self.mapDifficulty(self.userPrefs.difficultySet))
-            //self.sudokuBoard.buildSudokuSolution()
-            self.sudokuBoard.buildSudokuSolution2()
-            if self.debug == 1 {
-                print(self.sudokuBoard.printSudokuSolution())
-            }
-            self.sudokuBoard.buildOriginBoard()
-            self.finalPreparationForGameStart()
+            self.createNewBoard()
         }
         alertController.addAction(restartAction)
         self.presentViewController(alertController, animated: true, completion:nil)

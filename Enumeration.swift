@@ -51,15 +51,6 @@ enum sudokuDifficulty: Int {
 }
 
 //
-// internal game board difficulty
-//
-enum gameBoardDiff: Int {
-    case Easy   = 3
-    case Medium = 5
-    case Hard   = 7
-}
-
-//
 // initial hint penalty values
 //
 enum initialHintPenalty: Int {
@@ -88,15 +79,6 @@ enum gameMode: Int {
 //
 enum saveGameDictionary: String {
     case ApplicationVersion    = "APPLICATIONVERSION"
-    case GamesStarted          = "GAMESSTARTED"
-    case GamesCompleted        = "GAMESCOMPLETED"
-    case TotalTimePlayed       = "TOTALTIMEPLAYED"
-    case TotalMovesMade        = "TOTALMOVESMADE"
-    case TotalMovesDeleted     = "TOTALMOVESDELETED"
-    case HighScore             = "HIGHSCORE"
-    case LowScore              = "LOWSCORE"
-    case FastestGameTime       = "FASTESTGAMETIME"
-    case SlowestGameTime       = "SLOWESTGAMETIME"
     case GameInPlay            = "GAMEINPLAY"
     case PenaltyValue          = "PENALTYVALUE"
     case PenaltyIncrementValue = "PENALTYINCREMENTVALUE"
@@ -106,6 +88,7 @@ enum saveGameDictionary: String {
     case GameBoard             = "GAMEBOARD"
     case OriginBoard           = "ORIGINBOARD"
     case SolutionBoard         = "SOLUTIONBOARD"
+    case UserHistory           = "USERHISTORY"
 }
 
 //
@@ -120,4 +103,20 @@ enum cellDictionary: String {
     case image  = "image"
     case active = "active"
     case board  = "board"
+}
+
+//
+// user history
+//
+enum userGameHistory: String {
+    case difficulty        = "difficulty"
+    case gamesStarted      = "gamestarted"
+    case gamesCompleted    = "gamescompleted"
+    case totalTimePlayed   = "totaltimeplayed"
+    case totalMovesMade    = "totalmovesmade"
+    case totalMovesDeleted = "totalmovesdeleted"
+    case highestScore      = "highestscore"
+    case lowestScore       = "lowestscore"
+    case fastestTime       = "fastesttime"
+    case slowestTime       = "slowesttime"
 }

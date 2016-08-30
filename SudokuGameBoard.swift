@@ -47,7 +47,7 @@ class SudokuGameBoard {
         //
         // need to remap diff level passed to internal useful value
         //
-        self.difficulty = self.setDifficulty(difficulty)
+        self.setDifficulty(difficulty)
         //
         // init the all copies of the board ie solution/game and origin
         //
@@ -86,14 +86,14 @@ class SudokuGameBoard {
         }
     }
 
-    func setDifficulty(difficulty: sudokuDifficulty) -> gameDifficulty {
+    private func setDifficulty(difficulty: sudokuDifficulty) {
         switch difficulty {
         case sudokuDifficulty.Easy:
-            return(gameDifficulty.Easy)
+            self.difficulty = gameDifficulty.Easy
         case sudokuDifficulty.Medium:
-            return(gameDifficulty.Medium)
+            self.difficulty = gameDifficulty.Medium
         case sudokuDifficulty.Hard:
-            return(gameDifficulty.Hard)
+            self.difficulty = gameDifficulty.Hard
         }
     }
     
@@ -102,9 +102,9 @@ class SudokuGameBoard {
     //----------------------------------------------------------------------------
     private func coordBoundsCheck(coord: Coordinate) -> Bool {
         guard (0..<self.size.rows) ~= coord.row &&
-            (0..<self.size.columns) ~= coord.column &&
-            (0..<self.size.rows) ~= coord.cell.row &&
-            (0..<self.size.columns) ~= coord.cell.column
+              (0..<self.size.columns) ~= coord.column &&
+              (0..<self.size.rows) ~= coord.cell.row &&
+              (0..<self.size.columns) ~= coord.cell.column
             else {
                 return false
         }
@@ -324,72 +324,6 @@ class SudokuGameBoard {
     }
     
     //----------------------------------------------------------------------------
-    // building the solution board
-    //----------------------------------------------------------------------------
-//    private func buildSolutionCell(coord: Coordinate) -> Bool {
-//        var stalled: Int = 0
-//        while self.solutionBoard[coord.row][coord.column].isCellCompleted() == false {
-//            let newLocation: (row: Int, column: Int) = self.solutionBoard[coord.row][coord.column].getRandomUnusedLocation()
-//            let newNumber: Int = self.solutionBoard[coord.row][coord.column].getRandomUnusedNumber()
-//            let newCoord: Coordinate = Coordinate(row: coord.row, column: coord.column, cell: (newLocation.row, newLocation.column))
-//            if self.isNumberLegalOnBoard(in: self.solutionBoard, coord: newCoord, number: newNumber) {
-//                self.setNumberOnSolution(newCoord, number: newNumber)
-//                stalled = 0
-//            } else {
-//                stalled = stalled + 1
-//                if stalled > 100 {
-//                    return false
-//                }
-//            }
-//        }
-//        return true
-//    }
-//    
-//    func buildSudokuSolution() {
-//        var index: Int = 0
-//        self.stalls = 0
-//        while (self.isBoardCompleted(in: self.solutionBoard) == false) {
-//            let coord: Coordinate = Coordinate(row: self.coordinates[index].row, column: self.coordinates[index].column, cell: (0,0))
-//            if self.buildSolutionCell(coord) == true {
-//                index = index + 1
-//            } else {
-//                self.stalls = self.stalls + 1
-//                var i: Int = index
-//                while i > 0 {
-//                    self.solutionBoard[self.coordinates[i].row][self.coordinates[i].column].clear()
-//                    i = i - 1
-//                }
-//                index = 0
-//            }
-//        }
-//        return
-//    }
-    
-    func printSudokuSolution() -> String {
-        guard self.isBoardCompleted(in: self.solutionBoard) == true else {
-            return "Solution board is not completed"
-        }
-        var dumpOfBoard: String = ""
-        for row: Int in 0 ..< self.size.rows {
-            dumpOfBoard += "\nBoard row: \(row)\n"
-            for cellrow: Int in 0 ..< self.size.rows {
-                var dumpOfCellRow: String = ""
-                for column: Int in 0 ..< self.size.columns {
-                    let cellColumns: [Int] = self.solutionBoard[row][column].getRowNumbers(cellrow)
-                    dumpOfCellRow += " |"
-                    for i: Int in 0 ..< cellColumns.count {
-                        dumpOfCellRow += " \(cellColumns[i])"
-                    }
-                    dumpOfCellRow += " |"
-                }
-                dumpOfBoard += "\n" + dumpOfCellRow
-            }
-            dumpOfBoard += "\n"
-        }
-        return dumpOfBoard
-    }
-
-    //----------------------------------------------------------------------------
     // building the origin board
     //----------------------------------------------------------------------------
     //
@@ -570,10 +504,9 @@ class SudokuGameBoard {
     //----------------------------------------------------------------------------
     // Build the Board
     //----------------------------------------------------------------------------
-    func buildSudokuSolution2() {
-        //
-        // first build up a list of the number and cell locations, but blank posn inside cell (used to rewind the builder on stalling)
-        //
+    func generateSolution(difficulty: sudokuDifficulty) {
+        self.setDifficulty(difficulty)
+        self.clear()
         var start: [Placement] = getPlacementLocations()
         var board: [Placement] = []
         while start.count > 0 {
@@ -638,20 +571,28 @@ class SudokuGameBoard {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    func printSudokuSolution() -> String {
+        guard self.isBoardCompleted(in: self.solutionBoard) == true else {
+            return "Solution board is not completed"
+        }
+        var dumpOfBoard: String = ""
+        for row: Int in 0 ..< self.size.rows {
+            dumpOfBoard += "\nBoard row: \(row)\n"
+            for cellrow: Int in 0 ..< self.size.rows {
+                var dumpOfCellRow: String = ""
+                for column: Int in 0 ..< self.size.columns {
+                    let cellColumns: [Int] = self.solutionBoard[row][column].getRowNumbers(cellrow)
+                    dumpOfCellRow += " |"
+                    for i: Int in 0 ..< cellColumns.count {
+                        dumpOfCellRow += " \(cellColumns[i])"
+                    }
+                    dumpOfCellRow += " |"
+                }
+                dumpOfBoard += "\n" + dumpOfCellRow
+            }
+            dumpOfBoard += "\n"
+        }
+        return dumpOfBoard
+    }
+    
 }

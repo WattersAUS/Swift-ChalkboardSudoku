@@ -12,6 +12,8 @@ class Preferences: UIViewController {
     
     weak var prefs: PreferencesDelegate?
     weak var state: GameStateDelegate?
+    var userHistory: [GameHistory] = []
+    var userIndex: Int = -1
 
     //
     // prefs
@@ -25,12 +27,11 @@ class Preferences: UIViewController {
     //
     // now the game stats
     //
-    @IBOutlet weak var startedGames: UITextField!
-    @IBOutlet weak var completedGames: UITextField!
-    @IBOutlet weak var totalTimePlayed: UITextField!
-    @IBOutlet weak var fastestGameTime: UITextField!
-    @IBOutlet weak var totalMovesMade: UITextField!
-    @IBOutlet weak var totalMovesDeleted: UITextField!
+    @IBOutlet weak var timePlayed: UILabel!
+    @IBOutlet weak var userGames: UILabel!
+    @IBOutlet weak var userFastestTime: UILabel!
+    @IBOutlet weak var userSlowestTime: UILabel!
+    @IBOutlet weak var userMoves: UILabel!
     
     //
     // ** remember we re-map difficulty from 1 -> 3 to 0 -> 2 **
@@ -39,19 +40,25 @@ class Preferences: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //
         // get the current state of the prefs
+        //
         self.characterSet.selectedSegmentIndex  = (prefs?.characterSetInUse)!
-        self.setDifficulty.selectedSegmentIndex = (prefs?.difficultySet)! - 1
+        self.setDifficulty.selectedSegmentIndex = (prefs?.difficultyNew)! - 1
         self.gameMode.selectedSegmentIndex      = (prefs?.gameModeInUse)!
         self.useSound.on                        = (prefs?.soundOn)!
         self.allowHints.on                      = (prefs?.hintsOn)!
+        //
         // game stats (all read only)
-        self.startedGames.text      = String((state?.currentGame.startedGames)!)
-        self.completedGames.text    = String((state?.currentGame.completedGames)!)
-        self.totalTimePlayed.text   = (state?.getTotalGameTimePlayedAsString())
-        self.fastestGameTime.text   = (state?.getFastestGameTimeAsString())
-        self.totalMovesMade.text    = String((state?.currentGame.totalMovesMade)!)
-        self.totalMovesDeleted.text = String((state?.currentGame.totalMovesDeleted)!)
+        //
+        self.userHistory = state!.currentGame.userHistory
+        self.userIndex   = self.findUserHistoryIndex()
+        //
+        // now we can populate the display fields (this will change if the user selects another difficulty)
+        //
+        if self.userIndex != -1 {
+            self.updateGameHistoryStats()
+        }
         return
     }
 
@@ -71,7 +78,7 @@ class Preferences: UIViewController {
     */
     
     @IBAction func dismissDialog(sender: UIButton) {
-        prefs?.difficultySet = self.setDifficulty.selectedSegmentIndex + 1
+        prefs?.difficultyNew = self.setDifficulty.selectedSegmentIndex + 1
         prefs?.gameModeInUse = self.gameMode.selectedSegmentIndex
         prefs?.soundOn       = self.useSound.on
         prefs?.hintsOn       = self.allowHints.on
@@ -87,5 +94,22 @@ class Preferences: UIViewController {
         self.dismissViewControllerAnimated(true, completion: nil)
         return
     }
-
+    
+    private func findUserHistoryIndex() -> Int {
+        for i: Int in 0 ..< self.userHistory.count {
+            if (prefs?.difficultyNew)! == self.userHistory[i].getDifficulty().rawValue  {
+                return i
+            }
+        }
+        return -1
+    }
+    
+    private func updateGameHistoryStats() {
+        self.timePlayed.text      = (state?.currentGame.userHistory[self.userIndex].getTotalTimePlayedAsString())
+        self.userGames.text       = (state?.currentGame.userHistory[self.userIndex].getGamesCountsAsString())
+        self.userFastestTime.text = (state?.currentGame.userHistory[self.userIndex].getFastestTimeAsString())
+        self.userSlowestTime.text = (state?.currentGame.userHistory[self.userIndex].getSlowestTimeAsString())
+        self.userMoves.text       = (state?.currentGame.userHistory[self.userIndex].getMovesCountsAsString())
+        return
+    }
 }

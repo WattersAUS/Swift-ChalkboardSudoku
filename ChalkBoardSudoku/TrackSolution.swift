@@ -26,9 +26,9 @@ class TrackSolution: NSObject {
     //----------------------------------------------------------------------------
     private func coordBoundsCheck(coord: Coordinate) -> Bool {
         guard (0..<self.size.row) ~= coord.row &&
-            (0..<self.size.column) ~= coord.column &&
-            (0..<self.size.cell.row) ~= coord.cell.row &&
-            (0..<self.size.cell.column) ~= coord.cell.column
+              (0..<self.size.column) ~= coord.column &&
+              (0..<self.size.cell.row) ~= coord.cell.row &&
+              (0..<self.size.cell.column) ~= coord.cell.column
             else {
                 return false
         }

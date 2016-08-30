@@ -17,6 +17,7 @@ protocol PreferencesDelegate: class {
     // what we use to populate the pref dialog
     var characterSetInUse:          Int { get set }
     var difficultySet:              Int { get set }
+    var difficultyNew:              Int { get set }
     var gameModeInUse:              Int { get set }
     var soundOn:                   Bool { get set }
     var hintsOn:                   Bool { get set }
@@ -28,6 +29,7 @@ protocol PreferencesDelegate: class {
 class PreferencesHandler: NSObject, PreferencesDelegate {
     var characterSetInUse:          Int = 0
     var difficultySet:              Int = 0
+    var difficultyNew:              Int = 0
     var gameModeInUse:              Int = 0
     var soundOn:                   Bool = true
     var hintsOn:                   Bool = false
@@ -36,7 +38,6 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
     
     let userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
 
-    //init(charSet: Int, difficulty: Int, mode: Int, sound: Bool, hints: Bool, redrawFunctions: [(Void) -> ()]) {
     init(redrawFunctions: [(Void) -> ()]) {
         super.init()
         //
@@ -46,6 +47,7 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
         if difficulty != 0 {
             self.characterSetInUse = self.userDefaults.integerForKey("charset")
             self.difficultySet     = difficulty
+            self.difficultyNew     = self.difficultySet
             self.gameModeInUse     = self.userDefaults.integerForKey("gamemode")
             self.soundOn           = self.userDefaults.boolForKey("sound")
             self.hintsOn           = self.userDefaults.boolForKey("hint")
@@ -53,6 +55,7 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
             // store for the first time
             self.characterSetInUse = imageSet.Default.rawValue
             self.difficultySet     = sudokuDifficulty.Medium.rawValue
+            self.difficultyNew     = self.difficultySet
             self.gameModeInUse     = gameMode.Normal.rawValue
             self.soundOn           = true
             self.hintsOn           = false
