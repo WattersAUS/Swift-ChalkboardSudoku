@@ -31,7 +31,7 @@ class CellImages {
             self.size.rows = 3
         }
         self.size.columns = self.size.rows
-        self.allocateCellArray(self.size)
+        self.allocateCellArray(size: self.size)
         return
     }
 
@@ -48,7 +48,7 @@ class CellImages {
         if (self.size.columns < 2) || (self.size.columns > 4) {
             self.size.columns = 2
         }
-        self.allocateCellArray(self.size)
+        self.allocateCellArray(size: self.size)
         return
     }
 
@@ -98,7 +98,7 @@ class CellImages {
     // Get / set image and active states
     //----------------------------------------------------------------------------
     func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates, activeState: activeStates) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].imageView.image = imageToSet
@@ -108,7 +108,7 @@ class CellImages {
     }
     
     func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].imageView.image = imageToSet
@@ -117,14 +117,14 @@ class CellImages {
     }
     
     func getImageState(coord: (row: Int, column: Int)) -> imageStates {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return imageStates.Blank
         }
         return self.contents[coord.row][coord.column].imageState
     }
     
     func setImageState(coord: (row: Int, column: Int), imageState: imageStates) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].imageState = imageState
@@ -132,14 +132,14 @@ class CellImages {
     }
     
     func getActiveState(coord: (row: Int, column: Int)) -> activeStates {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return activeStates.Blank
         }
         return self.contents[coord.row][coord.column].activeState
     }
     
     func setActiveState(coord: (row: Int, column: Int), activeState: activeStates) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].activeState = activeState
@@ -147,7 +147,7 @@ class CellImages {
     }
     
     func clearImage(coord: (row: Int, column: Int)) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].imageView.image = nil

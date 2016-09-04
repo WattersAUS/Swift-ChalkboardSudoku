@@ -13,24 +13,22 @@ class Preferences: UIViewController {
     weak var prefs: PreferencesDelegate?
     weak var state: GameStateDelegate?
     var userHistory: [GameHistory] = []
-    var userIndex: Int = -1
 
     //
     // prefs
     //
-    @IBOutlet weak var characterSet: UISegmentedControl!
-    @IBOutlet weak var setDifficulty: UISegmentedControl!
-    @IBOutlet weak var gameMode: UISegmentedControl!
-    @IBOutlet weak var useSound: UISwitch!
-    @IBOutlet weak var allowHints: UISwitch!
+    @IBOutlet weak var userDifficulty: UISegmentedControl!
+    @IBOutlet weak var userCharacterSet: UISegmentedControl!
+    @IBOutlet weak var userSound: UISwitch!
+    @IBOutlet weak var userHints: UISwitch!
     
     //
     // now the game stats
     //
     @IBOutlet weak var timePlayed: UILabel!
     @IBOutlet weak var userGames: UILabel!
-    @IBOutlet weak var userFastestTime: UILabel!
-    @IBOutlet weak var userSlowestTime: UILabel!
+    @IBOutlet weak var fastestTime: UILabel!
+    @IBOutlet weak var slowestTime: UILabel!
     @IBOutlet weak var userMoves: UILabel!
     
     //
@@ -43,21 +41,20 @@ class Preferences: UIViewController {
         //
         // get the current state of the prefs
         //
-        self.characterSet.selectedSegmentIndex  = (prefs?.characterSetInUse)!
-        self.setDifficulty.selectedSegmentIndex = (prefs?.difficultyNew)! - 1
-        self.gameMode.selectedSegmentIndex      = (prefs?.gameModeInUse)!
-        self.useSound.on                        = (prefs?.soundOn)!
-        self.allowHints.on                      = (prefs?.hintsOn)!
+        self.userDifficulty.selectedSegmentIndex   = (prefs?.difficultyNew)! - 1
+        self.userCharacterSet.selectedSegmentIndex = (prefs?.characterSetInUse)!
+        self.userSound.isOn                        = (prefs?.soundOn)!
+        self.userHints.isOn                        = (prefs?.hintsOn)!
         //
         // game stats (all read only)
         //
         self.userHistory = state!.currentGame.userHistory
-        self.userIndex   = self.findUserHistoryIndex()
+        let index: Int = self.findUserHistoryIndex()
         //
         // now we can populate the display fields (this will change if the user selects another difficulty)
         //
-        if self.userIndex != -1 {
-            self.updateGameHistoryStats()
+        if index != -1 {
+            self.updateGameHistoryStats(index: index)
         }
         return
     }
@@ -77,13 +74,20 @@ class Preferences: UIViewController {
     }
     */
     
-    @IBAction func dismissDialog(sender: UIButton) {
-        prefs?.difficultyNew = self.setDifficulty.selectedSegmentIndex + 1
-        prefs?.gameModeInUse = self.gameMode.selectedSegmentIndex
-        prefs?.soundOn       = self.useSound.on
-        prefs?.hintsOn       = self.allowHints.on
-        if prefs?.characterSetInUse != self.characterSet.selectedSegmentIndex {
-            prefs?.characterSetInUse = self.characterSet.selectedSegmentIndex
+    @IBAction func userSelectedDifficulty(_ sender: UISegmentedControl) {
+        if prefs?.difficultyNew != self.userDifficulty.selectedSegmentIndex + 1 {
+            prefs?.difficultyNew = self.userDifficulty.selectedSegmentIndex + 1
+            self.updateGameHistoryStats(index: self.findUserHistoryIndex())
+        }
+        return
+    }
+    
+    @IBAction func okButtonSelected(_ sender: UIButton) {
+        prefs?.difficultyNew = self.userDifficulty.selectedSegmentIndex + 1
+        prefs?.soundOn       = self.userSound.isOn
+        prefs?.hintsOn       = self.userHints.isOn
+        if prefs?.characterSetInUse != self.userCharacterSet.selectedSegmentIndex {
+            prefs?.characterSetInUse = self.userCharacterSet.selectedSegmentIndex
             for redrawFunction: (Void) -> () in (prefs?.drawFunctions)! {
                 redrawFunction()
             }
@@ -91,7 +95,7 @@ class Preferences: UIViewController {
         for saveFunction: (Void) -> () in (prefs?.saveFunctions)! {
             saveFunction()
         }
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
         return
     }
     
@@ -104,12 +108,12 @@ class Preferences: UIViewController {
         return -1
     }
     
-    private func updateGameHistoryStats() {
-        self.timePlayed.text      = (state?.currentGame.userHistory[self.userIndex].getTotalTimePlayedAsString())
-        self.userGames.text       = (state?.currentGame.userHistory[self.userIndex].getGamesCountsAsString())
-        self.userFastestTime.text = (state?.currentGame.userHistory[self.userIndex].getFastestTimeAsString())
-        self.userSlowestTime.text = (state?.currentGame.userHistory[self.userIndex].getSlowestTimeAsString())
-        self.userMoves.text       = (state?.currentGame.userHistory[self.userIndex].getMovesCountsAsString())
+    private func updateGameHistoryStats(index: Int) {
+        self.timePlayed.text  = (state?.currentGame.userHistory[index].getTotalTimePlayedAsString())
+        self.userGames.text   = (state?.currentGame.userHistory[index].getGamesCountsAsString())
+        self.fastestTime.text = (state?.currentGame.userHistory[index].getFastestTimeAsString())
+        self.slowestTime.text = (state?.currentGame.userHistory[index].getSlowestTimeAsString())
+        self.userMoves.text   = (state?.currentGame.userHistory[index].getMovesCountsAsString())
         return
     }
 }

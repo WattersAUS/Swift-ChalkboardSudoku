@@ -47,7 +47,7 @@ class SudokuGameBoard {
         //
         // need to remap diff level passed to internal useful value
         //
-        self.setDifficulty(difficulty)
+        self.setDifficulty(difficulty: difficulty)
         //
         // init the all copies of the board ie solution/game and origin
         //
@@ -66,9 +66,9 @@ class SudokuGameBoard {
             return board
         }
         
-        self.solutionBoard.appendContentsOf(initialiseBoard())
-        self.originBoard.appendContentsOf(initialiseBoard())
-        self.gameBoard.appendContentsOf(initialiseBoard())
+        self.solutionBoard.append(contentsOf: initialiseBoard())
+        self.originBoard.append(contentsOf: initialiseBoard())
+        self.gameBoard.append(contentsOf: initialiseBoard())
         return
     }
     
@@ -119,16 +119,16 @@ class SudokuGameBoard {
     }
     
     func clear() {
-        func clearBoard(inout board: [[SudokuCell]]) {
+        func clearBoard( board: inout [[SudokuCell]]) {
             for row: [SudokuCell] in board {
                 for column: SudokuCell in row {
                     column.clear()
                 }
             }
         }
-        clearBoard(&self.solutionBoard)
-        clearBoard(&self.originBoard)
-        clearBoard(&self.gameBoard)
+        clearBoard(board: &self.solutionBoard)
+        clearBoard(board: &self.originBoard)
+        clearBoard(board: &self.gameBoard)
         return
     }
 
@@ -136,25 +136,25 @@ class SudokuGameBoard {
     // Get / Set numbers on the boards
     //----------------------------------------------------------------------------
     func clearGameBoardLocation(coord: Coordinate) {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return
         }
-        self.gameBoard[coord.row][coord.column].clearNumber(coord.cell)
+        self.gameBoard[coord.row][coord.column].clearNumber(coord: coord.cell)
         return
     }
 
     func getNumberFromGame(coord: Coordinate) -> Int {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return 0
         }
-        return self.gameBoard[coord.row][coord.column].getNumber(coord.cell)
+        return self.gameBoard[coord.row][coord.column].getNumber(coord: coord.cell)
     }
 
     func setNumberOnGameBoard(coord: Coordinate, number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
-        if self.gameBoard[coord.row][coord.column].isNumberUsed(number) == true {
+        if self.gameBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
         if self.isNumberLegalOnBoard(in: self.gameBoard, coord: coord, number: number) == false {
@@ -163,51 +163,51 @@ class SudokuGameBoard {
         //
         // passed all the validation, so add it. could still be a wrong move ofc
         //
-        self.gameBoard[coord.row][coord.column].setNumber(coord.cell, number: number)
+        self.gameBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
 
     func getNumberFromOrigin(coord: Coordinate) -> Int {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return 0
         }
-        return self.originBoard[coord.row][coord.column].getNumber(coord.cell)
+        return self.originBoard[coord.row][coord.column].getNumber(coord: coord.cell)
     }
     
     func setNumberOnOriginBoard(coord: Coordinate, number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
-        if self.originBoard[coord.row][coord.column].isNumberUsed(number) == true {
+        if self.originBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
-        self.originBoard[coord.row][coord.column].setNumber(coord.cell, number: number)
+        self.originBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
 
     private func clearNumberFromSolution(coord: Coordinate) {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return
         }
-        self.solutionBoard[coord.row][coord.column].clearNumber(coord.cell)
+        self.solutionBoard[coord.row][coord.column].clearNumber(coord: coord.cell)
         return
     }
     
     func getNumberFromSolution(coord: Coordinate) -> Int {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return 0
         }
-        return self.solutionBoard[coord.row][coord.column].getNumber(coord.cell)
+        return self.solutionBoard[coord.row][coord.column].getNumber(coord: coord.cell)
     }
 
     func setNumberOnSolution(coord: Coordinate, number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
-        if self.solutionBoard[coord.row][coord.column].isNumberUsed(number) == true {
+        if self.solutionBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
-        self.solutionBoard[coord.row][coord.column].setNumber(coord.cell, number: number)
+        self.solutionBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
     
@@ -216,12 +216,12 @@ class SudokuGameBoard {
     //----------------------------------------------------------------------------
     private func isNumberLegalOnBoard(in board: [[SudokuCell]], coord: Coordinate, number: Int) -> Bool {
         for row: Int in 0 ..< self.size.rows {
-            if board[row][coord.column].isNumberInColumn(coord.cell.column, number: number) == true {
+            if board[row][coord.column].isNumberInColumn(column:coord.cell.column, number: number) == true {
                 return false
             }
         }
         for column: Int in 0 ..< self.size.columns {
-            if board[coord.row][column].isNumberInRow(coord.cell.row, number: number) == true {
+            if board[coord.row][column].isNumberInRow(row: coord.cell.row, number: number) == true {
                 return false
             }
         }
@@ -232,10 +232,10 @@ class SudokuGameBoard {
     // can the number exist in this position in the game
     //
     func isNumberValidOnGameBoard(coord: Coordinate, number: Int) -> Bool {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
-        if self.gameBoard[coord.row][coord.column].isNumberUsed(number) == true {
+        if self.gameBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
         if self.isNumberLegalOnBoard(in: self.gameBoard, coord: coord, number: number) == false {
@@ -248,10 +248,10 @@ class SudokuGameBoard {
     // is the location on the origin board populated
     //
     private func isLocationUsed(in board: [[SudokuCell]], coord: Coordinate) -> Bool {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
-        return (board[coord.row][coord.column].getNumber((coord.cell.row, coord.cell.column)) == 0) ? false : true
+        return (board[coord.row][coord.column].getNumber(coord: (coord.cell.row, coord.cell.column)) == 0) ? false : true
     }
 
     func isOriginLocationUsed(coord: Coordinate) -> Bool {
@@ -281,7 +281,7 @@ class SudokuGameBoard {
     private func isNumberFullyUsedOnBoard(in board: [[SudokuCell]], number: Int) -> Bool {
         for index: Int in 0 ..< self.coordinates.count {
             if board[self.coordinates[index].row][coordinates[index].column].isCellCompleted() == false {
-                if board[self.coordinates[index].row][self.coordinates[index].column].isNumberUsed(number) == false {
+                if board[self.coordinates[index].row][self.coordinates[index].column].isNumberUsed(number: number) == false {
                     return false
                 }
             }
@@ -296,10 +296,11 @@ class SudokuGameBoard {
     //----------------------------------------------------------------------------
     // copy board from -> to
     //----------------------------------------------------------------------------
-    private func copyBoardFromTo(in sourceBoard: [[SudokuCell]], inout destinationBoard: [[SudokuCell]]) {
+    private func copyBoardFromTo(in sourceBoard: [[SudokuCell]], destinationBoard: inout [[SudokuCell]]) {
         destinationBoard.removeAll()
         for row: Int in 0 ..< self.size.rows {
-            var rowOfCells: [SudokuCell] = [sourceBoard[row][0].copy() as! SudokuCell]
+            var rowOfCells: [SudokuCell] = []
+            rowOfCells.append(sourceBoard[row][0].copy() as! SudokuCell)
             for column: Int in 1 ..< self.size.columns {
                 rowOfCells.append(sourceBoard[row][column].copy() as! SudokuCell)
             }
@@ -348,24 +349,24 @@ class SudokuGameBoard {
         var remove: [Coordinate] = []
         var number: Int = 1
         for clear: Int in clearFromBoard {
-            let locationsSelection: [Coordinate] = self.getNumberLocationsOnOriginBoard(number)
-            remove.appendContentsOf(self.getLocationsToRemove(locationsSelection, count: clear))
+            let locationsSelection: [Coordinate] = self.getNumberLocationsOnOriginBoard(number: number)
+            remove.append(contentsOf: self.getLocationsToRemove(coords: locationsSelection, count: clear))
             number = number + 1
         }
         for location in remove {
-            self.originBoard[location.row][location.column].clearNumber((location.cell.row, location.cell.column))
+            self.originBoard[location.row][location.column].clearNumber(coord: (location.cell.row, location.cell.column))
         }
         return
     }
     
     func getLocationsToRemove(coords: [Coordinate], count: Int) -> [Coordinate] {
         var choose: [Coordinate] = []
-        choose.appendContentsOf(coords)
+        choose.append(contentsOf: coords)
         var remove: [Coordinate] = []
         for _: Int in 0 ..< count {
             let posn: Int = Int(arc4random_uniform(UInt32(choose.count)))
             remove.append(choose[posn])
-            choose.removeAtIndex(posn)
+            choose.remove(at: posn)
         }
         return remove
     }
@@ -377,7 +378,7 @@ class SudokuGameBoard {
         var coords: [Coordinate] = []
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                let coord: (row: Int, column: Int) = board[row][column].getLocationOfNumber(number)
+                let coord: (row: Int, column: Int) = board[row][column].getLocationOfNumber(number: number)
                 if (coord != (-1,-1)) {
                     coords.append(Coordinate(row: row, column: column, cell: (row: coord.row, column: coord.column)))
                 }
@@ -407,8 +408,8 @@ class SudokuGameBoard {
         var coords: [Coordinate] = []
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                if self.gameBoard[row][column].isNumberUsed(number) == false {
-                    let coord: (row: Int, column: Int) = self.solutionBoard[row][column].getLocationOfNumber(number)
+                if self.gameBoard[row][column].isNumberUsed(number: number) == false {
+                    let coord: (row: Int, column: Int) = self.solutionBoard[row][column].getLocationOfNumber(number: number)
                     coords.append(Coordinate(row: row, column: column, cell: (row: coord.row, column: coord.column)))
                 }
             }
@@ -422,7 +423,7 @@ class SudokuGameBoard {
     func getFreeLocationsOnGameBoard() -> [Coordinate] {
         var coords: [Coordinate] = []
         for number: Int in 1 ..< (self.size.rows * self.size.columns) + 1 {
-            coords.appendContentsOf(self.getFreeNumberLocationsOnGameBoard(number))
+            coords.append(contentsOf: self.getFreeNumberLocationsOnGameBoard(number: number))
         }
         return coords
     }
@@ -431,13 +432,13 @@ class SudokuGameBoard {
     // when a cell is completed and correct, used to set cell contents to 'inactive' if user supplies correct solution
     //
     func getCorrectLocationsFromCompletedCellOnGameBoard(coord: Coordinate) -> [Coordinate] {
-        guard self.coordBoundsCheck(coord) && self.gameBoard[coord.row][coord.column].isCellCompleted() else {
+        guard self.coordBoundsCheck(coord: coord) && self.gameBoard[coord.row][coord.column].isCellCompleted() else {
             return []
         }
         var coords: [Coordinate] = []
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                if self.gameBoard[coord.row][coord.column].getNumber((row, column)) != self.solutionBoard[coord.row][coord.column].getNumber((row, column)) {
+                if self.gameBoard[coord.row][coord.column].getNumber(coord: (row, column)) != self.solutionBoard[coord.row][coord.column].getNumber(coord: (row, column)) {
                     return []
                 }
                 coords.append(Coordinate(row: coord.row, column: coord.column, cell:(row: row, column: column)))
@@ -450,13 +451,13 @@ class SudokuGameBoard {
     // as above but for a column
     //
     func getCorrectLocationsFromCompletedColumnOnGameBoard(coord: Coordinate) -> [Coordinate] {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return []
         }
         var coords: [Coordinate] = []
         for row: Int in 0 ..< self.size.rows {
             for cellrow: Int in 0 ..< self.size.rows {
-                if self.gameBoard[row][coord.column].getNumber((cellrow, column: coord.cell.column)) != self.solutionBoard[row][coord.column].getNumber((cellrow, column: coord.cell.column)) {
+                if self.gameBoard[row][coord.column].getNumber(coord: (cellrow, column: coord.cell.column)) != self.solutionBoard[row][coord.column].getNumber(coord: (cellrow, column: coord.cell.column)) {
                     return []
                 }
                 coords.append(Coordinate(row: row, column: coord.column, cell: (row: cellrow, coord.cell.column)))
@@ -469,13 +470,13 @@ class SudokuGameBoard {
     // now for the row
     //
     func getCorrectLocationsFromCompletedRowOnGameBoard(coord: Coordinate) -> [Coordinate] {
-        guard self.coordBoundsCheck(coord) else {
+        guard self.coordBoundsCheck(coord: coord) else {
             return []
         }
         var coords: [Coordinate] = []
         for column: Int in 0 ..< self.size.columns {
             for cellcolumn: Int in 0 ..< self.size.columns {
-                if self.gameBoard[coord.row][column].getNumber((coord.cell.row, column: cellcolumn)) != self.solutionBoard[coord.row][column].getNumber((coord.cell.row, column: cellcolumn)) {
+                if self.gameBoard[coord.row][column].getNumber(coord: (coord.cell.row, column: cellcolumn)) != self.solutionBoard[coord.row][column].getNumber(coord: (coord.cell.row, column: cellcolumn)) {
                     return []
                 }
                 coords.append(Coordinate(row: coord.row, column: column, cell: (coord.cell.row, cellcolumn)))
@@ -488,12 +489,12 @@ class SudokuGameBoard {
     // and for number
     //
     func getCorrectLocationsFromCompletedNumberOnGameBoard(number: Int) -> [Coordinate] {
-        guard self.isNumberFullyUsedInGame(number) else {
+        guard self.isNumberFullyUsedInGame(number: number) else {
             return []
         }
         var coords: [Coordinate] = []
-        for location: Coordinate in self.getNumberLocationsOnGameBoard(number) {
-            if self.getNumberFromGame(location) != self.getNumberFromSolution(location) {
+        for location: Coordinate in self.getNumberLocationsOnGameBoard(number: number) {
+            if self.getNumberFromGame(coord: location) != self.getNumberFromSolution(coord: location) {
                 return []
             }
             coords.append(location)
@@ -505,12 +506,12 @@ class SudokuGameBoard {
     // Build the Board
     //----------------------------------------------------------------------------
     func generateSolution(difficulty: sudokuDifficulty) {
-        self.setDifficulty(difficulty)
+        self.setDifficulty(difficulty: difficulty)
         self.clear()
         var start: [Placement] = getPlacementLocations()
         var board: [Placement] = []
         while start.count > 0 {
-            placeNumbers(&start, output: &board)
+            placeNumbers(input: &start, output: &board)
         }
         return
     }
@@ -535,7 +536,7 @@ class SudokuGameBoard {
     //
     // work through the placements row/column cell/row/column in turn
     //
-    func placeNumbers(inout input: [Placement], inout output: [Placement]) {
+    func placeNumbers( input: inout [Placement], output: inout [Placement]) {
         guard input.count > 0 else {
             return
         }
@@ -555,19 +556,19 @@ class SudokuGameBoard {
             if allowedNums.count > 0 {
                 input[0].number = allowedNums[Int(arc4random_uniform(UInt32(allowedNums.count)))]
                 input[0].tried.append(input[0].number)
-                self.setNumberOnSolution(input[0].location, number: input[0].number)
-                output.insert(input[0], atIndex: 0)
-                input.removeAtIndex(0)
+                self.setNumberOnSolution(coord: input[0].location, number: input[0].number)
+                output.insert(input[0], at: 0)
+                input.remove(at: 0)
                 return
             }
             //
             // failed to find a number to place, so rewind the solution one place and try again
             //
             input[0].tried = []
-            self.clearNumberFromSolution(Coordinate(row: output[0].location.row, column: output[0].location.column, cell: (output[0].location.cell)))
+            self.clearNumberFromSolution(coord: Coordinate(row: output[0].location.row, column: output[0].location.column, cell: (output[0].location.cell)))
             output[0].number = 0
-            input.insert(output[0], atIndex: 0)
-            output.removeAtIndex(0)
+            input.insert(output[0], at: 0)
+            output.remove(at: 0)
         }
     }
 
@@ -581,7 +582,7 @@ class SudokuGameBoard {
             for cellrow: Int in 0 ..< self.size.rows {
                 var dumpOfCellRow: String = ""
                 for column: Int in 0 ..< self.size.columns {
-                    let cellColumns: [Int] = self.solutionBoard[row][column].getRowNumbers(cellrow)
+                    let cellColumns: [Int] = self.solutionBoard[row][column].getRowNumbers(row: cellrow)
                     dumpOfCellRow += " |"
                     for i: Int in 0 ..< cellColumns.count {
                         dumpOfCellRow += " \(cellColumns[i])"

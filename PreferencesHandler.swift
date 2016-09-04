@@ -36,21 +36,21 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
     var drawFunctions:   [(Void) -> ()] = []
     var saveFunctions:   [(Void) -> ()] = []
     
-    let userDefaults: NSUserDefaults = NSUserDefaults.standardUserDefaults()
+    let userDefaults: UserDefaults = UserDefaults.standard
 
     init(redrawFunctions: [(Void) -> ()]) {
         super.init()
         //
         // get the difficulty first, if we get 0 then the prefs have never been saved. so save them
         //
-        let difficulty: Int = self.userDefaults.integerForKey("difficulty")
+        let difficulty: Int = self.userDefaults.integer(forKey: "difficulty")
         if difficulty != 0 {
-            self.characterSetInUse = self.userDefaults.integerForKey("charset")
+            self.characterSetInUse = self.userDefaults.integer(forKey: "charset")
             self.difficultySet     = difficulty
             self.difficultyNew     = self.difficultySet
-            self.gameModeInUse     = self.userDefaults.integerForKey("gamemode")
-            self.soundOn           = self.userDefaults.boolForKey("sound")
-            self.hintsOn           = self.userDefaults.boolForKey("hint")
+            self.gameModeInUse     = self.userDefaults.integer(forKey: "gamemode")
+            self.soundOn           = self.userDefaults.bool(forKey: "sound")
+            self.hintsOn           = self.userDefaults.bool(forKey: "hint")
         } else {
             // store for the first time
             self.characterSetInUse = imageSet.Default.rawValue
@@ -69,11 +69,11 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
     }
     
     func savePreferences() -> (Void) {
-        self.userDefaults.setInteger(self.characterSetInUse, forKey: "charset")
-        self.userDefaults.setInteger(self.difficultySet, forKey: "difficulty")
-        self.userDefaults.setInteger(self.gameModeInUse, forKey: "gamemode")
-        self.userDefaults.setBool(self.soundOn, forKey: "sound")
-        self.userDefaults.setBool(self.hintsOn, forKey: "hint")
+        self.userDefaults.set(self.characterSetInUse, forKey: "charset")
+        self.userDefaults.set(self.difficultySet, forKey: "difficulty")
+        self.userDefaults.set(self.gameModeInUse, forKey: "gamemode")
+        self.userDefaults.set(self.soundOn, forKey: "sound")
+        self.userDefaults.set(self.hintsOn, forKey: "hint")
         return
     }
     

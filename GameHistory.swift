@@ -47,9 +47,9 @@ class GameHistory {
         var str: String = ""
         for number: Int in numbers {
             if str != "" {
-                str.appendContentsOf(" / ")
+                str.append(" / ")
             }
-            str.appendContentsOf(String(format: "%04d", number))
+            str.append(String(format: "%04d", number))
         }
         return str
     }
@@ -70,7 +70,7 @@ class GameHistory {
     }
 
     func getGamesCountsAsString() -> String {
-        return self.formatNumbersAsString(self.startedGames, self.completedGames)
+        return self.formatNumbersAsString(numbers: self.startedGames, self.completedGames)
     }
     
     func getTotalTimePlayed() -> Int {
@@ -78,7 +78,7 @@ class GameHistory {
     }
     
     func getTotalTimePlayedAsString() -> String {
-        return self.formatTimeInSecondsAsTimeString(self.totalTimePlayed)
+        return self.formatTimeInSecondsAsTimeString(time: self.totalTimePlayed)
     }
     
     func getTotalMovesMade() -> Int {
@@ -90,7 +90,7 @@ class GameHistory {
     }
     
     func getMovesCountsAsString() -> String {
-        return self.formatNumbersAsString(self.totalMovesMade, self.totalMovesDeleted)
+        return self.formatNumbersAsString(numbers: self.totalMovesMade, self.totalMovesDeleted)
     }
     
     func getHighestScore() -> Int {
@@ -110,11 +110,11 @@ class GameHistory {
     }
 
     func getFastestTimeAsString() -> String {
-        return self.formatTimeInSecondsAsTimeString(self.fastestGame)
+        return self.formatTimeInSecondsAsTimeString(time: self.fastestGame)
     }
     
     func getSlowestTimeAsString() -> String {
-        return self.formatTimeInSecondsAsTimeString(self.slowestGame)
+        return self.formatTimeInSecondsAsTimeString(time: self.slowestGame)
     }
     
     //
@@ -155,9 +155,9 @@ class GameHistory {
         return
     }
     
-    func incrementTotalGameTimePlayed(increment: Int) -> Int {
+    func incrementTotalGameTimePlayed(increment: Int) {
         self.totalTimePlayed = self.totalTimePlayed + increment
-        return self.totalTimePlayed
+        return
     }
     
     func incrementTotalPlayerMovesMade(increment: Int) -> Int {

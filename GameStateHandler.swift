@@ -63,10 +63,10 @@ class GameStateHandler: NSObject, GameStateDelegate {
                 cell.value = value
                 break
             case cellDictionary.image.rawValue:
-                cell.image = self.translateIntToImagesState(value)
+                cell.image = self.translateIntToImagesState(state: value)
                 break
             case cellDictionary.active.rawValue:
-                cell.active = self.translateIntToActiveState(value)
+                cell.active = self.translateIntToActiveState(state: value)
                 break
             default:
                 break
@@ -85,7 +85,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         //
         for (key, value) in dictDiff {
             if key == userGameHistory.difficulty.rawValue {
-                history = GameHistory(difficulty: self.translateDifficulty(value))
+                history = GameHistory(difficulty: self.translateDifficulty(difficulty: value))
             }
         }
         //
@@ -103,31 +103,31 @@ class GameStateHandler: NSObject, GameStateDelegate {
                 // already used this to create the obj so can be ignored
                 break
             case userGameHistory.gamesStarted.rawValue:
-                history.setStartedGames(value)
+                history.setStartedGames(games: value)
                 break
             case userGameHistory.gamesCompleted.rawValue:
-                history.setCompletedGames(value)
+                history.setCompletedGames(games: value)
                 break
             case userGameHistory.totalTimePlayed.rawValue:
-                history.setTotalGameTimePlayed(value)
+                history.setTotalGameTimePlayed(time: value)
                 break
             case userGameHistory.totalMovesMade.rawValue:
-                history.setTotalPlayerMovesMade(value)
+                history.setTotalPlayerMovesMade(moves: value)
                 break
             case userGameHistory.totalMovesDeleted.rawValue:
-                history.setTotalPlayerMovesDeleted(value)
+                history.setTotalPlayerMovesDeleted(moves: value)
                 break
             case userGameHistory.highestScore.rawValue:
-                history.setHighestScore(value)
+                history.setHighestScore(score: value)
                 break
             case userGameHistory.lowestScore.rawValue:
-                history.setLowestScore(value)
+                history.setLowestScore(score: value)
                 break
             case userGameHistory.fastestTime.rawValue:
-                history.setFastestTime(value)
+                history.setFastestTime(newTime: value)
                 break
             case userGameHistory.slowestTime.rawValue:
-                history.setSlowestTime(value)
+                history.setSlowestTime(newTime: value)
                 break
             default:
                 break
@@ -219,61 +219,37 @@ class GameStateHandler: NSObject, GameStateDelegate {
     // move between the enum values for image and active states to the Int value
     //-------------------------------------------------------------------------------
     func updateGameSaveObjects() {
-        self.updateGameSaveValue(saveGameDictionary.ApplicationVersion.rawValue,    value: self.currentGame.applicationVersion)
-        self.updateGameSaveValue(saveGameDictionary.GameInPlay.rawValue,            value: self.currentGame.gameInPlay)
-        self.updateGameSaveValue(saveGameDictionary.PenaltyValue.rawValue,          value: self.currentGame.penaltyValue)
-        self.updateGameSaveValue(saveGameDictionary.PenaltyIncrementValue.rawValue, value: self.currentGame.penaltyIncrementValue)
-        self.updateGameSaveValue(saveGameDictionary.CurrentGameTime.rawValue,       value: self.currentGame.currentGameTime)
-        self.updateGameSaveValue(saveGameDictionary.GameMovesMade.rawValue,         value: self.currentGame.gameMovesMade)
-        self.updateGameSaveValue(saveGameDictionary.GameMovesDeleted.rawValue,      value: self.currentGame.gameMovesDeleted)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.ApplicationVersion.rawValue,    value: self.currentGame.applicationVersion)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.GameInPlay.rawValue,            value: self.currentGame.gameInPlay)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.PenaltyValue.rawValue,          value: self.currentGame.penaltyValue)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.PenaltyIncrementValue.rawValue, value: self.currentGame.penaltyIncrementValue)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.CurrentGameTime.rawValue,       value: self.currentGame.currentGameTime)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.GameMovesMade.rawValue,         value: self.currentGame.gameMovesMade)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.GameMovesDeleted.rawValue,      value: self.currentGame.gameMovesDeleted)
         //
         // Game
         //
-        var cellArray: [AnyObject] = []
+        var cellArray: [[String: Int]] = []
         for cell: BoardCell in self.currentGame.gameCells {
-            cellArray.append([
-                cellDictionary.row.rawValue:    cell.row,
-                cellDictionary.col.rawValue:    cell.col,
-                cellDictionary.crow.rawValue:   cell.crow,
-                cellDictionary.ccol.rawValue:   cell.ccol,
-                cellDictionary.value.rawValue:  cell.value,
-                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
-                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
-            ])
+            cellArray.append(self.convertCellEntry(cell: cell))
         }
-        self.updateGameSaveValue(saveGameDictionary.GameBoard.rawValue, value: cellArray)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.GameBoard.rawValue, value: cellArray)
         //
         // Origin
         //
         cellArray.removeAll()
         for cell: BoardCell in self.currentGame.originCells {
-            cellArray.append([
-                cellDictionary.row.rawValue:    cell.row,
-                cellDictionary.col.rawValue:    cell.col,
-                cellDictionary.crow.rawValue:   cell.crow,
-                cellDictionary.ccol.rawValue:   cell.ccol,
-                cellDictionary.value.rawValue:  cell.value,
-                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
-                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
-            ])
+            cellArray.append(self.convertCellEntry(cell: cell))
         }
-        self.updateGameSaveValue(saveGameDictionary.OriginBoard.rawValue, value: cellArray)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.OriginBoard.rawValue, value: cellArray)
         //
         // Solution
         //
         cellArray.removeAll()
         for cell: BoardCell in self.currentGame.solutionCells {
-            cellArray.append([
-                cellDictionary.row.rawValue:    cell.row,
-                cellDictionary.col.rawValue:    cell.col,
-                cellDictionary.crow.rawValue:   cell.crow,
-                cellDictionary.ccol.rawValue:   cell.ccol,
-                cellDictionary.value.rawValue:  cell.value,
-                cellDictionary.image.rawValue:  self.translateImageStateToInt(cell.image),
-                cellDictionary.active.rawValue: self.translateActiveStateToInt(cell.active)
-            ])
+            cellArray.append(self.convertCellEntry(cell: cell))
         }
-        self.updateGameSaveValue(saveGameDictionary.SolutionBoard.rawValue, value: cellArray)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.SolutionBoard.rawValue, value: cellArray)
         //
         // finally handle the user score/moves (stored against difficulty)
         //
@@ -292,60 +268,82 @@ class GameStateHandler: NSObject, GameStateDelegate {
                 userGameHistory.slowestTime.rawValue:       history.getSlowestGame()
             ])
         }
-        self.updateGameSaveValue(saveGameDictionary.UserHistory.rawValue, value: cellArray)
+        self.updateGameSaveValue(keyValue: saveGameDictionary.UserHistory.rawValue, value: cellArray)
         return
+    }
+    
+    func convertCellEntry(cell: BoardCell) -> [String: Int] {
+        var array: [String: Int] = [:]
+        array[cellDictionary.row.rawValue]    = cell.row
+        array[cellDictionary.col.rawValue]    = cell.col
+        array[cellDictionary.crow.rawValue]   = cell.crow
+        array[cellDictionary.ccol.rawValue]  = cell.ccol
+        array[cellDictionary.value.rawValue]  = cell.value
+        array[cellDictionary.image.rawValue]  = self.translateImageStateToInt(state: cell.image)
+        array[cellDictionary.active.rawValue] = self.translateActiveStateToInt(state: cell.active)
+        return array
     }
     
     //-------------------------------------------------------------------------------
     // load/save to/from internal 'currentgame' state and save dictionary 'gameSave'
     //-------------------------------------------------------------------------------
+    private func updateGameSaveValue(keyValue: String, value: Int) {
+        self.gameSave[keyValue] = value as? AnyObject
+        return
+    }
+    
+    private func updateGameSaveValue(keyValue: String, value: Bool) {
+        self.gameSave[keyValue] = value as? AnyObject
+        return
+    }
+    
     private func updateGameSaveValue(keyValue: String, value: AnyObject) {
-        self.gameSave[keyValue] = value
+        self.gameSave[keyValue] = value as? AnyObject
+        return
+    }
+    
+    private func updateGameSaveValue(keyValue: String, value: [[String: Int]]) {
+        self.gameSave[keyValue] = value as? AnyObject
         return
     }
     
     func loadGameSaveObjects() {
-        self.currentGame.applicationVersion    = self.getGameStateValue(saveGameDictionary.ApplicationVersion,    obj: self.currentGame.applicationVersion) as! Int
-        self.currentGame.gameInPlay            = self.getGameStateValue(saveGameDictionary.GameInPlay,            obj: self.currentGame.gameInPlay) as! Bool
-        self.currentGame.penaltyValue          = self.getGameStateValue(saveGameDictionary.PenaltyValue,          obj: self.currentGame.penaltyValue) as! Int
-        self.currentGame.penaltyIncrementValue = self.getGameStateValue(saveGameDictionary.PenaltyIncrementValue, obj: self.currentGame.penaltyIncrementValue) as! Int
-        self.currentGame.currentGameTime       = self.getGameStateValue(saveGameDictionary.CurrentGameTime,       obj: self.currentGame.currentGameTime)  as! Int
-        self.currentGame.gameMovesMade         = self.getGameStateValue(saveGameDictionary.GameMovesMade,         obj: self.currentGame.gameMovesMade) as! Int
-        self.currentGame.gameMovesDeleted      = self.getGameStateValue(saveGameDictionary.GameMovesDeleted,      obj: self.currentGame.gameMovesDeleted) as! Int
+        self.currentGame.applicationVersion    = self.getGameStateValue(keyValue: saveGameDictionary.ApplicationVersion,    obj: self.currentGame.applicationVersion as AnyObject) as! Int
+        self.currentGame.gameInPlay            = self.getGameStateValue(keyValue: saveGameDictionary.GameInPlay,            obj: self.currentGame.gameInPlay as AnyObject) as! Bool
+        self.currentGame.penaltyValue          = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyValue,          obj: self.currentGame.penaltyValue as AnyObject) as! Int
+        self.currentGame.penaltyIncrementValue = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyIncrementValue, obj: self.currentGame.penaltyIncrementValue as AnyObject) as! Int
+        self.currentGame.currentGameTime       = self.getGameStateValue(keyValue: saveGameDictionary.CurrentGameTime,       obj: self.currentGame.currentGameTime as AnyObject)  as! Int
+        self.currentGame.gameMovesMade         = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesMade,         obj: self.currentGame.gameMovesMade as AnyObject) as! Int
+        self.currentGame.gameMovesDeleted      = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesDeleted,      obj: self.currentGame.gameMovesDeleted as AnyObject) as! Int
         self.currentGame.gameCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(saveGameDictionary.GameBoard) as! [[String: Int]] {
-            self.currentGame.gameCells.append(self.translateCellFromDictionary(cell))
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.GameBoard) as! [[String: Int]] {
+            self.currentGame.gameCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.originCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(saveGameDictionary.OriginBoard) as! [[String: Int]] {
-            self.currentGame.originCells.append(self.translateCellFromDictionary(cell))
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.OriginBoard) as! [[String: Int]] {
+            self.currentGame.originCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.solutionCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(saveGameDictionary.SolutionBoard) as! [[String: Int]] {
-            self.currentGame.solutionCells.append(self.translateCellFromDictionary(cell))
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.SolutionBoard) as! [[String: Int]] {
+            self.currentGame.solutionCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.userHistory.removeAll()
-        for history: [String: Int] in self.getGameStateValue(saveGameDictionary.UserHistory) as! [[String: Int]] {
-            self.currentGame.userHistory.append(self.translateUserScoreFromDictionary(history))
+        for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) as! [[String: Int]] {
+            self.currentGame.userHistory.append(self.translateUserScoreFromDictionary(dictDiff: history))
         }
         return
     }
-    
-//    private func doesDictionaryEntryExist(keyValue: saveGameDictionary) -> Bool {
-//        if self.gameSave.indexForKey(<#T##key: Hashable##Hashable#>)
-//        return false
-//    }
     
     //-------------------------------------------------------------------------------
     // pick out the dictionary 'keys/value' when we load the game
     // if we don't yet have a value return a default (when we might add a new entry)
     //-------------------------------------------------------------------------------
     private func getGameStateValue(keyValue: saveGameDictionary) -> AnyObject {
-        return (self.gameSave.indexForKey(keyValue.rawValue) == nil) ? [] : self.gameSave[keyValue.rawValue]!
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? ([] as AnyObject) : self.gameSave[keyValue.rawValue]!
     }
     
     private func getGameStateValue(keyValue: saveGameDictionary, obj: AnyObject) -> AnyObject {
-        return (self.gameSave.indexForKey(keyValue.rawValue) == nil) ? self.defaultGameStateValue(obj) : self.gameSave[keyValue.rawValue]!
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? self.defaultGameStateValue(obj: obj) : self.gameSave[keyValue.rawValue]!
     }
     
     private func getValue(keyValue: saveGameDictionary) -> AnyObject {
@@ -355,13 +353,13 @@ class GameStateHandler: NSObject, GameStateDelegate {
     private func defaultGameStateValue(obj: AnyObject) -> AnyObject {
         switch obj {
         case is Bool:
-            return false
+            return (false as AnyObject)
         case is Int:
-            return 0
+            return (0 as AnyObject)
         case is String:
-            return ""
+            return ("" as AnyObject)
         default:
-            return ""
+            return ("" as AnyObject)
         }
     }
 
@@ -390,7 +388,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
     }
     
     func getCurrentGameTimePlayedAsString() -> String {
-        return(self.formatTimeInSecondsAsTimeString(self.currentGame.currentGameTime))
+        return(self.formatTimeInSecondsAsTimeString(time: self.currentGame.currentGameTime))
     }
     
     func getGamePlayerMovesMade() -> Int {
@@ -452,45 +450,45 @@ class GameStateHandler: NSObject, GameStateDelegate {
     }
 
     func setFastestPlayerTime(diff: sudokuDifficulty) -> Bool {
-        let index: Int = self.getUserHistoryIndex(diff)
-        return self.currentGame.userHistory[index].setFastestTime(self.currentGame.currentGameTime)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
+        return self.currentGame.userHistory[index].setFastestTime(newTime: self.currentGame.currentGameTime)
     }
     
     func setSlowestPlayerTime(diff: sudokuDifficulty) -> Bool {
-        let index: Int = self.getUserHistoryIndex(diff)
-        return self.currentGame.userHistory[index].setSlowestTime(self.currentGame.currentGameTime)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
+        return self.currentGame.userHistory[index].setSlowestTime(newTime: self.currentGame.currentGameTime)
     }
 
     //-------------------------------------------------------------------------------
     // Increments
     //-------------------------------------------------------------------------------
     func incrementStartedGames(diff: sudokuDifficulty) {
-        let index: Int = self.getUserHistoryIndex(diff)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
         self.currentGame.userHistory[index].incrementStartedGames()
         return
     }
 
     func incrementCompletedGames(diff: sudokuDifficulty) {
-        let index: Int = self.getUserHistoryIndex(diff)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
         self.currentGame.userHistory[index].incrementCompletedGames()
         return
     }
 
     func incrementTotalGameTimePlayed(diff: sudokuDifficulty, increment: Int) {
-        let index: Int = self.getUserHistoryIndex(diff)
-        self.currentGame.userHistory[index].incrementTotalGameTimePlayed(increment)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
+        self.currentGame.userHistory[index].incrementTotalGameTimePlayed(increment: increment)
         return
     }
     
     func incrementTotalPlayerMovesMade(diff: sudokuDifficulty, increment: Int) {
-        let index: Int = self.getUserHistoryIndex(diff)
-        self.currentGame.userHistory[index].incrementTotalPlayerMovesMade(increment)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
+        self.currentGame.userHistory[index].incrementTotalPlayerMovesMade(increment: increment)
         return
     }
     
     func incrementTotalPlayerMovesDeleted(diff: sudokuDifficulty, increment: Int) {
-        let index: Int = self.getUserHistoryIndex(diff)
-        self.currentGame.userHistory[index].incrementTotalPlayerMovesDeleted(increment)
+        let index: Int = self.getUserHistoryIndex(diff: diff)
+        self.currentGame.userHistory[index].incrementTotalPlayerMovesDeleted(increment: increment)
         return
     }
     
@@ -527,19 +525,19 @@ class GameStateHandler: NSObject, GameStateDelegate {
     //-------------------------------------------------------------------------------
     func setGameCells(cellArray: [BoardCell]) {
         self.currentGame.gameCells.removeAll()
-        self.currentGame.gameCells.appendContentsOf(cellArray)
+        self.currentGame.gameCells.append(contentsOf: cellArray)
         return
     }
     
     func setOriginCells(cellArray: [BoardCell]) {
         self.currentGame.originCells.removeAll()
-        self.currentGame.originCells.appendContentsOf(cellArray)
+        self.currentGame.originCells.append(contentsOf: cellArray)
         return
     }
     
     func setSolutionCells(cellArray: [BoardCell]) {
         self.currentGame.solutionCells.removeAll()
-        self.currentGame.solutionCells.appendContentsOf(cellArray)
+        self.currentGame.solutionCells.append(contentsOf: cellArray)
         return
     }
     
@@ -547,19 +545,20 @@ class GameStateHandler: NSObject, GameStateDelegate {
     // load/save the dictionary object
     //-------------------------------------------------------------------------------
     private func getFilename() -> String {
-        return getDocumentDirectory().stringByAppendingPathComponent("chalkboardsudoku.json")
+        let directory: String = getDocumentDirectory() + "/" + "chalkboardsudoku.json"
+        return directory
     }
     
-    private func getDocumentDirectory() -> NSString {
-        return NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+    private func getDocumentDirectory() -> String {
+        return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
     }
     
     func loadGame() {
         let filename: String = self.getFilename()
         do {
             let fileContents: String = try NSString(contentsOfFile: filename, usedEncoding: nil) as String
-            let fileData: NSData = fileContents.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            self.gameSave = try NSJSONSerialization.JSONObjectWithData(fileData, options: .AllowFragments) as! Dictionary<String, AnyObject>
+            let fileData: Data = fileContents.data(using: String.Encoding.utf8, allowLossyConversion: false)!
+            self.gameSave = try JSONSerialization.jsonObject(with: fileData, options: .allowFragments) as! Dictionary<String, AnyObject>
             self.loadGameSaveObjects()
         } catch {
             print("Failed to read to file: \(filename)")
@@ -569,14 +568,14 @@ class GameStateHandler: NSObject, GameStateDelegate {
     
     func saveGame() {
         self.updateGameSaveObjects()
-        if NSJSONSerialization.isValidJSONObject(self.gameSave) { // True
+        if JSONSerialization.isValidJSONObject(self.gameSave) { // True
             do {
-                let rawData: NSData = try NSJSONSerialization.dataWithJSONObject(self.gameSave, options: .PrettyPrinted)
+                let rawData: Data = try JSONSerialization.data(withJSONObject: self.gameSave, options: .prettyPrinted)
                 //Convert NSString to String
-                let resultString: String = NSString(data: rawData, encoding: NSUTF8StringEncoding)! as String
+                let resultString: String = String(data: rawData as Data, encoding: String.Encoding.utf8)! as String
                 let filename: String = self.getFilename()
                 do {
-                    try resultString.writeToFile(filename, atomically: true, encoding: NSUTF8StringEncoding)
+                    try resultString.write(toFile: filename, atomically: true, encoding: String.Encoding.utf8)
                 } catch {
                     // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
                     print("Failed to write to file: \(filename)")

@@ -72,20 +72,20 @@ class SudokuCell: NumberGrid {
     // public functions - number level operations
     //
     func clearNumber(coord: (row: Int, column: Int)) {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return
         }
-        self.resetNumberUsed(self.getNumber(coord))
-        super.setNumber(coord, number: 0)
+        self.resetNumberUsed(number: self.getNumber(coord: coord))
+        super.setNumber(coord: coord, number: 0)
         return
     }
     
     override func setNumber(coord: (row: Int, column: Int), number: Int) -> Bool {
-        guard self.boundsCheck(coord) && (1..<(self.used.count + 1)) ~= number && self.isNumberUsed(number) == false && self.getNumber(coord) == 0 else {
+        guard self.boundsCheck(coord: coord) && (1..<(self.used.count + 1)) ~= number && self.isNumberUsed(number: number) == false && self.getNumber(coord: coord) == 0 else {
             return false
         }
-        if super.setNumber(coord, number: number) {
-            self.setNumberUsed(number)
+        if super.setNumber(coord: coord, number: number) {
+            self.setNumberUsed(number: number)
             return true
         }
         return false
@@ -104,7 +104,7 @@ class SudokuCell: NumberGrid {
         }
         var numbers: [Int] = []
         for column: Int in 0 ..< self.getColumns() {
-            numbers.append(self.getNumber((row, column)))
+            numbers.append(self.getNumber(coord: (row, column)))
         }
         return numbers
     }
@@ -115,7 +115,7 @@ class SudokuCell: NumberGrid {
         }
         var numbers: [Int] = []
         for row: Int in 0 ..< self.getRows() {
-            numbers.append(self.getNumber((row, column)))
+            numbers.append(self.getNumber(coord: (row, column)))
         }
         return numbers
     }
@@ -127,7 +127,7 @@ class SudokuCell: NumberGrid {
         guard (0..<self.getRows()) ~= row && (1..<(self.used.count + 1)) ~= number && used[number - 1] else {
             return false
         }
-        let coords: [(row: Int, column: Int)] = self.getLocationsOfNumber(number)
+        let coords: [(row: Int, column: Int)] = self.getLocationsOfNumber(number: number)
         if coords.count > 0  && coords[0].row == row {
             return true
         }
@@ -138,7 +138,7 @@ class SudokuCell: NumberGrid {
         guard (0..<self.getColumns()) ~= column && (1..<(self.used.count + 1)) ~= number && used[number - 1] else {
             return false
         }
-        let coords: [(row: Int, column: Int)] = self.getLocationsOfNumber(number)
+        let coords: [(row: Int, column: Int)] = self.getLocationsOfNumber(number: number)
         if coords.count > 0  && coords[0].column == column {
             return true
         }
@@ -163,7 +163,7 @@ class SudokuCell: NumberGrid {
         guard !self.isCellCompleted() else {
             return (-1, -1)
         }
-        let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(0)
+        let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(number: 0)
         return (locations.count == 0) ? (-1, -1) : locations[Int(arc4random_uniform(UInt32(locations.count)))]
     }
     
@@ -171,7 +171,7 @@ class SudokuCell: NumberGrid {
         guard !self.isCellCompleted() else {
             return []
         }
-        return self.getLocationsOfNumber(0)
+        return self.getLocationsOfNumber(number: 0)
     }
     
     func getRandomUsedLocation() -> (row: Int, column: Int) {
@@ -184,21 +184,21 @@ class SudokuCell: NumberGrid {
                 numbers.append(index + 1)
             }
         }
-        return (numbers.count == 0) ? (-1, -1) : self.getLocationsOfNumber(numbers[Int(arc4random_uniform(UInt32(numbers.count)))])[0]
+        return (numbers.count == 0) ? (-1, -1) : self.getLocationsOfNumber(number: numbers[Int(arc4random_uniform(UInt32(numbers.count)))])[0]
     }
     
     func getLocationOfNumber(number: Int) -> (row: Int, column: Int) {
-        let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(number)
+        let locations: [(row: Int, column: Int)] = self.getLocationsOfNumber(number: number)
         return (locations.count == 0) ? (-1, -1) : locations[0]
     }
     
     //
     // copy object operation
     //
-    override func copyWithZone(zone: NSZone) -> AnyObject {
+    override public func copy(with zone: NSZone? = nil) -> Any {
         let copy = SudokuCell(size: self.getRows())
         for coord in copy.getCoords() {
-            copy.setNumber(coord, number: self.getNumber(coord))
+            copy.setNumber(coord: coord, number: self.getNumber(coord: coord))
         }
         for index: Int in 0 ..< copy.used.count {
             copy.used[index] = self.used[index]

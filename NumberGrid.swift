@@ -71,14 +71,14 @@ class NumberGrid: NSObject, NSCopying {
     // public functions - number level operations
     //
     func getNumber(coord: (row: Int, column: Int)) -> Int {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return 0
         }
         return self.number[coord.row][coord.column]
     }
     
     func setNumber(coord: (row: Int, column: Int), number: Int)  -> Bool {
-        guard self.boundsCheck(coord) else {
+        guard self.boundsCheck(coord: coord) else {
             return false
         }
         self.number[coord.row][coord.column] = number
@@ -108,7 +108,7 @@ class NumberGrid: NSObject, NSCopying {
     //
     // copy object operation
     //
-    func copyWithZone(zone: NSZone) -> AnyObject {
+    public func copy(with zone: NSZone? = nil) -> Any {
         let copy = NumberGrid(size: self.size)
         for index: Int in 0 ..< self.coords.count {
             copy.number[self.coords[index].row][self.coords[index].column] = self.number[self.coords[index].row][self.coords[index].column]

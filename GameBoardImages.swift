@@ -36,7 +36,7 @@ class GameBoardImages {
             return
         }
         
-        allocateImageArray(setSize, columns: setSize)
+        allocateImageArray(rows: setSize, columns: setSize)
         return
     }
     
@@ -63,7 +63,7 @@ class GameBoardImages {
             for column: Int in 0 ..< self.size.columns {
                 for crow: Int in 0 ..< self.size.rows {
                     for ccol: Int in 0 ..< self.size.columns {
-                        self.gameImages[row][column].clearImage((crow, ccol))
+                        self.gameImages[row][column].clearImage(coord: (crow, ccol))
                     }
                 }
             }
@@ -75,14 +75,14 @@ class GameBoardImages {
     // Get / Set 'active' state (is there an image) and image types
     //----------------------------------------------------------------------------
     func getImageState(coord: Coordinate) -> imageStates {
-        return self.gameImages[coord.row][coord.column].getImageState((coord.cell.row, coord.cell.column))
+        return self.gameImages[coord.row][coord.column].getImageState(coord: (coord.cell.row, coord.cell.column))
     }
     
     func setImageStates(setState: imageStates) {
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfImageStateEqualTo(setState) {
-                    self.gameImages[row][column].setImageState((location), imageState: setState)
+                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfImageStateEqualTo(imageState: setState) {
+                    self.gameImages[row][column].setImageState(coord: (location), imageState: setState)
                 }
             }
         }
@@ -92,8 +92,8 @@ class GameBoardImages {
     func setActiveStates(setState: activeStates) {
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfActiveStateEqualTo(setState) {
-                    self.gameImages[row][column].setActiveState((location), activeState: setState)
+                for location: (row:Int, column: Int) in self.gameImages[row][column].getLocationsOfActiveStateEqualTo(activeState: setState) {
+                    self.gameImages[row][column].setActiveState(coord: (location), activeState: setState)
                 }
             }
         }
@@ -110,7 +110,7 @@ class GameBoardImages {
         var coords: [Coordinate] = []
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {
-                let images: [(row: Int, column: Int)] = self.gameImages[row][column].getLocationsOfImageStateEqualTo(imageState)
+                let images: [(row: Int, column: Int)] = self.gameImages[row][column].getLocationsOfImageStateEqualTo(imageState: imageState)
                 if images.isEmpty == false {
                     for coord in images {
                         coords.append(Coordinate(row: row, column: column, cell: (row: coord.row, column: coord.column)))
