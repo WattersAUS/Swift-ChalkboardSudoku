@@ -314,7 +314,7 @@ class ViewController: UIViewController {
         //
         // Do any additional setup after loading the view, typically from a nib.
         //
-        self.applicationVersion = 101
+        self.applicationVersion = 300
         self.userPrefs = PreferencesHandler(redrawFunctions: [])
         self.userGame = GameStateHandler(applicationVersion: self.applicationVersion)
         self.sudokuBoard = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(difficulty: self.userPrefs.difficultySet))
@@ -329,7 +329,7 @@ class ViewController: UIViewController {
         //
         // setup the timer but dont let game time start yet (not in a game yet)
         //
-        self.initialiseGameTimer()
+        self.setupGameTimer()
         self.stopGameTimer()
         self.initialiseGameSounds()
         self.giveHint = false
@@ -476,7 +476,7 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // timer display handling
     //----------------------------------------------------------------------------
-    func initialiseGameTimer() {
+    func setupGameTimer() {
         self.timer = Timer()
         self.timer = Timer.scheduledTimer(timeInterval: 1, target:self, selector: #selector(ViewController.updateGameTime), userInfo: nil, repeats: true)
         return
