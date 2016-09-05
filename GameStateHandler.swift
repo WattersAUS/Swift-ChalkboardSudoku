@@ -118,16 +118,16 @@ class GameStateHandler: NSObject, GameStateDelegate {
                 history.setTotalPlayerMovesDeleted(moves: value)
                 break
             case userGameHistory.highestScore.rawValue:
-                history.setHighestScore(score: value)
+                let _: Bool = history.setHighestScore(score: value)
                 break
             case userGameHistory.lowestScore.rawValue:
-                history.setLowestScore(score: value)
+                let _: Bool = history.setLowestScore(score: value)
                 break
             case userGameHistory.fastestTime.rawValue:
-                history.setFastestTime(newTime: value)
+                let _: Bool = history.setFastestTime(newTime: value)
                 break
             case userGameHistory.slowestTime.rawValue:
-                history.setSlowestTime(newTime: value)
+                let _: Bool = history.setSlowestTime(newTime: value)
                 break
             default:
                 break
@@ -482,13 +482,13 @@ class GameStateHandler: NSObject, GameStateDelegate {
     
     func incrementTotalPlayerMovesMade(diff: sudokuDifficulty, increment: Int) {
         let index: Int = self.getUserHistoryIndex(diff: diff)
-        self.currentGame.userHistory[index].incrementTotalPlayerMovesMade(increment: increment)
+        let _: Int = self.currentGame.userHistory[index].incrementTotalPlayerMovesMade(increment: increment)
         return
     }
     
     func incrementTotalPlayerMovesDeleted(diff: sudokuDifficulty, increment: Int) {
         let index: Int = self.getUserHistoryIndex(diff: diff)
-        self.currentGame.userHistory[index].incrementTotalPlayerMovesDeleted(increment: increment)
+        let _: Int = self.currentGame.userHistory[index].incrementTotalPlayerMovesDeleted(increment: increment)
         return
     }
     

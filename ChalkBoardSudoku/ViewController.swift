@@ -516,8 +516,8 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     func addPenaltyToGameTime() {
         self.userGame.incrementTotalGameTimePlayed(diff: self.mapDifficulty(difficulty: self.userPrefs.difficultySet), increment: self.userGame.getGamePenaltyTime())
-        self.userGame.incrementCurrentGameTimePlayed(increment: self.userGame.getGamePenaltyTime())
-        self.userGame.incrementGamePenaltyTime(increment: self.userGame.incrementGamePenaltyIncrementTime(increment: 1))
+        let _: Int = self.userGame.incrementCurrentGameTimePlayed(increment: self.userGame.getGamePenaltyTime())
+        let _: Int = self.userGame.incrementGamePenaltyTime(increment: self.userGame.incrementGamePenaltyIncrementTime(increment: 1))
         return
     }
     
@@ -571,16 +571,16 @@ class ViewController: UIViewController {
         self.sudokuBoard.clear()
         // copy the saved boards into the sudokuBoard object
         for cell: BoardCell in self.userGame.currentGame.solutionCells {
-            self.sudokuBoard.setNumberOnSolution(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
+            let _: Bool = self.sudokuBoard.setNumberOnSolution(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
         for cell: BoardCell in self.userGame.currentGame.originCells {
-            self.sudokuBoard.setNumberOnOriginBoard(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
+            let _: Bool = self.sudokuBoard.setNumberOnOriginBoard(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
         // now copy the game progress values on top of the origin, and dont forget the solution tracker
         self.sudokuBoard.initialiseGame()
         for cell: BoardCell in self.userGame.currentGame.gameCells {
             let coord: Coordinate = Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol))
-            self.sudokuBoard.setNumberOnGameBoard(coord: coord, number: cell.value)
+            let _: Bool = self.sudokuBoard.setNumberOnGameBoard(coord: coord, number: cell.value)
             self.setCoordToStateImage(coord: coord, number: cell.value, imageState: cell.image)
             self.userSolution.addCoordinate(coord: coord)
         }
@@ -669,7 +669,7 @@ class ViewController: UIViewController {
         self.resetGameTimer()
         self.startGameTimer()
         self.userGame.setGameInPlay(value: true)
-        self.userGame.setGamePenaltyTime(value: self.setInitialPenalty().rawValue)
+        let _: Int = self.userGame.setGamePenaltyTime(value: self.setInitialPenalty().rawValue)
         self.userGame.resetGamePenaltyIncrementTime(value: self.setInitialPenaltyIncrement().rawValue)
         self.userGame.resetGamePlayerMovesMade()
         self.userGame.resetGamePlayerMovesDeleted()
@@ -942,7 +942,7 @@ class ViewController: UIViewController {
                 return false
             }
             self.userSolution.addCoordinate(coord: boardPosn)
-            self.userGame.incrementGamePlayerMovesMade()
+            let _: Int = self.userGame.incrementGamePlayerMovesMade()
             self.playPlacementSound(number: index + 1)
             if self.sudokuBoard.isNumberFullyUsedInGame(number: index + 1) == true {
                 self.setControlPanelToInactiveImageValue(coord: (index / 2, column: index % 2))
@@ -961,7 +961,7 @@ class ViewController: UIViewController {
                 self.sudokuBoard.clearGameBoardLocation(coord: boardPosn)
                 self.setCellToBlankImage(coord: boardPosn)
                 self.userSolution.removeCoordinate(coord: boardPosn)
-                self.userGame.incrementGamePlayerMovesDeleted()
+                let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
                 //
                 // may need to reactivate 'inactive' control panel posn
                 //
@@ -1086,7 +1086,7 @@ class ViewController: UIViewController {
                 self.sudokuBoard.clearGameBoardLocation(coord: posn)
                 self.setCellToBlankImage(coord: posn)
                 self.userSolution.removeCoordinate(coord: posn)
-                self.userGame.incrementGamePlayerMovesDeleted()
+                let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
                 self.resetBoardPosition()
                 return
             }
@@ -1095,7 +1095,7 @@ class ViewController: UIViewController {
                 return
             }
             self.userSolution.addCoordinate(coord: posn)
-            self.userGame.incrementGamePlayerMovesMade()
+            let _: Int = self.userGame.incrementGamePlayerMovesMade()
             //
             // do we need to make number 'inactive'?
             //
@@ -1126,7 +1126,7 @@ class ViewController: UIViewController {
             self.sudokuBoard.clearGameBoardLocation(coord: posn)
             self.setCellToBlankImage(coord: posn)
             self.userSolution.removeCoordinate(coord: posn)
-            self.userGame.incrementGamePlayerMovesDeleted()
+            let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
             self.resetBoardPosition()
             // may need to reactivate 'inactive' control panel posn
             self.resetInactiveNumberOnBoard(number: number)
@@ -1171,7 +1171,7 @@ class ViewController: UIViewController {
         // add the number to the solution
         //
         self.userSolution.addCoordinate(coord: location)
-        self.userGame.incrementGamePlayerMovesMade()
+        let _: Int = self.userGame.incrementGamePlayerMovesMade()
         self.playPlacementSound(number: number)
         self.giveHint = false
         //
@@ -1349,7 +1349,7 @@ class ViewController: UIViewController {
         let number: Int = self.sudokuBoard.getNumberFromSolution(coord: optionsToRemove[posnToRemove])
         if self.sudokuBoard.setNumberOnGameBoard(coord: optionsToRemove[posnToRemove], number: number) {
             self.userSolution.addCoordinate(coord: optionsToRemove[posnToRemove])
-            self.userGame.incrementGamePlayerMovesMade()
+            let _: Int = self.userGame.incrementGamePlayerMovesMade()
             // do we need to make number 'inactive'?
             if self.sudokuBoard.isNumberFullyUsedInGame(number: number) == false {
                 self.setCoordToSelectImage(coord: optionsToRemove[posnToRemove], number: number)
@@ -1704,15 +1704,15 @@ class ViewController: UIViewController {
         return true
     }
     
-    func setUserUsedNumberCompletion(number: Int) -> Bool {
+    func setUserUsedNumberCompletion(number: Int) {
         let locations: [Coordinate] = self.sudokuBoard.getCorrectLocationsFromCompletedNumberOnGameBoard(number: number)
         if locations.isEmpty == true {
-            return false
+            return
         }
         for coord in locations {
             self.setCoordToInactiveImage(coord: coord, number: number)
         }
-        return true
+        return
     }
     
     //----------------------------------------------------------------------------

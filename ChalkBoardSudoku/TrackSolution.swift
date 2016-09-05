@@ -48,12 +48,12 @@ class TrackSolution: NSObject {
     //
     // only add the coord if in bounds of the board we're tracking, and it hasn't already been added
     //
-    func addCoordinate(coord: Coordinate) -> Int {
+    func addCoordinate(coord: Coordinate) {
         guard self.coordBoundsCheck(coord: coord) && self.getCoordinateIndex(coord: coord) == -1 else {
-            return -1
+            return
         }
         coords.append(coord)
-        return self.coords.count
+        return
     }
 
     func clearCoordinates() {
@@ -88,18 +88,17 @@ class TrackSolution: NSObject {
     //
     // remove the coord only if in bounds of the board and it's been stored previously
     //
-    func removeCoordinate(coord: Coordinate) -> Int {
+    func removeCoordinate(coord: Coordinate) {
         guard self.coordBoundsCheck(coord: coord) else {
-            return -1
+            return
         }
         for index: Int in 0 ..< self.countOfUserSolution() {
-            
             if self.coordinatesEqual(coord1: coord, coord2: coords[index]) {
                 coords.remove(at: index)
-                return self.coords.count
+                return
             }
         }
-        return -1
+        return
     }
     
 }

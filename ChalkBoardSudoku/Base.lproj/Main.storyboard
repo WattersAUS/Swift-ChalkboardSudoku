@@ -48,7 +48,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rBu-QR-pM5">
-                                <frame key="frameInset" minX="841" minY="582" width="121" height="55"/>
+                                <frame key="frameInset" minX="847" minY="585" width="109" height="46"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="ImageStart"/>
                                 <connections>
@@ -66,7 +66,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1043.75" y="166.9921875"/>
+            <point key="canvasLocation" x="-1044.8" y="166.41679160419793"/>
         </scene>
     </scenes>
     <resources>

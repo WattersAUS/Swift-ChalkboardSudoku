@@ -163,7 +163,7 @@ class SudokuGameBoard {
         //
         // passed all the validation, so add it. could still be a wrong move ofc
         //
-        self.gameBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
+        let _: Bool = self.gameBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
 
@@ -181,7 +181,7 @@ class SudokuGameBoard {
         if self.originBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
-        self.originBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
+        let _: Bool = self.originBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
 
@@ -207,7 +207,7 @@ class SudokuGameBoard {
         if self.solutionBoard[coord.row][coord.column].isNumberUsed(number: number) == true {
             return false
         }
-        self.solutionBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
+        let _: Bool = self.solutionBoard[coord.row][coord.column].setNumber(coord: coord.cell, number: number)
         return true
     }
     
@@ -556,7 +556,7 @@ class SudokuGameBoard {
             if allowedNums.count > 0 {
                 input[0].number = allowedNums[Int(arc4random_uniform(UInt32(allowedNums.count)))]
                 input[0].tried.append(input[0].number)
-                self.setNumberOnSolution(coord: input[0].location, number: input[0].number)
+                let _: Bool = self.setNumberOnSolution(coord: input[0].location, number: input[0].number)
                 output.insert(input[0], at: 0)
                 input.remove(at: 0)
                 return

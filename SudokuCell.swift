@@ -76,7 +76,7 @@ class SudokuCell: NumberGrid {
             return
         }
         self.resetNumberUsed(number: self.getNumber(coord: coord))
-        super.setNumber(coord: coord, number: 0)
+        let _: Bool = super.setNumber(coord: coord, number: 0)
         return
     }
     
@@ -198,7 +198,7 @@ class SudokuCell: NumberGrid {
     override public func copy(with zone: NSZone? = nil) -> Any {
         let copy = SudokuCell(size: self.getRows())
         for coord in copy.getCoords() {
-            copy.setNumber(coord: coord, number: self.getNumber(coord: coord))
+            let _: Bool = copy.setNumber(coord: coord, number: self.getNumber(coord: coord))
         }
         for index: Int in 0 ..< copy.used.count {
             copy.used[index] = self.used[index]
