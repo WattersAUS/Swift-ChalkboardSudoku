@@ -278,10 +278,10 @@ class ViewController: UIViewController {
     // sound handling
     //
     var createBoardSound: AVAudioPlayer!
-    var userPlacementSounds: [AVAudioPlayer?] = []
-    var userErrorSound: AVAudioPlayer!
-    var userRuboutSound: AVAudioPlayer!
-    var userVictorySound: AVAudioPlayer!
+    var placementSounds: [AVAudioPlayer?] = []
+    var errorSound:       AVAudioPlayer!
+    var ruboutSound:      AVAudioPlayer!
+    var victorySound:     AVAudioPlayer!
     
     //
     // prefs
@@ -359,7 +359,7 @@ class ViewController: UIViewController {
     func mapDifficulty(difficulty: Int) -> sudokuDifficulty {
         switch difficulty {
         case 1:
-            return(sudokuDifficulty.Easy)
+            return (sudokuDifficulty.Easy)
         case 2:
             return (sudokuDifficulty.Medium)
         case 3:
@@ -405,18 +405,18 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     func initialiseGameSounds() {
         self.createBoardSound = self.loadSound(soundName: "CreateBoard_001.aiff")
-        self.userErrorSound   = self.loadSound(soundName: "Mistake_001.aiff")
-        self.userRuboutSound  = self.loadSound(soundName: "RubOut_001.aiff")
-        self.userVictorySound = self.loadSound(soundName: "Triumph_001.aiff")
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_001.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_002.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_003.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_004.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_005.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_006.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_007.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_008.aiff"))
-        self.userPlacementSounds.append(self.loadSound(soundName: "Write_009.aiff"))
+        self.errorSound       = self.loadSound(soundName: "Mistake_001.aiff")
+        self.ruboutSound      = self.loadSound(soundName: "RubOut_001.aiff")
+        self.victorySound     = self.loadSound(soundName: "Triumph_001.aiff")
+        self.placementSounds.append(self.loadSound(soundName: "Write_001.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_002.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_003.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_004.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_005.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_006.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_007.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_008.aiff"))
+        self.placementSounds.append(self.loadSound(soundName: "Write_009.aiff"))
         return
     }
     
@@ -439,37 +439,37 @@ class ViewController: UIViewController {
     }
     
     func playErrorSound() {
-        guard self.userErrorSound != nil && self.userPrefs.soundOn == true else {
+        guard self.errorSound != nil && self.userPrefs.soundOn == true else {
             return
         }
-        self.userErrorSound.play()
+        self.errorSound.play()
         return
     }
     
     func playPlacementSound(number: Int) {
-        guard (self.userPlacementSounds.count) > 0 && (self.userPrefs.soundOn == true) && (1..<(self.userPlacementSounds.count + 1)) ~= number else {
+        guard (self.placementSounds.count) > 0 && (self.userPrefs.soundOn == true) && (1..<(self.placementSounds.count + 1)) ~= number else {
             return
         }
-        if self.userPlacementSounds[number - 1] == nil {
+        if self.placementSounds[number - 1] == nil {
             return
         }
-        self.userPlacementSounds[number - 1]?.play()
+        self.placementSounds[number - 1]?.play()
         return
     }
     
     func playRuboutSound() {
-        guard self.userRuboutSound != nil && self.userPrefs.soundOn == true else {
+        guard self.ruboutSound != nil && self.userPrefs.soundOn == true else {
             return
         }
-        self.userRuboutSound.play()
+        self.ruboutSound.play()
         return
     }
     
     func playVictorySound() {
-        guard self.userVictorySound != nil && self.userPrefs.soundOn == true else {
+        guard self.victorySound != nil && self.userPrefs.soundOn == true else {
             return
         }
-        self.userVictorySound.play()
+        self.victorySound.play()
         return
     }
     
@@ -519,17 +519,6 @@ class ViewController: UIViewController {
         let _: Int = self.userGame.incrementCurrentGameTimePlayed(increment: self.userGame.getGamePenaltyTime())
         let _: Int = self.userGame.incrementGamePenaltyTime(increment: self.userGame.incrementGamePenaltyIncrementTime(increment: 1))
         return
-    }
-    
-    
-    //----------------------------------------------------------------------------
-    // Generic coordinate equality test
-    //----------------------------------------------------------------------------
-    func coordinatesEqual(coord1: Coordinate, coord2: Coordinate) -> Bool {
-        guard coord1.row == coord2.row && coord1.column == coord2.column && coord1.cell.row == coord2.cell.row && coord1.cell.column == coord2.cell.column else {
-            return false
-        }
-        return true
     }
     
     //----------------------------------------------------------------------------
@@ -623,7 +612,6 @@ class ViewController: UIViewController {
         if sender.currentImage?.isEqual(self.startImage) == true {
             // load the game save, if in inprogress does the user want to carry on?
             sender.setImage(self.resetImage, for: UIControlState.normal)
-            //self.userGame.loadGame()
             if self.userGame.getGameInPlay() {
                 self.askUserToContinueGame()
                 return
@@ -1203,8 +1191,10 @@ class ViewController: UIViewController {
     // if the user selects the board first
     //
     func userSelectedBoardFirst(currentPosn: Coordinate, previousPosn: Coordinate) -> Coordinate {
+        //
         // if we've previously selected the same cell, if it was blank then remove the highlight otherwise revert to the original state
-        if self.coordinatesEqual(coord1: currentPosn, coord2: previousPosn) {
+        //
+        if currentPosn.isEqual(coord: previousPosn) {
             if self.sudokuBoard.isGameLocationUsed(coord: currentPosn) == false {
                 self.setCellToBlankImage(coord: currentPosn)
             } else {

@@ -22,6 +22,13 @@ struct Coordinate {
         self.cell.row    = cell.row
         self.cell.column = cell.column
     }
+    
+    func isEqual(coord: Coordinate) -> Bool {
+        guard self.row == coord.row && self.column == coord.column && self.cell.row == coord.cell.row && self.cell.column == coord.cell.column else {
+            return false
+        }
+        return true
+    }
 }
 
 //
@@ -36,19 +43,6 @@ struct BoardCell {
     var image:  imageStates  = imageStates.Blank
     var active: activeStates = activeStates.Blank
 }
-
-//struct GameHistory {
-//    var difficulty:        Int = 0
-//    var startedGames:      Int = 0
-//    var completedGames:    Int = 0
-//    var totalTimePlayed:   Int = 0
-//    var totalMovesMade:    Int = 0
-//    var totalMovesDeleted: Int = 0
-//    var highestScore:      Int = 0
-//    var lowestScore:       Int = 0
-//    var fastestGame:       Int = 0
-//    var slowestGame:       Int = 0
-//}
 
 struct GameState {
     //
