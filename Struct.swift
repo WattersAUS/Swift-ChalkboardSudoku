@@ -66,5 +66,9 @@ struct GameState {
     var gameCells:     [BoardCell] = []
     var originCells:   [BoardCell] = []
     var solutionCells: [BoardCell] = []
+    //
+    // and the control panel
+    //
+    var controlPanel:  [BoardCell] = []
 }
 

@@ -35,6 +35,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.currentGame.gameCells             = []
         self.currentGame.originCells           = []
         self.currentGame.solutionCells         = []
+        self.currentGame.controlPanel          = []
         self.gameSave                          = [:]
         self.updateGameSaveObjects()
         return
@@ -251,7 +252,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
         self.updateGameSaveValue(keyValue: saveGameDictionary.SolutionBoard.rawValue, value: cellArray)
         //
-        // finally handle the user score/moves (stored against difficulty)
+        // handle the user score/moves (stored against difficulty)
         //
         cellArray.removeAll()
         for history: GameHistory in self.currentGame.userHistory {
@@ -269,6 +270,14 @@ class GameStateHandler: NSObject, GameStateDelegate {
             ])
         }
         self.updateGameSaveValue(keyValue: saveGameDictionary.UserHistory.rawValue, value: cellArray)
+        //
+        // state of the control panel
+        //
+        cellArray.removeAll()
+        for cell: BoardCell in self.currentGame.controlPanel {
+            cellArray.append(self.convertCellEntry(cell: cell))
+        }
+        self.updateGameSaveValue(keyValue: saveGameDictionary.ControlPanel.rawValue, value: cellArray)
         return
     }
     
@@ -330,6 +339,10 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.currentGame.userHistory.removeAll()
         for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) as! [[String: Int]] {
             self.currentGame.userHistory.append(self.translateUserScoreFromDictionary(dictDiff: history))
+        }
+        self.currentGame.controlPanel.removeAll()
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.ControlPanel) as! [[String: Int]] {
+            self.currentGame.controlPanel.append(self.translateCellFromDictionary(dictCell: cell))
         }
         return
     }
@@ -538,6 +551,15 @@ class GameStateHandler: NSObject, GameStateDelegate {
     func setSolutionCells(cellArray: [BoardCell]) {
         self.currentGame.solutionCells.removeAll()
         self.currentGame.solutionCells.append(contentsOf: cellArray)
+        return
+    }
+    
+    //-------------------------------------------------------------------------------
+    // the control panel
+    //-------------------------------------------------------------------------------
+    func setControlPanel(cellArray: [BoardCell]) {
+        self.currentGame.controlPanel.removeAll()
+        self.currentGame.controlPanel.append(contentsOf: cellArray)
         return
     }
     

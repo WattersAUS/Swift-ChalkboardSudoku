@@ -342,9 +342,12 @@ class ViewController: UIViewController {
         //
         self.setupApplicationNotifications()
         //
-        // load up any saved game, but don't continue until user selects to start/reset the game
+        // load up any saved game, if we have one
         //
         self.userGame.loadGame()
+        if self.userGame.getGameInPlay() {
+            self.continueSavedGame()
+        }
         return
     }
     
@@ -382,6 +385,7 @@ class ViewController: UIViewController {
     
     func applicationToClose() {
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
+        self.userGame.setControlPanel(cellArray: self.getCurrentControlPanelState())
         self.userGame.saveGame()
         return
     }
@@ -396,6 +400,7 @@ class ViewController: UIViewController {
     func applicationMovingToBackground() {
         self.stopGameTimer()
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
+        self.userGame.setControlPanel(cellArray: self.getCurrentControlPanelState())
         self.userGame.saveGame()
         return
     }
@@ -558,14 +563,18 @@ class ViewController: UIViewController {
     //
     func continueSavedGame() {
         self.sudokuBoard.clear()
+        //
         // copy the saved boards into the sudokuBoard object
+        //
         for cell: BoardCell in self.userGame.currentGame.solutionCells {
             let _: Bool = self.sudokuBoard.setNumberOnSolution(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
         for cell: BoardCell in self.userGame.currentGame.originCells {
             let _: Bool = self.sudokuBoard.setNumberOnOriginBoard(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
+        //
         // now copy the game progress values on top of the origin, and dont forget the solution tracker
+        //
         self.sudokuBoard.initialiseGame()
         for cell: BoardCell in self.userGame.currentGame.gameCells {
             let coord: Coordinate = Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol))
@@ -574,6 +583,12 @@ class ViewController: UIViewController {
             self.userSolution.addCoordinate(coord: coord)
         }
         self.updateSudokuBoardDisplay()
+        //
+        // finally the state of the control panel
+        //
+        for cell: BoardCell in self.userGame.currentGame.controlPanel {
+            self.setControlPanelToImageValue(coord: (cell.row, cell.col), imageState: cell.image)
+        }
         self.startGameTimer()
         return
     }
@@ -1432,7 +1447,7 @@ class ViewController: UIViewController {
     }
     
     //----------------------------------------------------------------------------
-    // all image setting routines live here!
+    // all board image setting routines live here!
     //----------------------------------------------------------------------------
     func unsetDeleteNumbersOnBoard() {
         let locations: [Coordinate] = self.displayBoard.getLocationsOfImages(imageState: imageStates.Delete)
@@ -1500,7 +1515,7 @@ class ViewController: UIViewController {
     }
     
     //
-    // set space on board to cell having been 'touched', we use this when the user selectes the board cell first and not the control panel
+    // set space on board to cell having been 'touched', we use this when the user selects the board cell first and not the control panel
     //
     func setCoordToTouchedImage(coord: Coordinate) {
         self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.userSelectImage, imageState: imageStates.Origin)
@@ -1539,7 +1554,9 @@ class ViewController: UIViewController {
         return
     }
     
-    //
+    //----------------------------------------------------------------------------
+    // all control panel image setting routines live here!
+    //----------------------------------------------------------------------------
     // set numbers on the control panel to whatever 'state' is stored (used when we swap char sets)
     //
     func setControlPanelToCurrentImageValue(coord: (row: Int, column: Int)) {
@@ -1577,6 +1594,14 @@ class ViewController: UIViewController {
     //
     func setControlPanelToDeleteImageValue(coord: (row: Int, column: Int)) {
         self.controlPanelImages.setImage(coord: (coord), imageToSet: self.imageLibrary[imageStates.Delete.rawValue][self.userPrefs.characterSetInUse][(coord.row * 2) + coord.column], imageState: imageStates.Delete)
+        return
+    }
+
+    //
+    // set numbers to supplied 'state' (used on game reload)
+    //
+    func setControlPanelToImageValue(coord: (row: Int, column: Int), imageState: imageStates) {
+        self.controlPanelImages.setImage(coord: (coord), imageToSet: self.imageLibrary[imageState.rawValue][self.userPrefs.characterSetInUse][(coord.row * 2) + coord.column], imageState: imageState)
         return
     }
     
@@ -1658,6 +1683,27 @@ class ViewController: UIViewController {
         return cells
     }
 
+    //
+    // handle the control panel also
+    //
+    func getCurrentControlPanelState() -> [BoardCell] {
+        var cells: [BoardCell] = []
+        for y: Int in 0 ..< self.controlPanelImages.getRows() {
+            for x: Int in 0 ..< self.controlPanelImages.getColumns() {
+                var cell: BoardCell = BoardCell()
+                cell.row    = y
+                cell.col    = x
+                cell.crow   = 0
+                cell.ccol   = 0
+                cell.value  = (y * 2) + x + 1
+                cell.image  = self.controlPanelImages.getImageState(coord: (row: y, column: x))
+                cell.active = activeStates.Active
+                cells.append(cell)
+            }
+        }
+        return cells
+    }
+    
     //----------------------------------------------------------------------------
     // has the user completed a row, col, cell or even fully used a number
     //----------------------------------------------------------------------------

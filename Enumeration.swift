@@ -89,6 +89,7 @@ enum saveGameDictionary: String {
     case OriginBoard           = "ORIGINBOARD"
     case SolutionBoard         = "SOLUTIONBOARD"
     case UserHistory           = "USERHISTORY"
+    case ControlPanel          = "CONTROLPANEL"
 }
 
 //
