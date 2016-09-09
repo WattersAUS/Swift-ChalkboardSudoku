@@ -36,12 +36,9 @@ class ViewController: UIViewController {
     // the board to solve
     //
     var viewSudokuBoard: UIView!
+    @IBOutlet weak var userStartButton: UIButton!
     var sudokuBoard: SudokuGameBoard!
     var displayBoard: GameBoardImages!
-    //
-    // stores any user selected board position (if any, -1 if none)
-    //
-    var boardPosition: Coordinate = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
     
     //
     // user progress through puzzle
@@ -55,9 +52,10 @@ class ViewController: UIViewController {
     let kPanelMargin: CGFloat = 5
     var controlPanelImages: CellImages!
     //
-    // current crtl panel position (if any)
+    // stores ctrl panel and board posns if selected
     //
-    var controlPanelPosition: (row: Int, column: Int) = (-1, -1)
+    //var boardPosition: Coordinate = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
+    //var controlPanelPosition: (row: Int, column: Int) = (-1, -1)
     
     //
     // settings panel
@@ -314,7 +312,7 @@ class ViewController: UIViewController {
         //
         // Do any additional setup after loading the view, typically from a nib.
         //
-        self.applicationVersion = 300
+        self.applicationVersion = 100
         self.userPrefs = PreferencesHandler(redrawFunctions: [])
         self.userGame = GameStateHandler(applicationVersion: self.applicationVersion)
         self.sudokuBoard = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(difficulty: self.userPrefs.difficultySet))
@@ -342,11 +340,12 @@ class ViewController: UIViewController {
         //
         self.setupApplicationNotifications()
         //
-        // load up any saved game, if we have one
+        // load up any saved game, if we have one making sure we set the user Start button to 'Reset' if we have a game in progress
         //
         self.userGame.loadGame()
         if self.userGame.getGameInPlay() {
             self.continueSavedGame()
+            self.userStartButton.setImage(self.resetImage, for: UIControlState.normal)
         }
         return
     }
@@ -385,6 +384,7 @@ class ViewController: UIViewController {
     
     func applicationToClose() {
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
+        self.userGame.setOriginCells(cellArray: self.getCurrentOriginBoardState())
         self.userGame.setControlPanel(cellArray: self.getCurrentControlPanelState())
         self.userGame.saveGame()
         return
@@ -400,6 +400,7 @@ class ViewController: UIViewController {
     func applicationMovingToBackground() {
         self.stopGameTimer()
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
+        self.userGame.setOriginCells(cellArray: self.getCurrentOriginBoardState())
         self.userGame.setControlPanel(cellArray: self.getCurrentControlPanelState())
         self.userGame.saveGame()
         return
@@ -570,7 +571,9 @@ class ViewController: UIViewController {
             let _: Bool = self.sudokuBoard.setNumberOnSolution(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
         }
         for cell: BoardCell in self.userGame.currentGame.originCells {
+            let coord: Coordinate = Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol))
             let _: Bool = self.sudokuBoard.setNumberOnOriginBoard(coord: Coordinate(row: cell.row, column: cell.col, cell: (row: cell.crow, column: cell.ccol)), number: cell.value)
+            self.setCoordToStateImage(coord: coord, number: cell.value, imageState: cell.image)
         }
         //
         // now copy the game progress values on top of the origin, and dont forget the solution tracker
@@ -626,12 +629,12 @@ class ViewController: UIViewController {
         //
         if sender.currentImage?.isEqual(self.startImage) == true {
             // load the game save, if in inprogress does the user want to carry on?
-            sender.setImage(self.resetImage, for: UIControlState.normal)
-            if self.userGame.getGameInPlay() {
-                self.askUserToContinueGame()
-                return
-            }
+            //if self.userGame.getGameInPlay() {
+            //    self.askUserToContinueGame()
+            //    return
+            //}
             self.createNewBoard()
+            sender.setImage(self.resetImage, for: UIControlState.normal)
         } else {
             //
             // then we can:
@@ -827,13 +830,14 @@ class ViewController: UIViewController {
         if posn == (-1, -1) {
             return
         }
-        if self.boardPosition.row == -1 {
-            self.setControlPanelPosition(coord: self.userSelectedControlPanelFirst(currentPosn: posn, previousPosn: self.controlPanelPosition))
+        
+        if self.userGame.currentGame.boardPosn.row == -1 {
+            self.setControlPanelPosition(coord: self.userSelectedControlPanelFirst(currentPosn: posn, previousPosn: self.userGame.currentGame.controlPosn.posn))
         } else {
             //
             // user placing / removing is a one off deal, so reset positions when done
             //
-            if self.userSelectBoardBeforeControlPanel(currentPosn: posn, previousPosn: self.controlPanelPosition, boardPosn: self.boardPosition) == true {
+            if self.userSelectBoardBeforeControlPanel(currentPosn: posn, previousPosn: self.userGame.currentGame.controlPosn.posn, boardPosn: self.userGame.currentGame.boardPosn) == true {
                 self.resetBoardPosition()
             }
             self.resetControlPanelPosition()
@@ -1073,11 +1077,11 @@ class ViewController: UIViewController {
             return
         }
         // if there's no action to process from the control panel, store the board posn, highlight it and leave
-        if self.controlPanelPosition.row == -1 {
-            self.boardPosition = self.userSelectedBoardFirst(currentPosn: posn, previousPosn: self.boardPosition)
+        if self.userGame.currentGame.controlPosn.posn == (-1, -1) {
+            self.userGame.currentGame.boardPosn = self.userSelectedBoardFirst(currentPosn: posn, previousPosn: self.userGame.currentGame.boardPosn)
             return
         }
-        let index: Int = (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column
+        let index: Int = (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column
         let number: Int = self.sudokuBoard.getNumberFromGame(coord: posn)
         switch index {
         case 0..<9:
@@ -1180,8 +1184,8 @@ class ViewController: UIViewController {
         //
         // reset control panel if needed
         //
-        if self.controlPanelPosition.row != -1 {
-            self.resetControlPanelImage(index: (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column)
+        if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
+            self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
             self.resetControlPanelPosition()
         }
         //
@@ -1305,8 +1309,8 @@ class ViewController: UIViewController {
                     //
                     // need to clear any ctrl posn and board cells already highlighted
                     //
-                    if self.controlPanelPosition.row != -1 {
-                        self.resetControlPanelImage(index: (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column)
+                    if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
+                        self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
                     }
                     self.unsetSelectNumbersOnBoard()
                     self.unsetDeleteNumbersOnBoard()
@@ -1331,10 +1335,10 @@ class ViewController: UIViewController {
     //
     func addHintToBoard() -> Bool {
         var optionsToRemove: [Coordinate] = []
-        if self.controlPanelPosition.row == -1 {
+        if self.userGame.currentGame.controlPosn.posn == (-1, -1) {
             optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
         } else {
-            let index: Int = (self.controlPanelPosition.row * 2) + self.controlPanelPosition.column
+            let index: Int = (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column
             if index > 8 {
                 optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
             } else {
@@ -1616,13 +1620,13 @@ class ViewController: UIViewController {
         for coord in self.userSolution.getCoordinatesInSolution() {
             let number: Int = self.sudokuBoard.getNumberFromGame(coord: coord)
             var cell: BoardCell = BoardCell()
-            cell.row   = coord.row
-            cell.col   = coord.column
-            cell.crow  = coord.cell.row
-            cell.ccol  = coord.cell.column
-            cell.value = number
-            cell.image = self.displayBoard.getImageState(coord: coord)
-            cell.active = activeStates.Active
+            cell.row    = coord.row
+            cell.col    = coord.column
+            cell.crow   = coord.cell.row
+            cell.ccol   = coord.cell.column
+            cell.value  = number
+            cell.image  = self.displayBoard.getImageState(coord: coord)
+            cell.active = self.displayBoard.getActiveState(coord: coord)
             cells.append(cell)
         }
         return cells
@@ -1641,13 +1645,13 @@ class ViewController: UIViewController {
                         let number: Int = self.sudokuBoard.getNumberFromOrigin(coord: coord)
                         if number > 0 {
                             var cell: BoardCell = BoardCell()
-                            cell.row   = coord.row
-                            cell.col   = coord.column
-                            cell.crow  = coord.cell.row
-                            cell.ccol  = coord.cell.column
-                            cell.value = number
-                            cell.image = self.displayBoard.getImageState(coord: coord)
-                            cell.active = activeStates.Active
+                            cell.row    = coord.row
+                            cell.col    = coord.column
+                            cell.crow   = coord.cell.row
+                            cell.ccol   = coord.cell.column
+                            cell.value  = number
+                            cell.image  = self.displayBoard.getImageState(coord: coord)
+                            cell.active = self.displayBoard.getActiveState(coord: coord)
                             cells.append(cell)
                         }
                     }
@@ -1674,7 +1678,7 @@ class ViewController: UIViewController {
                         cell.ccol   = coord.cell.column
                         cell.value  = self.sudokuBoard.getNumberFromSolution(coord: coord)
                         cell.image  = self.displayBoard.getImageState(coord: coord)
-                        cell.active = activeStates.Active
+                        cell.active = self.displayBoard.getActiveState(coord: coord)
                         cells.append(cell)
                     }
                 }
@@ -1697,7 +1701,7 @@ class ViewController: UIViewController {
                 cell.ccol   = 0
                 cell.value  = (y * 2) + x + 1
                 cell.image  = self.controlPanelImages.getImageState(coord: (row: y, column: x))
-                cell.active = activeStates.Active
+                cell.active = self.controlPanelImages.getActiveState(coord: (row: y, column: x))
                 cells.append(cell)
             }
         }
@@ -1772,17 +1776,17 @@ class ViewController: UIViewController {
     }
     
     func setControlPanelPosition(coord: (row: Int, column: Int)) {
-        self.controlPanelPosition = coord
+        self.userGame.currentGame.controlPosn.posn = coord
         return
     }
     
     func resetControlPanelPosition() {
-        self.controlPanelPosition = (-1, -1)
+        self.userGame.currentGame.controlPosn.posn = (-1, -1)
         return
     }
 
     func resetBoardPosition() {
-        self.boardPosition = Coordinate(row: -1, column: -1, cell:(-1, -1))
+        self.userGame.currentGame.boardPosn = Coordinate(row: -1, column: -1, cell:(row: -1, column: -1))
         return
     }
     

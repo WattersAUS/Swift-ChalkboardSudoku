@@ -90,6 +90,8 @@ enum saveGameDictionary: String {
     case SolutionBoard         = "SOLUTIONBOARD"
     case UserHistory           = "USERHISTORY"
     case ControlPanel          = "CONTROLPANEL"
+    case ControlPosition       = "CONTROLPOSITION"
+    case BoardPosition         = "BOARDPOSITION"
 }
 
 //
@@ -104,6 +106,14 @@ enum cellDictionary: String {
     case image  = "image"
     case active = "active"
     case board  = "board"
+}
+
+//
+// define dictionary keys for position storage
+//
+enum posnDictionary: String {
+    case row    = "row"
+    case column = "column"
 }
 
 //

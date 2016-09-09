@@ -10,6 +10,7 @@
             <connections>
                 <outlet property="fastestTime" destination="Zbb-nZ-tEP" id="nJN-Fe-ghy"/>
                 <outlet property="slowestTime" destination="fBM-UU-SBj" id="plf-jC-yYS"/>
+                <outlet property="statsDescription" destination="jQI-3t-AMP" id="lNC-CH-KF1"/>
                 <outlet property="timePlayed" destination="DD5-ew-b9i" id="3tH-iA-YTP"/>
                 <outlet property="userCharacterSet" destination="can-bA-cdB" id="zeA-aY-5s1"/>
                 <outlet property="userDifficulty" destination="zyp-YS-ftl" id="G9q-8a-HkC"/>

@@ -9,12 +9,31 @@
 import Foundation
 
 //
+// user selected board/ctrl panel position
+//
+struct Position {
+    var posn: (row: Int, column: Int) = (-1, -1)
+    
+    init(row: Int, column: Int) {
+        self.posn.row    = row
+        self.posn.column = column
+    }
+
+    func isEqual(posn: Position) -> Bool {
+        guard self.posn.row == posn.posn.row && self.posn.column == posn.posn.column else {
+            return false
+        }
+        return true
+    }
+}
+
+//
 // coordinate system / how cell and user inaction position is mapped
 //
 struct Coordinate {
     var row:        Int = 0
     var column:     Int = 0
-    var cell:       (row: Int, column: Int) = (0,0)
+    var cell:       (row: Int, column: Int) = (0, 0)
     
     init(row: Int, column: Int, cell: (row: Int, column: Int)) {
         self.row         = row
@@ -70,5 +89,9 @@ struct GameState {
     // and the control panel
     //
     var controlPanel:  [BoardCell] = []
+    //
+    // and positions for board and ctrl panel
+    //
+    var controlPosn:     Position   = Position(row: -1, column: -1)
+    var boardPosn:       Coordinate = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
 }
-

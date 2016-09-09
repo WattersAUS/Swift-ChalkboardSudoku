@@ -23,6 +23,12 @@ class Preferences: UIViewController {
     @IBOutlet weak var userHints: UISwitch!
     
     //
+    // header for the stats section
+    //
+    
+    @IBOutlet weak var statsDescription: UILabel!
+    
+    //
     // now the game stats
     //
     @IBOutlet weak var timePlayed: UILabel!
@@ -53,6 +59,7 @@ class Preferences: UIViewController {
         //
         // now we can populate the display fields (this will change if the user selects another difficulty)
         //
+        self.statsDescription.text = self.updateStatsDescription(index: self.userDifficulty.selectedSegmentIndex + 1)
         if index != -1 {
             self.updateGameHistoryStats(index: index)
         }
@@ -97,6 +104,25 @@ class Preferences: UIViewController {
         }
         self.dismiss(animated: true, completion: nil)
         return
+    }
+    
+    private func updateStatsDescription(index: Int) -> String {
+        var descriptionText: String = ""
+        switch index {
+        case sudokuDifficulty.Easy.rawValue:
+            descriptionText = "Easy"
+            break
+        case sudokuDifficulty.Medium.rawValue:
+            descriptionText = "Medium"
+            break
+        case sudokuDifficulty.Hard.rawValue:
+            descriptionText = "Hard"
+            break
+        default:
+            descriptionText = "Unknown"
+            break
+        }
+        return "Game stats for " + descriptionText + "..."
     }
     
     private func findUserHistoryIndex() -> Int {

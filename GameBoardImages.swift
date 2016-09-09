@@ -89,6 +89,10 @@ class GameBoardImages {
         return
     }
     
+    func getActiveState(coord: Coordinate) -> activeStates {
+        return self.gameImages[coord.row][coord.column].getActiveState(coord: (coord.cell.row, coord.cell.column))
+    }
+    
     func setActiveStates(setState: activeStates) {
         for row: Int in 0 ..< self.size.rows {
             for column: Int in 0 ..< self.size.columns {

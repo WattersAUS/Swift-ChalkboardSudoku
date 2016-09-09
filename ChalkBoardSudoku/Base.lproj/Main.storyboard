@@ -62,6 +62,7 @@
                     <size key="freeformSize" width="1028" height="768"/>
                     <connections>
                         <outlet property="gameTimer" destination="Ncn-9c-TQH" id="tIp-gX-UtR"/>
+                        <outlet property="userStartButton" destination="rBu-QR-pM5" id="OcH-OM-W5d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

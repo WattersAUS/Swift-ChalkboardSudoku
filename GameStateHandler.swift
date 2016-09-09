@@ -36,6 +36,8 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.currentGame.originCells           = []
         self.currentGame.solutionCells         = []
         self.currentGame.controlPanel          = []
+        self.currentGame.boardPosn             = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
+        self.currentGame.controlPosn           = Position(row: -1, column: -1)
         self.gameSave                          = [:]
         self.updateGameSaveObjects()
         return
@@ -75,7 +77,53 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
         return cell
     }
+    
+    //-------------------------------------------------------------------------------
+    // for Position storage, generate the 'text' names for the JSON file
+    //-------------------------------------------------------------------------------
+    private func translatePositionFromDictionary(dictCell: [String: Int]) -> Position {
+        var posn: Position = Position(row: -1, column: -1)
+        for (key, value) in dictCell {
+            switch key {
+            case posnDictionary.row.rawValue:
+                posn.posn.row    = value
+                break
+            case posnDictionary.column.rawValue:
+                posn.posn.column = value
+                break
+            default:
+                break
+            }
+        }
+        return posn
+    }
 
+    //-------------------------------------------------------------------------------
+    // for Coordinate storage, generate the 'text' names for the JSON file
+    //-------------------------------------------------------------------------------
+    private func translateCoordinateFromDictionary(dictCell: [String: Int]) -> Coordinate {
+        var coord: Coordinate = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
+        for (key, value) in dictCell {
+            switch key {
+            case cellDictionary.row.rawValue:
+                coord.row         = value
+                break
+            case cellDictionary.col.rawValue:
+                coord.column      = value
+                break
+            case cellDictionary.crow.rawValue:
+                coord.cell.row    = value
+                break
+            case cellDictionary.ccol.rawValue:
+                coord.cell.column = value
+                break
+            default:
+                break
+            }
+        }
+        return coord
+    }
+    
     //-------------------------------------------------------------------------------
     // now for user history scores / moves etc
     //-------------------------------------------------------------------------------
@@ -278,6 +326,11 @@ class GameStateHandler: NSObject, GameStateDelegate {
             cellArray.append(self.convertCellEntry(cell: cell))
         }
         self.updateGameSaveValue(keyValue: saveGameDictionary.ControlPanel.rawValue, value: cellArray)
+        //
+        // positions for board and control panel
+        //
+        self.updateGameSaveValue(keyValue: saveGameDictionary.ControlPosition.rawValue, value: self.convertPositionEntry(posn: self.currentGame.controlPosn))
+        self.updateGameSaveValue(keyValue: saveGameDictionary.BoardPosition.rawValue,   value: self.convertCoordinateEntry(coord: self.currentGame.boardPosn))
         return
     }
     
@@ -286,10 +339,26 @@ class GameStateHandler: NSObject, GameStateDelegate {
         array[cellDictionary.row.rawValue]    = cell.row
         array[cellDictionary.col.rawValue]    = cell.col
         array[cellDictionary.crow.rawValue]   = cell.crow
-        array[cellDictionary.ccol.rawValue]  = cell.ccol
+        array[cellDictionary.ccol.rawValue]   = cell.ccol
         array[cellDictionary.value.rawValue]  = cell.value
         array[cellDictionary.image.rawValue]  = self.translateImageStateToInt(state: cell.image)
         array[cellDictionary.active.rawValue] = self.translateActiveStateToInt(state: cell.active)
+        return array
+    }
+    
+    func convertPositionEntry(posn: Position) -> [String: Int] {
+        var array: [String: Int] = [:]
+        array[posnDictionary.row.rawValue]    = posn.posn.row
+        array[posnDictionary.column.rawValue] = posn.posn.column
+        return array
+    }
+    
+    func convertCoordinateEntry(coord: Coordinate) -> [String: Int] {
+        var array: [String: Int] = [:]
+        array[cellDictionary.row.rawValue]  = coord.row
+        array[cellDictionary.col.rawValue]  = coord.column
+        array[cellDictionary.crow.rawValue] = coord.cell.row
+        array[cellDictionary.ccol.rawValue] = coord.cell.column
         return array
     }
     
@@ -316,34 +385,41 @@ class GameStateHandler: NSObject, GameStateDelegate {
         return
     }
     
+    private func updateGameSaveValue(keyValue: String, value: [String: Int]) {
+        self.gameSave[keyValue] = value as? AnyObject
+        return
+    }
+    
     func loadGameSaveObjects() {
-        self.currentGame.applicationVersion    = self.getGameStateValue(keyValue: saveGameDictionary.ApplicationVersion,    obj: self.currentGame.applicationVersion as AnyObject) as! Int
-        self.currentGame.gameInPlay            = self.getGameStateValue(keyValue: saveGameDictionary.GameInPlay,            obj: self.currentGame.gameInPlay as AnyObject) as! Bool
-        self.currentGame.penaltyValue          = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyValue,          obj: self.currentGame.penaltyValue as AnyObject) as! Int
-        self.currentGame.penaltyIncrementValue = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyIncrementValue, obj: self.currentGame.penaltyIncrementValue as AnyObject) as! Int
-        self.currentGame.currentGameTime       = self.getGameStateValue(keyValue: saveGameDictionary.CurrentGameTime,       obj: self.currentGame.currentGameTime as AnyObject)  as! Int
-        self.currentGame.gameMovesMade         = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesMade,         obj: self.currentGame.gameMovesMade as AnyObject) as! Int
-        self.currentGame.gameMovesDeleted      = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesDeleted,      obj: self.currentGame.gameMovesDeleted as AnyObject) as! Int
+        self.currentGame.applicationVersion    = self.getGameStateValue(keyValue: saveGameDictionary.ApplicationVersion)
+        self.currentGame.gameInPlay            = self.getGameStateValue(keyValue: saveGameDictionary.GameInPlay)
+        self.currentGame.penaltyValue          = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyValue)
+        self.currentGame.penaltyIncrementValue = self.getGameStateValue(keyValue: saveGameDictionary.PenaltyIncrementValue)
+        self.currentGame.currentGameTime       = self.getGameStateValue(keyValue: saveGameDictionary.CurrentGameTime)
+        self.currentGame.gameMovesMade         = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesMade)
+        self.currentGame.gameMovesDeleted      = self.getGameStateValue(keyValue: saveGameDictionary.GameMovesDeleted)
         self.currentGame.gameCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.GameBoard) as! [[String: Int]] {
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.GameBoard) {
             self.currentGame.gameCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.originCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.OriginBoard) as! [[String: Int]] {
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.OriginBoard) {
             self.currentGame.originCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.solutionCells.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.SolutionBoard) as! [[String: Int]] {
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.SolutionBoard) {
             self.currentGame.solutionCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.userHistory.removeAll()
-        for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) as! [[String: Int]] {
+        for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) {
             self.currentGame.userHistory.append(self.translateUserScoreFromDictionary(dictDiff: history))
         }
         self.currentGame.controlPanel.removeAll()
-        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.ControlPanel) as! [[String: Int]] {
+        for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.ControlPanel) {
             self.currentGame.controlPanel.append(self.translateCellFromDictionary(dictCell: cell))
         }
+        self.currentGame.controlPosn = self.translatePositionFromDictionary(dictCell: self.getGameStateValue(keyValue: saveGameDictionary.ControlPosition))
+        self.currentGame.boardPosn   = self.translateCoordinateFromDictionary(dictCell: self.getGameStateValue(keyValue: saveGameDictionary.BoardPosition))
         return
     }
     
@@ -354,28 +430,27 @@ class GameStateHandler: NSObject, GameStateDelegate {
     private func getGameStateValue(keyValue: saveGameDictionary) -> AnyObject {
         return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? ([] as AnyObject) : self.gameSave[keyValue.rawValue]!
     }
-    
-    private func getGameStateValue(keyValue: saveGameDictionary, obj: AnyObject) -> AnyObject {
-        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? self.defaultGameStateValue(obj: obj) : self.gameSave[keyValue.rawValue]!
-    }
-    
-    private func getValue(keyValue: saveGameDictionary) -> AnyObject {
-        return self.gameSave[keyValue.rawValue]!
-    }
-    
-    private func defaultGameStateValue(obj: AnyObject) -> AnyObject {
-        switch obj {
-        case is Bool:
-            return (false as AnyObject)
-        case is Int:
-            return (0 as AnyObject)
-        case is String:
-            return ("" as AnyObject)
-        default:
-            return ("" as AnyObject)
-        }
-    }
 
+    private func getGameStateValue(keyValue: saveGameDictionary) -> Bool {
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? false : self.gameSave[keyValue.rawValue] as! Bool
+    }
+    
+    private func getGameStateValue(keyValue: saveGameDictionary) -> Int {
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? 0 : self.gameSave[keyValue.rawValue] as! Int
+    }
+    
+    private func getGameStateValue(keyValue: saveGameDictionary) -> String {
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? "" : self.gameSave[keyValue.rawValue] as! String
+    }
+    
+    private func getGameStateValue(keyValue: saveGameDictionary) -> [String: Int] {
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? ([:]) : self.gameSave[keyValue.rawValue] as! [String : Int]
+    }
+    
+    private func getGameStateValue(keyValue: saveGameDictionary) -> [[String: Int]] {
+        return (self.gameSave.index(forKey: keyValue.rawValue) == nil) ? ([[:]]) : self.gameSave[keyValue.rawValue] as! [[String : Int]]
+    }
+    
     //-------------------------------------------------------------------------------
     // gets/sets if needed for the 'game'
     //-------------------------------------------------------------------------------
