@@ -81,7 +81,7 @@ class Preferences: UIViewController {
     }
     */
     
-    @IBAction func userSelectedDifficulty(_ sender: UISegmentedControl) {
+    @IBAction func userDifficultyValueChanged(_ sender: UISegmentedControl) {
         if prefs?.difficultyNew != self.userDifficulty.selectedSegmentIndex + 1 {
             prefs?.difficultyNew = self.userDifficulty.selectedSegmentIndex + 1
             self.updateGameHistoryStats(index: self.findUserHistoryIndex())

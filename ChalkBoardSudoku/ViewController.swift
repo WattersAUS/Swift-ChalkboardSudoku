@@ -14,7 +14,6 @@ class ViewController: UIViewController {
     var applicationVersion: Int = 100
     var debug: Int = 1
     var boardDimensions: Int = 3
-    //var gameDifficulty: Int = gameDiff.Medium.rawValue
     
     //
     // enum for subviews (internal to this ViewController only)
@@ -24,6 +23,11 @@ class ViewController: UIViewController {
         case controlPanel = 1
         case settingsPanel = 2
     }
+    
+    //
+    // the board backgournd graphic accessed here
+    //
+    @IBOutlet weak var boardBackground: UIImageView!
     
     //
     // defaults for positioning UIImageView components
@@ -310,6 +314,10 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         //
+        // first thing to do is load the correct background graphic
+        //
+        self.boardBackground.image = UIImage(named:"Background.iPad.png")!
+        //
         // Do any additional setup after loading the view, typically from a nib.
         //
         self.applicationVersion = 100
@@ -526,24 +534,10 @@ class ViewController: UIViewController {
         let _: Int = self.userGame.incrementGamePenaltyTime(increment: self.userGame.incrementGamePenaltyIncrementTime(increment: 1))
         return
     }
-    
+
     //----------------------------------------------------------------------------
-    // does the user want to continue their last game or not?
+    // start a new game for the user
     //----------------------------------------------------------------------------
-    func askUserToContinueGame() {
-        let alertController = UIAlertController(title: "Continue Game", message: "Do you want to continue playing the inprogress game?", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "No way, start again!", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
-            self.createNewBoard()
-        }
-        alertController.addAction(cancelAction)
-        let loadAction = UIAlertAction(title: "Yes, let's carry on!", style: .default) { (action:UIAlertAction!) in
-            self.continueSavedGame()
-        }
-        alertController.addAction(loadAction)
-        self.present(alertController, animated: true, completion:nil)
-        return
-    }
-    
     func createNewBoard() {
         self.resetControlPanelSelection()
         self.playCreateSound()
@@ -628,11 +622,6 @@ class ViewController: UIViewController {
         // if we have 'Start' button, build the board
         //
         if sender.currentImage?.isEqual(self.startImage) == true {
-            // load the game save, if in inprogress does the user want to carry on?
-            //if self.userGame.getGameInPlay() {
-            //    self.askUserToContinueGame()
-            //    return
-            //}
             self.createNewBoard()
             sender.setImage(self.resetImage, for: UIControlState.normal)
         } else {

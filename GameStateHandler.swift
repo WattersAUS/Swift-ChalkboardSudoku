@@ -31,7 +31,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.currentGame.currentGameTime       = 0
         self.currentGame.gameMovesMade         = 0
         self.currentGame.gameMovesDeleted      = 0
-        self.currentGame.userHistory           = []
+        self.currentGame.userHistory           = self.createBlankHistory()        
         self.currentGame.gameCells             = []
         self.currentGame.originCells           = []
         self.currentGame.solutionCells         = []
@@ -41,6 +41,14 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.gameSave                          = [:]
         self.updateGameSaveObjects()
         return
+    }
+    
+    private func createBlankHistory() -> [GameHistory] {
+        var array: [GameHistory] = []
+        array.append(GameHistory(difficulty: sudokuDifficulty.Easy))
+        array.append(GameHistory(difficulty: sudokuDifficulty.Medium))
+        array.append(GameHistory(difficulty: sudokuDifficulty.Hard))
+        return array
     }
 
     //-------------------------------------------------------------------------------
@@ -127,7 +135,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
     //-------------------------------------------------------------------------------
     // now for user history scores / moves etc
     //-------------------------------------------------------------------------------
-    private func translateUserScoreFromDictionary(dictDiff: [String: Int]) -> GameHistory {
+    private func translateUserHistoryFromDictionary(dictDiff: [String: Int]) -> GameHistory {
         var history: GameHistory!
         //
         // when we find the difficulty we can init the obj and then start to build it!
@@ -276,7 +284,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         self.updateGameSaveValue(keyValue: saveGameDictionary.GameMovesMade.rawValue,         value: self.currentGame.gameMovesMade)
         self.updateGameSaveValue(keyValue: saveGameDictionary.GameMovesDeleted.rawValue,      value: self.currentGame.gameMovesDeleted)
         //
-        // Game
+        // Game board
         //
         var cellArray: [[String: Int]] = []
         for cell: BoardCell in self.currentGame.gameCells {
@@ -300,7 +308,7 @@ class GameStateHandler: NSObject, GameStateDelegate {
         }
         self.updateGameSaveValue(keyValue: saveGameDictionary.SolutionBoard.rawValue, value: cellArray)
         //
-        // handle the user score/moves (stored against difficulty)
+        // handle the user score/moves (stored against difficulty ie easy/medium/hard)
         //
         cellArray.removeAll()
         for history: GameHistory in self.currentGame.userHistory {
@@ -410,16 +418,35 @@ class GameStateHandler: NSObject, GameStateDelegate {
         for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.SolutionBoard) {
             self.currentGame.solutionCells.append(self.translateCellFromDictionary(dictCell: cell))
         }
-        self.currentGame.userHistory.removeAll()
-        for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) {
-            self.currentGame.userHistory.append(self.translateUserScoreFromDictionary(dictDiff: history))
-        }
         self.currentGame.controlPanel.removeAll()
         for cell: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.ControlPanel) {
             self.currentGame.controlPanel.append(self.translateCellFromDictionary(dictCell: cell))
         }
         self.currentGame.controlPosn = self.translatePositionFromDictionary(dictCell: self.getGameStateValue(keyValue: saveGameDictionary.ControlPosition))
         self.currentGame.boardPosn   = self.translateCoordinateFromDictionary(dictCell: self.getGameStateValue(keyValue: saveGameDictionary.BoardPosition))
+        //
+        // for user history we already have objects in an array waiting, so they just need updating
+        //
+        for history: [String: Int] in self.getGameStateValue(keyValue: saveGameDictionary.UserHistory) {
+            self.updateUserHistoryObject(history: self.translateUserHistoryFromDictionary(dictDiff: history))
+        }
+        return
+    }
+    
+    private func updateUserHistoryObject(history: GameHistory) {
+        for i: GameHistory in self.currentGame.userHistory {
+            if i.getDifficulty() == history.getDifficulty() {
+                i.setStartedGames(games: history.getStartedGames())
+                i.setCompletedGames(games: history.getCompletedGames())
+                i.setTotalGameTimePlayed(time: history.getTotalTimePlayed())
+                i.setTotalPlayerMovesMade(moves: history.getTotalMovesMade())
+                i.setTotalPlayerMovesDeleted(moves: history.getTotalMovedDeleted())
+                let _: Bool = i.setHighestScore(score: history.getHighestScore())
+                let _: Bool = i.setLowestScore(score: history.getLowestScore())
+                let _: Bool = i.setFastestTime(newTime: history.getFastestGame())
+                let _: Bool = i.setSlowestTime(newTime: history.getSlowestGame())
+            }
+        }
         return
     }
     

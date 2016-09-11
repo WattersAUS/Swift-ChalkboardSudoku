@@ -2,7 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "BoardBackground.png",
+      "filename" : "Background.iPad.png",
       "scale" : "1x"
     },
     {

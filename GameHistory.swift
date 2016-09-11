@@ -190,7 +190,7 @@ class GameHistory {
     }
     
     func setFastestTime(newTime: Int) -> Bool {
-        if self.fastestGame == 0 || self.fastestGame < newTime {
+        if self.fastestGame == 0 || newTime < self.fastestGame {
             self.fastestGame = newTime
             return true
         }

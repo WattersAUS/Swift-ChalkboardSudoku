@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -13,7 +13,7 @@
                 <outlet property="statsDescription" destination="jQI-3t-AMP" id="lNC-CH-KF1"/>
                 <outlet property="timePlayed" destination="DD5-ew-b9i" id="3tH-iA-YTP"/>
                 <outlet property="userCharacterSet" destination="can-bA-cdB" id="zeA-aY-5s1"/>
-                <outlet property="userDifficulty" destination="zyp-YS-ftl" id="G9q-8a-HkC"/>
+                <outlet property="userDifficulty" destination="lmh-Gy-3LR" id="jr4-ZO-JNj"/>
                 <outlet property="userGames" destination="MzK-Hi-xLJ" id="ZUe-kC-3dR"/>
                 <outlet property="userHints" destination="zNG-60-9MY" id="4LH-cC-XPA"/>
                 <outlet property="userMoves" destination="Q7I-eO-YfJ" id="nXr-m3-HQ8"/>
@@ -40,19 +40,6 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zyp-YS-ftl">
-                    <frame key="frameInset" minX="119" minY="59" width="227" height="29"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <segments>
-                        <segment title="Easy"/>
-                        <segment title="Med"/>
-                        <segment title="Hard"/>
-                    </segments>
-                    <connections>
-                        <action selector="userChangedDifficulty:" destination="-1" eventType="primaryActionTriggered" id="QS9-qv-RaE"/>
-                        <action selector="userSelectedDifficulty:" destination="-1" eventType="valueChanged" id="V4l-Di-uW8"/>
-                    </connections>
-                </segmentedControl>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sound" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YxF-3h-3aV">
                     <frame key="frameInset" minX="35" minY="418" width="50" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -169,6 +156,18 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="lmh-Gy-3LR">
+                    <frame key="frameInset" minX="119" minY="59" width="227" height="29"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <segments>
+                        <segment title="Easy"/>
+                        <segment title="Medium"/>
+                        <segment title="Hard"/>
+                    </segments>
+                    <connections>
+                        <action selector="userDifficultyValueChanged:" destination="-1" eventType="valueChanged" id="RzI-7V-otk"/>
+                    </connections>
+                </segmentedControl>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
