@@ -18,7 +18,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1028" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BoardBackground" translatesAutoresizingMaskIntoConstraints="NO" id="q6L-Vq-ixF">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Background.iPad" translatesAutoresizingMaskIntoConstraints="NO" id="q6L-Vq-ixF">
                                 <frame key="frameInset" width="1028" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -72,7 +72,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BoardBackground" width="1024" height="768"/>
+        <image name="Background.iPad" width="1024" height="768"/>
         <image name="ImageHint" width="65" height="65"/>
         <image name="ImagePreferences" width="65" height="65"/>
         <image name="ImageStart" width="130" height="65"/>

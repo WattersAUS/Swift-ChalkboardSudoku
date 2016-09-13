@@ -23,10 +23,9 @@ class Preferences: UIViewController {
     @IBOutlet weak var userHints: UISwitch!
     
     //
-    // header for the stats section
+    // header for the stats section / and text if users changes difficulty
     //
-    
-    @IBOutlet weak var statsDescription: UILabel!
+    @IBOutlet weak var difficultyDescription: UILabel!
     
     //
     // now the game stats
@@ -59,8 +58,9 @@ class Preferences: UIViewController {
         //
         // now we can populate the display fields (this will change if the user selects another difficulty)
         //
-        self.statsDescription.text = self.updateStatsDescription(index: self.userDifficulty.selectedSegmentIndex + 1)
+        self.difficultyDescription.text = "..."
         if index != -1 {
+            self.updateStatsDescription(index: self.userDifficulty.selectedSegmentIndex + 1)
             self.updateGameHistoryStats(index: index)
         }
         return
@@ -84,6 +84,7 @@ class Preferences: UIViewController {
     @IBAction func userDifficultyValueChanged(_ sender: UISegmentedControl) {
         if prefs?.difficultyNew != self.userDifficulty.selectedSegmentIndex + 1 {
             prefs?.difficultyNew = self.userDifficulty.selectedSegmentIndex + 1
+            self.updateStatsDescription(index: self.userDifficulty.selectedSegmentIndex + 1)
             self.updateGameHistoryStats(index: self.findUserHistoryIndex())
         }
         return
@@ -106,7 +107,19 @@ class Preferences: UIViewController {
         return
     }
     
-    private func updateStatsDescription(index: Int) -> String {
+    private func findUserHistoryIndex() -> Int {
+        for i: Int in 0 ..< self.userHistory.count {
+            if (prefs?.difficultyNew)! == self.userHistory[i].getDifficulty().rawValue  {
+                return i
+            }
+        }
+        return -1
+    }
+    
+    private func updateStatsDescription(index: Int) {
+        guard (sudokuDifficulty.Easy.rawValue..<sudokuDifficulty.Hard.rawValue + 1) ~= index else {
+            return
+        }
         var descriptionText: String = ""
         switch index {
         case sudokuDifficulty.Easy.rawValue:
@@ -119,19 +132,12 @@ class Preferences: UIViewController {
             descriptionText = "Hard"
             break
         default:
-            descriptionText = "Unknown"
+            // never used due to guard, just here to keep the compiler warnings quiet
             break
         }
-        return "Game stats for " + descriptionText + "..."
-    }
-    
-    private func findUserHistoryIndex() -> Int {
-        for i: Int in 0 ..< self.userHistory.count {
-            if (prefs?.difficultyNew)! == self.userHistory[i].getDifficulty().rawValue  {
-                return i
-            }
-        }
-        return -1
+        let str: String  = "Game stats for " + descriptionText + "..."
+        self.difficultyDescription.text = str
+        return
     }
     
     private func updateGameHistoryStats(index: Int) {
