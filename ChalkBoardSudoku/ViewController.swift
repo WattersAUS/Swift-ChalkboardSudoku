@@ -25,16 +25,28 @@ class ViewController: UIViewController {
     }
     
     //
-    // the board backgournd graphic accessed here
+    // the board background graphic accessed here
     //
     @IBOutlet weak var boardBackground: UIImageView!
     
     //
-    // defaults for positioning UIImageView components
+    // defaults for positioning UIImageView components for main board
     //
-    let kMainViewMargin: CGFloat = 40.0
+    let kMainViewMargin:  CGFloat = 40.0
     let kCellWidthMargin: CGFloat = 9
     let kCellDepthMargin: CGFloat = 7
+
+    //
+    // control panel offsets
+    //
+    let ctrlOriginX:     CGFloat = 825
+    let ctrlOriginY:     CGFloat = 210
+    let ctrlFrameWidth:  CGFloat = 148
+    let ctrlFrameHeight: CGFloat = 360
+
+    let ctrlCellWidth: CGFloat = 65
+    let ctrlXOffset:   CGFloat = 18
+    let ctrlYOffset:   CGFloat = 8
     
     //
     // the board to solve
@@ -53,13 +65,7 @@ class ViewController: UIViewController {
     // the control panel
     //
     var viewControlPanel: UIView!
-    let kPanelMargin: CGFloat = 5
     var controlPanelImages: CellImages!
-    //
-    // stores ctrl panel and board posns if selected
-    //
-    //var boardPosition: Coordinate = Coordinate(row: -1, column: -1, cell: (row: -1, column: -1))
-    //var controlPanelPosition: (row: Int, column: Int) = (-1, -1)
     
     //
     // settings panel
@@ -321,12 +327,12 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         //
         self.applicationVersion = 100
-        self.userPrefs = PreferencesHandler(redrawFunctions: [])
-        self.userGame = GameStateHandler(applicationVersion: self.applicationVersion)
-        self.sudokuBoard = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(difficulty: self.userPrefs.difficultySet))
-        self.displayBoard = GameBoardImages(size: self.boardDimensions)
+        self.userPrefs          = PreferencesHandler(redrawFunctions: [])
+        self.userGame           = GameStateHandler(applicationVersion: self.applicationVersion)
+        self.sudokuBoard        = SudokuGameBoard(size: self.boardDimensions, difficulty: self.mapDifficulty(difficulty: self.userPrefs.difficultySet))
+        self.displayBoard       = GameBoardImages(size: self.boardDimensions)
         self.controlPanelImages = CellImages(size: (5, 2))
-        self.userSolution = TrackSolution(row: self.boardDimensions, column: self.boardDimensions, cellRow: self.boardDimensions, cellColumn: self.boardDimensions)
+        self.userSolution       = TrackSolution(row: self.boardDimensions, column: self.boardDimensions, cellRow: self.boardDimensions, cellColumn: self.boardDimensions)
         //
         // now setup displays
         //
@@ -348,7 +354,7 @@ class ViewController: UIViewController {
         //
         self.setupApplicationNotifications()
         //
-        // load up any saved game, if we have one making sure we set the user Start button to 'Reset' if we have a game in progress
+        // load up any saved game, making sure we set the user Start button to 'Reset' if we have a game in progress
         //
         self.userGame.loadGame()
         if self.userGame.getGameInPlay() {
@@ -766,11 +772,7 @@ class ViewController: UIViewController {
     // Handle the control panel display, setup event handler and detect taps in the board
     //------------------------------------------------------------------------------------
     func setupControlPanelDisplay() {
-        let originX: CGFloat = 825
-        let originY: CGFloat = 210
-        let frameWidth: CGFloat = 148
-        let frameHeight: CGFloat = 360
-        self.viewControlPanel = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
+        self.viewControlPanel = UIView(frame: CGRect(x: self.ctrlOriginX, y: ctrlOriginY, width: ctrlFrameWidth, height: ctrlFrameHeight))
         self.viewControlPanel.tag = subViewTags.controlPanel.rawValue
         self.view.addSubview(self.viewControlPanel)
         self.addImageViewsToControlPanelView()
@@ -782,20 +784,19 @@ class ViewController: UIViewController {
     // add the image containers to the control panel, set default image, state to 'default'
     //
     func addImageViewsToControlPanelView() {
-        let cellWidth: CGFloat = 65
         var yCoord: CGFloat = 0
         var i: Int = 0
         for row: Int in 0 ..< 5 {
             var xCoord: CGFloat = 0
             for column: Int in 0 ..< 2 {
-                self.controlPanelImages.contents[row][column].imageView.frame = CGRect(x: xCoord, y: yCoord, width: cellWidth, height: cellWidth)
+                self.controlPanelImages.contents[row][column].imageView.frame = CGRect(x: xCoord, y: yCoord, width: self.ctrlCellWidth, height: self.ctrlCellWidth)
                 self.controlPanelImages.contents[row][column].imageView.image = self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][i]
                 self.controlPanelImages.contents[row][column].imageState = imageStates.Origin
                 self.viewControlPanel.addSubview(self.controlPanelImages.contents[row][column].imageView)
-                xCoord += cellWidth + 18
+                xCoord += self.ctrlCellWidth + self.ctrlXOffset
                 i += 1
             }
-            yCoord += cellWidth + 8
+            yCoord += self.ctrlCellWidth + self.ctrlYOffset
         }
         return
     }
@@ -1191,7 +1192,7 @@ class ViewController: UIViewController {
     func placeUserHintOnBoard(location: Coordinate) {
         let number: Int = self.sudokuBoard.getNumberFromSolution(coord: location)
         //
-        // the user could have placed an incorrect number stopping the user selectioon from working. so warn them!
+        // the user could have placed an incorrect number stopping the placement ofa correct number from working. so warn them!
         //
         if self.sudokuBoard.setNumberOnGameBoard(coord: location, number: number) == false {
             self.playErrorSound()
