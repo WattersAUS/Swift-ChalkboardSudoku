@@ -1079,7 +1079,11 @@ class ViewController: UIViewController {
         // if we have an active Hint to place see if the board cell is clear and fill it!
         //
         if self.giveHint == true {
-            self.placeUserHintOnBoard(location: posn)
+            if self.sudokuBoard.isGameLocationUsed(coord: posn) == true {
+                self.playErrorSound()
+            } else {
+                self.placeUserHintOnBoard(location: posn)
+            }
             return
         }
         //
@@ -1186,8 +1190,17 @@ class ViewController: UIViewController {
     //
     func placeUserHintOnBoard(location: Coordinate) {
         let number: Int = self.sudokuBoard.getNumberFromSolution(coord: location)
-        if self.sudokuBoard.isGameLocationUsed(coord: location) == true || self.sudokuBoard.setNumberOnGameBoard(coord: location, number: number) == false {
+        //
+        // the user could have placed an incorrect number stopping the user selectioon from working. so warn them!
+        //
+        if self.sudokuBoard.setNumberOnGameBoard(coord: location, number: number) == false {
             self.playErrorSound()
+            let alertController = UIAlertController(title: "Hint Error", message: "I can't put the correct number there! An incorrectly placed number is stopping me", preferredStyle: .alert)
+            let warningAction = UIAlertAction(title: "Ok!", style: .default) { (action:UIAlertAction!) in
+                // just a warning message
+            }
+            alertController.addAction(warningAction)
+            self.present(alertController, animated: true, completion:nil)
             return
         }
         //
