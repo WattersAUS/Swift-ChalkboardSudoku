@@ -930,7 +930,7 @@ class ViewController: UIViewController {
             //
             // place the selected number on the board if we can put it there
             //
-            if self.sudokuBoard.isNumberValidOnGameBoard(coord: boardPosn, number: index + 1) == false {
+            if self.sudokuBoard.isNumberLegalOnGameBoard(coord: boardPosn, number: index + 1) == false {
                 self.playErrorSound()
                 return false
             }

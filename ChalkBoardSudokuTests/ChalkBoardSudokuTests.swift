@@ -442,6 +442,7 @@ class ChalkBoardSudokuTests: XCTestCase {
         // build a game
         //
         testBoard.generateSolution(difficulty: sudokuDifficulty.Medium)
+        let _: String = testBoard.printSudokuSolution()
 
         
 //        var coord: Coordinate = Coordinate(row: 0, column: 0, cell: (0, 0))

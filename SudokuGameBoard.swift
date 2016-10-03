@@ -23,10 +23,9 @@ class SudokuGameBoard {
     
     private var coordinates:   [(row: Int, column: Int)] = []
     private var size:          (rows: Int, columns: Int) = (0, 0)
-    private var stalls:        Int = 0
     
     //
-    // internal represnetaion of the game difficulty
+    // internal representation of the game difficulty
     //
     enum gameDifficulty: Int {
         case Easy   = 3
@@ -231,7 +230,7 @@ class SudokuGameBoard {
     //
     // can the number exist in this position in the game
     //
-    func isNumberValidOnGameBoard(coord: Coordinate, number: Int) -> Bool {
+    func isNumberLegalOnGameBoard(coord: Coordinate, number: Int) -> Bool {
         guard self.coordBoundsCheck(coord: coord) else {
             return false
         }
@@ -402,6 +401,17 @@ class SudokuGameBoard {
     }
     
     //
+    // empty locations on the gameBoard (used in hints)
+    //
+    func getFreeLocationsOnGameBoard() -> [Coordinate] {
+        var coords: [Coordinate] = []
+        for number: Int in 1 ..< (self.size.rows * self.size.columns) + 1 {
+            coords.append(contentsOf: self.getFreeNumberLocationsOnGameBoard(number: number))
+        }
+        return coords
+    }
+    
+    //
     // where the 'number' hasn't been used yet (used in hints)
     //
     func getFreeNumberLocationsOnGameBoard(number: Int) -> [Coordinate] {
@@ -413,17 +423,6 @@ class SudokuGameBoard {
                     coords.append(Coordinate(row: row, column: column, cell: (row: coord.row, column: coord.column)))
                 }
             }
-        }
-        return coords
-    }
-    
-    //
-    // empty locations on the gameBoard (used in hints)
-    //
-    func getFreeLocationsOnGameBoard() -> [Coordinate] {
-        var coords: [Coordinate] = []
-        for number: Int in 1 ..< (self.size.rows * self.size.columns) + 1 {
-            coords.append(contentsOf: self.getFreeNumberLocationsOnGameBoard(number: number))
         }
         return coords
     }
@@ -505,17 +504,6 @@ class SudokuGameBoard {
     //----------------------------------------------------------------------------
     // Build the Board
     //----------------------------------------------------------------------------
-    func generateSolution(difficulty: sudokuDifficulty) {
-        self.setDifficulty(difficulty: difficulty)
-        self.clear()
-        var start: [Placement] = getPlacementLocations()
-        var board: [Placement] = []
-        while start.count > 0 {
-            placeNumbers(input: &start, output: &board)
-        }
-        return
-    }
-    
     //
     // Build an array of places where we will place a number
     //
@@ -534,47 +522,200 @@ class SudokuGameBoard {
     }
     
     //
+    // we need an array of adjacent numbers for a transposition check against the Placement location
+    //
+    // except when the Placement position is:
+    //
+    //  1. In the first cell
+    //  2. In the first cell row of the first row
+    //  3. In the first cell col of the first col
+    //  4. The first location of any cell i.e (0,0)
+    //
+    func getAdjacentNumberPlacements(origin: Placement) -> [Adjacent] {
+        var adjacent: [Adjacent] = []
+        if origin.location.row == 0 && origin.location.cell.row == 0 {
+            return adjacent
+        }
+        if origin.location.column == 0 && origin.location.cell.column == 0 {
+            return adjacent
+        }
+        if origin.location.row == 0 && origin.location.column == 0 {
+            return adjacent
+        }
+        if origin.location.cell.row == 0 && origin.location.cell.column == 0 {
+            return adjacent
+        }
+        //
+        // get adjacent columns but only if we are not on the first row of cells
+        //
+        if origin.location.column > 0 {
+            for i: Int in 0 ..< origin.location.cell.row {
+                let coord: Coordinate = Coordinate(row: origin.location.row, column: origin.location.column, cell: (row: i, column: origin.location.cell.column))
+                let number: Int = self.getNumberFromSolution(coord: coord)
+                if number > 0 {
+                    adjacent.append(Adjacent(coord: coord, number: number, axis: axis.column))
+                }
+            }
+        }
+        //
+        // same for rows, only interested if we are beyond the initial column of cells
+        //
+        if origin.location.row > 0 {
+            for i: Int in 0 ..< origin.location.cell.column {
+                let coord: Coordinate = Coordinate(row: origin.location.row, column: origin.location.column, cell: (row: origin.location.cell.row, column: i))
+                let number: Int = self.getNumberFromSolution(coord: coord)
+                if number > 0 {
+                    adjacent.append(Adjacent(coord: coord, number: number, axis: axis.row))
+                }
+            }
+        }
+        return adjacent
+    }
+    
+    //
+    // from the adjacent Placements and a possible number to place, check if the number breaks the transposition rule
+    //
+    func isTranspositionRuleOk(input: Placement, number: Int, adjacent: [Adjacent]) -> Bool {
+        guard adjacent.count > 0 else {
+            return true
+        }
+        //
+        // iterate around number of possible transpositions and if we find one exit
+        //
+        //  1. the direction we test depends on the positioning of the adjacent number to the proposed number to be placed
+        //  2. we move cell by cell
+        //  3. should never fail to find a number, either proposed or adjacent but test anyway
+        //
+        for i: Int in 0 ..< adjacent.count {
+            if adjacent[i].axis == axis.column {
+                for x: Int in 0 ..< adjacent[i].location.column {
+                    let proposedNum: (row: Int, column: Int) = self.solutionBoard[adjacent[i].location.row][x].getLocationOfNumber(number: number)
+                    if proposedNum.row != -1 {
+                        let adjacentNum: (row: Int, column: Int) = self.solutionBoard[adjacent[i].location.row][x].getLocationOfNumber(number: adjacent[i].number)
+                        if adjacentNum.row != -1 {
+                            //
+                            // numbers should exist in the same column in the cell we're testing
+                            // but reversed rows compared to the input and adjacent positions
+                            //
+                            if adjacentNum.column == proposedNum.column && input.location.cell.row == adjacentNum.row && adjacent[i].location.cell.row == proposedNum.row {
+                                return false
+                            }
+                        }
+                    }
+                }
+            } else {
+                for y: Int in 0 ..< adjacent[i].location.row {
+                    let proposedNum: (row: Int, column: Int) = self.solutionBoard[y][adjacent[i].location.column].getLocationOfNumber(number: number)
+                    if proposedNum.row != -1 {
+                        let adjacentNum: (row: Int, column: Int) = self.solutionBoard[y][adjacent[i].location.column].getLocationOfNumber(number: adjacent[i].number)
+                        if adjacentNum.row != -1 {
+                            //
+                            // numbers should exist in the same row in the cell we're testing
+                            // but reversed coilumns compared to the input and adjacent positions
+                            //
+                            if adjacentNum.row == proposedNum.row && input.location.cell.column == adjacentNum.column && adjacent[i].location.cell.column == proposedNum.column {
+                                return false
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true
+    }
+    
+    func rewindSolution(input: inout [Placement], output: inout [Placement]) {
+        input[0].tried = []
+        self.clearNumberFromSolution(coord: Coordinate(row: output[0].location.row, column: output[0].location.column, cell: (output[0].location.cell)))
+        output[0].number = 0
+        input.insert(output[0], at: 0)
+        output.remove(at: 0)
+        return
+    }
+    
+    //
     // work through the placements row/column cell/row/column in turn
     //
-    func placeNumbers( input: inout [Placement], output: inout [Placement]) {
+    func placeNumbers(input: inout [Placement], output: inout [Placement], rewind: inout Int, reset: inout Int) {
         guard input.count > 0 else {
             return
         }
         while true {
+            //
+            // using the list of used / excluded numbers, build a list of possibles for that posn
+            //
+            var possibleNums: [Int] = []
             var numberUsage: [Bool] = self.solutionBoard[input[0].location.row][input[0].location.column].getNumberUsage()
-            var allowedNums: [Int] = []
             for i: Int in 0 ..< numberUsage.count {
                 if numberUsage[i] == false {
-                    if self.isNumberLegalOnBoard(in: self.solutionBoard, coord: input[0].location, number: i + 1) && input[0].tried.contains(i + 1) == false {
-                        allowedNums.append(i + 1)
+                    if input[0].tried.contains(i + 1) == false {
+                        possibleNums.append(i + 1)
                     }
                 }
             }
             //
-            // if we have a number to try, do it. remembering the number we place in case we need to rewind and exclude it from the position
+            // get the adjacent numbers to this location (used for the transposition check)
             //
-            if allowedNums.count > 0 {
-                input[0].number = allowedNums[Int(arc4random_uniform(UInt32(allowedNums.count)))]
-                input[0].tried.append(input[0].number)
-                let _: Bool = self.setNumberOnSolution(coord: input[0].location, number: input[0].number)
-                output.insert(input[0], at: 0)
-                input.remove(at: 0)
-                return
+            let adjNumbers: [Adjacent] = self.getAdjacentNumberPlacements(origin: input[0])
+            //
+            // see if one of the possibles can be placed
+            //
+            while possibleNums.count > 0 {
+                let index: Int  = Int(arc4random_uniform(UInt32(possibleNums.count)))
+                let number: Int = possibleNums[index]
+                input[0].tried.append(number)
+                if self.isNumberLegalOnBoard(in: self.solutionBoard, coord: input[0].location, number: number) {
+                    if self.isTranspositionRuleOk(input: input[0], number: number, adjacent: adjNumbers) == true {
+                        input[0].number = number
+                        let _: Bool = self.setNumberOnSolution(coord: input[0].location, number: number)
+                        output.insert(input[0], at: 0)
+                        input.remove(at: 0)
+                        return
+                    }
+                }
+                possibleNums.remove(at: index)
             }
             //
-            // failed to find a number to place, so rewind the solution one place and try again
+            // failed to place one of the numbers, so rewind the solution one place and try again
             //
-            input[0].tried = []
-            self.clearNumberFromSolution(coord: Coordinate(row: output[0].location.row, column: output[0].location.column, cell: (output[0].location.cell)))
-            output[0].number = 0
-            input.insert(output[0], at: 0)
-            output.remove(at: 0)
+            rewind = rewind + 1
+            //
+            // if we've repeatedly rewound then brute force the puzzle back to just after the first cell and try again
+            //
+            if rewind < 1250 {
+                self.rewindSolution(input: &input, output: &output)
+            } else {
+                rewind = 0
+                reset = reset + 1
+                while (output.count > (self.size.rows * self.size.columns)) {
+                    self.rewindSolution(input: &input, output: &output)
+                }
+            }
         }
     }
+    
+    func generateSolution(difficulty: sudokuDifficulty) {
+        self.setDifficulty(difficulty: difficulty)
+        self.clear()
+        var start:  [Placement] = getPlacementLocations()
+        var board:  [Placement] = []
+        let stime:  CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
+        var stall: Int = 0
+        var times: Int = 0
+        while start.count > 0 {
+            placeNumbers(input: &start, output: &board, rewind: &stall, reset: &times)
+        }
+        let elapsed: CFAbsoluteTime = CFAbsoluteTimeGetCurrent() - stime
+        print("CBS: \(elapsed) seconds passed during the board generation, this included \(times) resets...")
+        return
+    }
 
+    //----------------------------------------------------------------------------
+    // Build the Board
+    //----------------------------------------------------------------------------
     func printSudokuSolution() -> String {
         guard self.isBoardCompleted(in: self.solutionBoard) == true else {
-            return "Solution board is not completed"
+            return "ChalkBoardSudoku: Solution board is not completed"
         }
         var dumpOfBoard: String = ""
         for row: Int in 0 ..< self.size.rows {
