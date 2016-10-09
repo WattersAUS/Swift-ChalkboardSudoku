@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -18,52 +18,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="1028" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Background.iPad" translatesAutoresizingMaskIntoConstraints="NO" id="q6L-Vq-ixF">
-                                <frame key="frameInset" width="1028" height="768"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="00:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ncn-9c-TQH" userLabel="GameTimer">
-                                <frame key="frameInset" minX="834" minY="150" width="134" height="47"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Chalkduster" family="Chalkduster" pointSize="36"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="highlightedColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="shadowColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <size key="shadowOffset" width="4" height="4"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RYr-It-6ee">
-                                <frame key="frameInset" minX="841" minY="681" width="47" height="43"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="ImageHint"/>
-                                <connections>
-                                    <action selector="hintButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lZq-Rh-lav"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cou-S2-XIy">
-                                <frame key="frameInset" minX="925" minY="681" width="46" height="43"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="ImagePreferences"/>
-                                <connections>
-                                    <action selector="preferencesButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FlL-Id-CuZ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rBu-QR-pM5">
-                                <frame key="frameInset" minX="847" minY="585" width="109" height="46"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="ImageStart"/>
-                                <connections>
-                                    <action selector="startButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="GkE-SN-Gao"/>
-                                </connections>
-                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background.iPad" translatesAutoresizingMaskIntoConstraints="NO" id="q6L-Vq-ixF"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="q6L-Vq-ixF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="6dn-b3-CcC"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="q6L-Vq-ixF" secondAttribute="bottom" id="7Vy-6e-Qoz"/>
+                            <constraint firstAttribute="trailing" secondItem="q6L-Vq-ixF" secondAttribute="trailing" id="8Fz-R9-xcH"/>
+                            <constraint firstItem="q6L-Vq-ixF" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="AY9-t6-rue"/>
+                            <constraint firstAttribute="trailing" secondItem="q6L-Vq-ixF" secondAttribute="trailing" id="BCR-XJ-s68"/>
+                            <constraint firstItem="q6L-Vq-ixF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="NXi-Js-i3a"/>
+                            <constraint firstItem="q6L-Vq-ixF" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="hwQ-Mj-kQa"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="q6L-Vq-ixF" secondAttribute="bottom" id="wt3-5d-dJq"/>
+                        </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="1028" height="768"/>
                     <connections>
                         <outlet property="boardBackground" destination="q6L-Vq-ixF" id="5Rk-Ai-Nbp"/>
-                        <outlet property="gameTimer" destination="Ncn-9c-TQH" id="tIp-gX-UtR"/>
-                        <outlet property="userStartButton" destination="rBu-QR-pM5" id="OcH-OM-W5d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -73,8 +45,5 @@
     </scenes>
     <resources>
         <image name="Background.iPad" width="1024" height="768"/>
-        <image name="ImageHint" width="65" height="65"/>
-        <image name="ImagePreferences" width="65" height="65"/>
-        <image name="ImageStart" width="130" height="65"/>
     </resources>
 </document>

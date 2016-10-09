@@ -30,29 +30,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var boardBackground: UIImageView!
     
     //
-    // defaults for positioning UIImageView components for main board
-    //
-    let kMainViewMargin:  CGFloat = 40.0
-    let kCellWidthMargin: CGFloat = 9
-    let kCellDepthMargin: CGFloat = 7
-
-    //
-    // control panel offsets
-    //
-    let ctrlOriginX:     CGFloat = 825
-    let ctrlOriginY:     CGFloat = 210
-    let ctrlFrameWidth:  CGFloat = 148
-    let ctrlFrameHeight: CGFloat = 360
-
-    let ctrlCellWidth: CGFloat = 65
-    let ctrlXOffset:   CGFloat = 18
-    let ctrlYOffset:   CGFloat = 8
-    
-    //
     // the board to solve
     //
     var viewSudokuBoard: UIView!
-    @IBOutlet weak var userStartButton: UIButton!
     var sudokuBoard: SudokuGameBoard!
     var displayBoard: GameBoardImages!
     
@@ -70,22 +50,20 @@ class ViewController: UIViewController {
     //
     // settings panel
     //
-    var viewSettings: UIView!
+    //var viewSettings: UIView!
     
     //
-    // images that will be swapped on starting/reseting board
+    // images used in default buttons
     //
     var startImage: UIImage = UIImage(named:"ImageStart.png")!
     var resetImage: UIImage = UIImage(named:"ImageReset.png")!
+    var prefsImage: UIImage = UIImage(named:"ImagePreferences.png")!
+    var hintsImage: UIImage = UIImage(named:"ImageHint.png")!
+    
     //
     // user selects board position
     //
     var userSelectImage: UIImage = UIImage(named:"UserSelect.png")!
-    
-    //
-    // app settings dialog
-    //
-    var preferencesImage: UIImage = UIImage(named:"ImagePreferences.png")!
     
     //
     // image library referenced [state][image set][number]
@@ -304,9 +282,9 @@ class ViewController: UIViewController {
     //
     // timer display and storage for counter etc
     //
-    @IBOutlet weak var gameTimer: UILabel!
-    var timer: Timer!
-    var timerActive: Bool!
+    var gameTimer:    UILabel!
+    var timer:        Timer!
+    var timerActive:  Bool!
     var timerDisplay: Bool!
     
     //
@@ -322,7 +300,7 @@ class ViewController: UIViewController {
         //
         // first thing to do is load the correct background graphic
         //
-        self.boardBackground.image = UIImage(named:"Background.iPad.png")!
+        //self.boardBackground.image = UIImage(named:"Background.iPad.png")!
         //
         // Do any additional setup after loading the view, typically from a nib.
         //
@@ -338,6 +316,8 @@ class ViewController: UIViewController {
         //
         self.setupSudokuBoardDisplay()
         self.setupControlPanelDisplay()
+        self.setupGameButtons()
+        self.setupGameTimerLabel()
         //
         // setup the timer but dont let game time start yet (not in a game yet)
         //
@@ -359,7 +339,6 @@ class ViewController: UIViewController {
         self.userGame.loadGame()
         if self.userGame.getGameInPlay() {
             self.continueSavedGame()
-            self.userStartButton.setImage(self.resetImage, for: UIControlState.normal)
         }
         return
     }
@@ -629,43 +608,6 @@ class ViewController: UIViewController {
         return
     }
 
-    //----------------------------------------------------------------------------
-    // user presses the 'Start' or 'Reset' button
-    //----------------------------------------------------------------------------
-    @IBAction func startButtonPressed(_ sender: UIButton) {
-        //
-        // if we have 'Start' button, build the board
-        //
-        if sender.currentImage?.isEqual(self.startImage) == true {
-            self.createNewBoard()
-            sender.setImage(self.resetImage, for: UIControlState.normal)
-        } else {
-            //
-            // then we can:
-            //
-            //      1. cancel and forget the user asked to reset
-            //      2. go back to the start of the current game
-            //      3. restart the game
-            //
-            let alertController = UIAlertController(title: "Reset Options", message: "So you want to reset the puzzle?", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
-                // nothing to do here, user bailed on reseting the game
-            }
-            alertController.addAction(cancelAction)
-            let resetAction = UIAlertAction(title: "Restart this puzzle!", style: .default) { (action:UIAlertAction!) in
-                self.resetControlPanelSelection()
-                self.finalPreparationForGameStart()
-            }
-            alertController.addAction(resetAction)
-            let restartAction = UIAlertAction(title: "New Puzzle!", style: .default) { (action:UIAlertAction!) in
-                self.createNewBoard()
-            }
-            alertController.addAction(restartAction)
-            self.present(alertController, animated: true, completion:nil)
-        }
-        return
-    }
-    
     //
     // standard prep and setup for final game start/re-start
     //
@@ -772,34 +714,49 @@ class ViewController: UIViewController {
     // Handle the control panel display, setup event handler and detect taps in the board
     //------------------------------------------------------------------------------------
     func setupControlPanelDisplay() {
-        self.viewControlPanel = UIView(frame: CGRect(x: self.ctrlOriginX, y: ctrlOriginY, width: ctrlFrameWidth, height: ctrlFrameHeight))
+        //
+        // control panel offsets (iPad)
+        //
+        var originX:     CGFloat
+        var originY:     CGFloat
+        var frameWidth:  CGFloat
+        var frameHeight: CGFloat
+        var offsetX:     CGFloat
+        var offsetY:     CGFloat
+
+        //
+        // iPad Pro (frame width = 1366)
+        //
+        if self.view.frame.width > 1024 {
+            originX     = 1100
+            originY     = 286.6
+            frameWidth  = 197.3
+            frameHeight = 460
+            offsetX     = 15
+            offsetY     = 10
+        } else {
+            originX     = 825
+            originY     = 215
+            frameWidth  = 148
+            frameHeight = 350
+            offsetX     = 15
+            offsetY     = 6
+        }
+        
+        self.viewControlPanel = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
         self.viewControlPanel.tag = subViewTags.controlPanel.rawValue
         self.view.addSubview(self.viewControlPanel)
-        self.addImageViewsToControlPanelView()
+        let ctrlPanel: Panel = Panel(hostFrame: self.viewControlPanel.frame, xOrigin: 0, yOrigin: 0, xMargin: offsetX, yMargin: offsetY, rows: 5, columns: 2)
+        for image: ImagePosition in ctrlPanel.imageDetails {
+            self.controlPanelImages.contents[image.coord.row][image.coord.column].imageView.frame = image.image
+            self.controlPanelImages.contents[image.coord.row][image.coord.column].imageView.image = self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][(image.coord.row * 2) + image.coord.column]
+            self.controlPanelImages.contents[image.coord.row][image.coord.column].imageState      = imageStates.Origin
+            self.viewControlPanel.addSubview(self.controlPanelImages.contents[image.coord.row][image.coord.column].imageView)
+        }
         self.initialiseControlPanelUIViewToAcceptTouch(view: self.viewControlPanel)
         return
     }
     
-    //
-    // add the image containers to the control panel, set default image, state to 'default'
-    //
-    func addImageViewsToControlPanelView() {
-        var yCoord: CGFloat = 0
-        var i: Int = 0
-        for row: Int in 0 ..< 5 {
-            var xCoord: CGFloat = 0
-            for column: Int in 0 ..< 2 {
-                self.controlPanelImages.contents[row][column].imageView.frame = CGRect(x: xCoord, y: yCoord, width: self.ctrlCellWidth, height: self.ctrlCellWidth)
-                self.controlPanelImages.contents[row][column].imageView.image = self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][i]
-                self.controlPanelImages.contents[row][column].imageState = imageStates.Origin
-                self.viewControlPanel.addSubview(self.controlPanelImages.contents[row][column].imageView)
-                xCoord += self.ctrlCellWidth + self.ctrlXOffset
-                i += 1
-            }
-            yCoord += self.ctrlCellWidth + self.ctrlYOffset
-        }
-        return
-    }
     
     //
     // sets up and allows touches to be detected on SudokuBoard view only
@@ -853,6 +810,259 @@ class ViewController: UIViewController {
             }
         }
         return(-1, -1)
+    }
+    
+    //----------------------------------------------------------------------------
+    // setup the game buttons that user interacts with
+    //----------------------------------------------------------------------------
+    func setupGameButtons() {
+        //
+        // button for prefs dialog
+        //
+        let prefsButton: UIButton = UIButton()
+        if self.view.frame.width > 1024 {
+            prefsButton.frame = CGRect(x: 1233, y: 908, width: 61, height: 61)
+        } else {
+            prefsButton.frame = CGRect(x: 925, y: 681, width: 46, height: 46)
+        }
+        prefsButton.setImage(self.prefsImage, for: UIControlState.normal)
+        prefsButton.addTarget(self, action: #selector(ViewController.preferencesButtonUsed(_:)), for: .touchUpInside)
+        self.view.addSubview(prefsButton)
+        //
+        // hints button
+        //
+        let hintsButton: UIButton = UIButton()
+        if self.view.frame.width > 1024 {
+            hintsButton.frame = CGRect(x: 1121, y: 908, width: 61, height: 61)
+        } else {
+            hintsButton.frame = CGRect(x: 841, y: 681, width: 46, height: 46)
+        }
+        hintsButton.setImage(self.hintsImage, for: UIControlState.normal)
+        hintsButton.addTarget(self, action: #selector(ViewController.hintButtonUsed(_:)), for: .touchUpInside)
+        self.view.addSubview(hintsButton)
+        //
+        // start button
+        //
+        let startButton: UIButton = UIButton()
+        if self.view.frame.width > 1024 {
+            startButton.frame = CGRect(x: 1129, y: 780, width: 145, height: 61)
+        } else {
+            startButton.frame = CGRect(x: 847, y: 585, width: 109, height: 46)
+        }
+        startButton.setImage(self.startImage, for: UIControlState.normal)
+        startButton.addTarget(self, action: #selector(ViewController.startButtonUsed(_:)), for: .touchUpInside)
+        self.view.addSubview(startButton)
+        return
+    }
+    
+    //
+    // what happens when we use the prefs button
+    //
+    func preferencesButtonUsed(_ sender: UIButton) {
+        // first save the current preferences
+        let pViewController: Preferences = Preferences()
+        pViewController.modalPresentationStyle = UIModalPresentationStyle.popover
+        pViewController.prefs = self.userPrefs
+        pViewController.state = self.userGame
+        self.present(pViewController, animated: true, completion: nil)
+        let popoverController = pViewController.popoverPresentationController
+        popoverController?.sourceView = sender
+        return
+    }
+
+    //
+    // a bit more can happen when the hints button is used (but only if the hints are turned on in the prefs panel)
+    //
+    func hintButtonUsed(_ sender: UIButton) {
+        var alertController: UIAlertController!
+        if self.userGame.getGameInPlay() == false {
+            self.playErrorSound()
+            alertController = UIAlertController(title: "Hint Options", message: "Hints are only useful when you have a game in progress!", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+                // nothing to do here, user bailed on using a hint
+            }
+            alertController.addAction(cancelAction)
+            return
+        }
+        if self.userPrefs.hintsOn == false {
+            self.playErrorSound()
+            alertController = UIAlertController(title: "Hint Options", message: "Hints have been turned off! You can turn them back on in the prefs panel.", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+                // nothing to do here, user bailed on using a hint
+            }
+            alertController.addAction(cancelAction)
+        } else {
+            alertController = UIAlertController(title: "Hint Options", message: "So you want to use a hint, this will add some time to your game clock. Ok?",preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+                // nothing to do here, user bailed on using a hint
+            }
+            alertController.addAction(cancelAction)
+            let useHintAction = UIAlertAction(title: "Give me a hint!", style: .default) { (action:UIAlertAction!) in
+                if self.addHintToBoard() {
+                    self.addPenaltyToGameTime()
+                }
+            }
+            alertController.addAction(useHintAction)
+            let userSelectAction = UIAlertAction(title: "Let me select a cell to uncover!", style: .default) { (action:UIAlertAction!) in
+                self.giveHint = true
+            }
+            alertController.addAction(userSelectAction)
+            //
+            // if we have detected numbers placed incorrectly give option to highlight (then pretend bin has been selected with restricted set)
+            //
+            let incorrectPlacements: [Coordinate] = self.incorrectNumbersPlacedOnBoard()
+            if incorrectPlacements.count > 0 {
+                var msg: String = ""
+                if incorrectPlacements.count == 1 {
+                    msg = "There is an incorrect number, show it!"
+                } else {
+                    msg = "\(incorrectPlacements.count) incorrect numbers, show them!"
+                }
+                let useHighlightAction = UIAlertAction(title: msg, style: .default) { (action:UIAlertAction!) in
+                    //
+                    // need to clear any ctrl posn and board cells already highlighted
+                    //
+                    if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
+                        self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
+                    }
+                    self.unsetSelectNumbersOnBoard()
+                    self.unsetDeleteNumbersOnBoard()
+                    //
+                    // highlight the incorrect numbers and the 'bin' as though the user had done it!
+                    //
+                    self.setControlPanelToDeleteImageValue(coord: (4, column: 1))
+                    self.setControlPanelPosition(coord: (4,1))
+                    self.setDeleteLocationsOnBoard(locations: incorrectPlacements)
+                    self.resetBoardPosition()
+                }
+                alertController.addAction(useHighlightAction)
+            }
+        }
+        self.present(alertController, animated: true, completion:nil)
+        return
+    }
+    
+    //
+    // If they have a 'selected' number highlighted use that!
+    // then failover to a random hint
+    //
+    func addHintToBoard() -> Bool {
+        var optionsToRemove: [Coordinate] = []
+        if self.userGame.currentGame.controlPosn.posn == (-1, -1) {
+            optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
+        } else {
+            let index: Int = (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column
+            if index > 8 {
+                optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
+            } else {
+                optionsToRemove = self.sudokuBoard.getFreeNumberLocationsOnGameBoard(number: index + 1)
+            }
+        }
+        //
+        // if we found none to remove, escape cleanly (shouldn't happen though)
+        //
+        if optionsToRemove.count == 0 {
+            return false
+        }
+        //
+        // choose a random hint
+        //
+        let posnToRemove: Int = Int(arc4random_uniform(UInt32(optionsToRemove.count)))
+        let number: Int = self.sudokuBoard.getNumberFromSolution(coord: optionsToRemove[posnToRemove])
+        if self.sudokuBoard.setNumberOnGameBoard(coord: optionsToRemove[posnToRemove], number: number) {
+            self.userSolution.addCoordinate(coord: optionsToRemove[posnToRemove])
+            let _: Int = self.userGame.incrementGamePlayerMovesMade()
+            // do we need to make number 'inactive'?
+            if self.sudokuBoard.isNumberFullyUsedInGame(number: number) == false {
+                self.setCoordToSelectImage(coord: optionsToRemove[posnToRemove], number: number)
+                self.playPlacementSound(number: number)
+            } else {
+                self.setCoordToOriginImage(coord: optionsToRemove[posnToRemove], number: number)
+                self.setControlPanelToInactiveImageValue(coord: ((number - 1) / 2, column: (number - 1) % 2))
+                self.unsetSelectNumbersOnBoard()
+                self.resetControlPanelPosition()
+                self.playPlacementSound(number: number)
+                // have we completed the game
+                if self.sudokuBoard.isGameCompleted() {
+                    self.userCompletesGame()
+                }
+            }
+        }
+        return true
+    }
+    
+    //
+    // use the userSolution and compare against the 'Origin' board to see if we have incorrect placements
+    //
+    func incorrectNumbersPlacedOnBoard() -> [Coordinate] {
+        var incorrectCoords: [Coordinate] = []
+        let coordsInSolution: [Coordinate] = self.userSolution.getCoordinatesInSolution()
+        for coord in coordsInSolution {
+            if self.sudokuBoard.getNumberFromGame(coord: coord) != self.sudokuBoard.getNumberFromSolution(coord: coord) {
+                incorrectCoords.append(coord)
+            }
+        }
+        return incorrectCoords
+    }
+    
+    //
+    // and the start button
+    //
+    func startButtonUsed(_ sender: UIButton) {
+        //
+        // if we have 'Start' button, build the board
+        //
+        if sender.currentImage?.isEqual(self.startImage) == true {
+            self.createNewBoard()
+            sender.setImage(self.resetImage, for: UIControlState.normal)
+        } else {
+            //
+            // then we can:
+            //
+            //      1. cancel and forget the user asked to reset
+            //      2. go back to the start of the current game
+            //      3. restart the game
+            //
+            let alertController = UIAlertController(title: "Reset Options", message: "So you want to reset the puzzle?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+                // nothing to do here, user bailed on reseting the game
+            }
+            alertController.addAction(cancelAction)
+            let resetAction = UIAlertAction(title: "Restart this puzzle!", style: .default) { (action:UIAlertAction!) in
+                self.resetControlPanelSelection()
+                self.finalPreparationForGameStart()
+            }
+            alertController.addAction(resetAction)
+            let restartAction = UIAlertAction(title: "New Puzzle!", style: .default) { (action:UIAlertAction!) in
+                self.createNewBoard()
+            }
+            alertController.addAction(restartAction)
+            self.present(alertController, animated: true, completion:nil)
+        }
+        return
+    }
+    
+    //----------------------------------------------------------------------------
+    // label for the game time to be displayed
+    //----------------------------------------------------------------------------
+    func setupGameTimerLabel() {
+        //
+        // button for prefs dialog
+        //
+        self.gameTimer = UILabel()
+        if self.view.frame.width > 1024 {
+            self.gameTimer.frame = CGRect(x: 1112, y: 200, width: 179, height: 61)
+        } else {
+            self.gameTimer.frame = CGRect(x: 834, y: 150, width: 134, height: 46)
+        }
+        self.gameTimer.text          = "00:00"
+        self.gameTimer.textAlignment = NSTextAlignment.natural
+        self.gameTimer.textColor     = UIColor.white
+        self.gameTimer.shadowColor   = UIColor.black
+        self.gameTimer.shadowOffset  = CGSize(width: 4, height: 4)
+        self.gameTimer.font          = UIFont(name: "Chalkduster", size: CGFloat(36))
+        self.view.addSubview(self.gameTimer)
+        return
     }
     
     //----------------------------------------------------------------------------
@@ -987,69 +1197,87 @@ class ViewController: UIViewController {
     // build the initial board display, we only do this once!
     //----------------------------------------------------------------------------
     func setupSudokuBoardDisplay() {
-        let originX: CGFloat = self.view.bounds.origin.x + self.kMainViewMargin
-        let originY: CGFloat = self.kMainViewMargin
-        let frameWidth: CGFloat = self.view.bounds.height - (2 * self.kMainViewMargin)
-        let frameHeight: CGFloat = self.view.bounds.height - (2 * self.kMainViewMargin)
+        //
+        // defaults for positioning UIImageView components for main board (iPad width = 1024)
+        //
+        var kMainViewMargin:  CGFloat
+        var kCellWidthMargin: CGFloat
+        var kCellDepthMargin: CGFloat
+        if self.view.frame.width > 1024 {
+            kMainViewMargin  = 52
+            kCellWidthMargin = 11.7
+            kCellDepthMargin = 9.33
+        } else {
+            kMainViewMargin  = 40.0
+            kCellWidthMargin = 8.8
+            kCellDepthMargin = 7
+        }
+        //
+        // add the image containers onto the board row by row
+        //
+        func addImagesViewsToSudokuBoard(boardRows: Int, boardColumns: Int, cellWidthMargin: CGFloat, cellDepthMargin: CGFloat) {
+            //
+            // calculate the size of the image views we'll use on the board
+            //
+            func calculateBoardCellWidth(boardColumns: Int, margin: CGFloat) -> CGFloat {
+                var cellWidth: CGFloat = self.viewSudokuBoard.bounds.width
+                cellWidth -= (CGFloat(boardColumns + 1) * margin)
+                return cellWidth / CGFloat(boardColumns)
+            }
+            
+            func calculateBoardCellDepth(boardRows: Int, margin: CGFloat) -> CGFloat {
+                var cellDepth: CGFloat = self.viewSudokuBoard.bounds.height
+                cellDepth -= (CGFloat(boardRows + 1) * margin)
+                return cellDepth / CGFloat(boardRows)
+            }
+            
+            let cellWidth: CGFloat = calculateBoardCellWidth(boardColumns: boardColumns * boardColumns, margin: cellWidthMargin)
+            let cellDepth: CGFloat = calculateBoardCellDepth(boardRows: boardRows * boardRows, margin: cellWidthMargin)
+            var yStart: CGFloat = cellDepthMargin
+            for y: Int in 0 ..< boardRows {
+                var jStart: CGFloat = 0
+                for j: Int in 0 ..< boardColumns {
+                    var xStart: CGFloat = cellWidthMargin
+                    for x: Int in 0 ..< boardRows {
+                        var kStart: CGFloat = 0
+                        for k: Int in 0 ..< boardColumns {
+                            self.displayBoard.gameImages[y][x].contents[j][k].imageView.frame = CGRect(x: xStart + kStart, y: yStart + jStart, width: cellWidth, height: cellWidth)
+                            self.viewSudokuBoard.addSubview(self.displayBoard.gameImages[y][x].contents[j][k].imageView)
+                            kStart += cellWidth + cellWidthMargin
+                        }
+                        xStart += kStart + (cellWidthMargin * 2)
+                    }
+                    jStart += cellDepth + cellDepthMargin
+                }
+                yStart += jStart + (cellDepthMargin * 2)
+            }
+            return
+        }
+        
+        //
+        // allowing touches to be detected on SudokuBoard view only
+        //
+        func initialiseSudokuBoardUIViewToAcceptTouch(view: UIView) {
+            let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.detectedSudokuBoardUIViewTapped(recognizer:)))
+            singleTap.numberOfTapsRequired = 1
+            singleTap.numberOfTouchesRequired = 1
+            view.addGestureRecognizer(singleTap)
+            view.isUserInteractionEnabled = true
+            return
+        }
+
+        let originX: CGFloat = self.view.bounds.origin.x + kMainViewMargin
+        let originY: CGFloat = kMainViewMargin
+        let frameWidth: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
+        let frameHeight: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
         self.viewSudokuBoard = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
         self.viewSudokuBoard.tag = subViewTags.sudokuBoard.rawValue
         self.view.addSubview(self.viewSudokuBoard)
-        self.addImagesViewsToSudokuBoard(boardRows: self.boardDimensions, boardColumns: self.boardDimensions, cellWidthMargin: self.kCellWidthMargin, cellDepthMargin: self.kCellDepthMargin)
-        self.initialiseSudokuBoardUIViewToAcceptTouch(view: self.viewSudokuBoard)
+        addImagesViewsToSudokuBoard(boardRows: self.boardDimensions, boardColumns: self.boardDimensions, cellWidthMargin: kCellWidthMargin, cellDepthMargin: kCellDepthMargin)
+        initialiseSudokuBoardUIViewToAcceptTouch(view: self.viewSudokuBoard)
         return
     }
-    
-    //
-    // add the image containers onto the board row by row
-    //
-    func addImagesViewsToSudokuBoard(boardRows: Int, boardColumns: Int, cellWidthMargin: CGFloat, cellDepthMargin: CGFloat) {
-        let cellWidth: CGFloat = self.calculateBoardCellWidth(boardColumns: boardColumns * boardColumns, margin: cellWidthMargin)
-        let cellDepth: CGFloat = self.calculateBoardCellDepth(boardRows: boardRows * boardRows, margin: cellWidthMargin)
-        var yStart: CGFloat = cellDepthMargin
-        for y: Int in 0 ..< boardRows {
-            var jStart: CGFloat = 0
-            for j: Int in 0 ..< boardColumns {
-                var xStart: CGFloat = cellWidthMargin
-                for x: Int in 0 ..< boardRows {
-                    var kStart: CGFloat = 0
-                    for k: Int in 0 ..< boardColumns {
-                        self.displayBoard.gameImages[y][x].contents[j][k].imageView.frame = CGRect(x: xStart + kStart, y: yStart + jStart, width: cellWidth, height: cellWidth)
-                        self.viewSudokuBoard.addSubview(self.displayBoard.gameImages[y][x].contents[j][k].imageView)
-                        kStart += cellWidth + cellWidthMargin
-                    }
-                    xStart += kStart + (cellWidthMargin * 2)
-                }
-                jStart += cellDepth + cellDepthMargin
-            }
-            yStart += jStart + (cellDepthMargin * 2)
-        }
-        return
-    }
-    
-    func calculateBoardCellWidth(boardColumns: Int, margin: CGFloat) -> CGFloat {
-        var cellWidth: CGFloat = self.viewSudokuBoard.bounds.width
-        cellWidth -= (CGFloat(boardColumns + 1) * margin)
-        return cellWidth / CGFloat(boardColumns)
-    }
-    
-    func calculateBoardCellDepth(boardRows: Int, margin: CGFloat) -> CGFloat {
-        var cellDepth: CGFloat = self.viewSudokuBoard.bounds.height
-        cellDepth -= (CGFloat(boardRows + 1) * margin)
-        return cellDepth / CGFloat(boardRows)
-    }
-    
-    //
-    // allowing touches to be detected on SudokuBoard view only
-    //
-    func initialiseSudokuBoardUIViewToAcceptTouch(view: UIView) {
-        let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.detectedSudokuBoardUIViewTapped(recognizer:)))
-        singleTap.numberOfTapsRequired = 1
-        singleTap.numberOfTouchesRequired = 1
-        view.addGestureRecognizer(singleTap)
-        view.isUserInteractionEnabled = true
-        return
-    }
-    
+
     //
     // handle user interaction with the game board
     //
@@ -1293,141 +1521,6 @@ class ViewController: UIViewController {
     }
     
     //----------------------------------------------------------------------------
-    // captures user pressing the 'Hints' button / if it is active
-    //----------------------------------------------------------------------------
-    @IBAction func hintButtonPressed(_ sender: UIButton) {
-        var alertController: UIAlertController!
-        if self.userGame.getGameInPlay() == false {
-            self.playErrorSound()
-            alertController = UIAlertController(title: "Hint Options", message: "Hints are only useful when you have a game in progress!", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
-                // nothing to do here, user bailed on using a hint
-            }
-            alertController.addAction(cancelAction)
-            return
-        }
-        if self.userPrefs.hintsOn == false {
-            self.playErrorSound()
-            alertController = UIAlertController(title: "Hint Options", message: "Hints have been turned off! You can turn them back on in the prefs panel.", preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
-                // nothing to do here, user bailed on using a hint
-            }
-            alertController.addAction(cancelAction)
-        } else {
-            alertController = UIAlertController(title: "Hint Options", message: "So you want to use a hint, this will add some time to your game clock. Ok?",preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
-                // nothing to do here, user bailed on using a hint
-            }
-            alertController.addAction(cancelAction)
-            let useHintAction = UIAlertAction(title: "Give me a hint!", style: .default) { (action:UIAlertAction!) in
-                if self.addHintToBoard() {
-                    self.addPenaltyToGameTime()
-                }
-            }
-            alertController.addAction(useHintAction)
-            let userSelectAction = UIAlertAction(title: "Let me select a cell to uncover!", style: .default) { (action:UIAlertAction!) in
-                self.giveHint = true
-            }
-            alertController.addAction(userSelectAction)
-            //
-            // if we have detected numbers placed incorrectly give option to highlight (then pretend bin has been selected with restricted set)
-            //
-            let incorrectPlacements: [Coordinate] = self.incorrectNumbersPlacedOnBoard()
-            if incorrectPlacements.count > 0 {
-                var msg: String = ""
-                if incorrectPlacements.count == 1 {
-                    msg = "There is an incorrect number, show it!"
-                } else {
-                    msg = "\(incorrectPlacements.count) incorrect numbers, show them!"
-                }
-                let useHighlightAction = UIAlertAction(title: msg, style: .default) { (action:UIAlertAction!) in
-                    //
-                    // need to clear any ctrl posn and board cells already highlighted
-                    //
-                    if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
-                        self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
-                    }
-                    self.unsetSelectNumbersOnBoard()
-                    self.unsetDeleteNumbersOnBoard()
-                    //
-                    // highlight the incorrect numbers and the 'bin' as though the user had done it!
-                    //
-                    self.setControlPanelToDeleteImageValue(coord: (4, column: 1))
-                    self.setControlPanelPosition(coord: (4,1))
-                    self.setDeleteLocationsOnBoard(locations: incorrectPlacements)
-                    self.resetBoardPosition()
-                }
-                alertController.addAction(useHighlightAction)
-            }
-        }
-        self.present(alertController, animated: true, completion:nil)
-        return
-    }
-    
-    //
-    // If they have a 'selected' number highlighted use that!
-    // then failover to a random hint
-    //
-    func addHintToBoard() -> Bool {
-        var optionsToRemove: [Coordinate] = []
-        if self.userGame.currentGame.controlPosn.posn == (-1, -1) {
-            optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
-        } else {
-            let index: Int = (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column
-            if index > 8 {
-                optionsToRemove = self.sudokuBoard.getFreeLocationsOnGameBoard()
-            } else {
-                optionsToRemove = self.sudokuBoard.getFreeNumberLocationsOnGameBoard(number: index + 1)
-            }
-        }
-        //
-        // if we found none to remove, escape cleanly (shouldn't happen though)
-        //
-        if optionsToRemove.count == 0 {
-            return false
-        }
-        //
-        // choose a random hint
-        //
-        let posnToRemove: Int = Int(arc4random_uniform(UInt32(optionsToRemove.count)))
-        let number: Int = self.sudokuBoard.getNumberFromSolution(coord: optionsToRemove[posnToRemove])
-        if self.sudokuBoard.setNumberOnGameBoard(coord: optionsToRemove[posnToRemove], number: number) {
-            self.userSolution.addCoordinate(coord: optionsToRemove[posnToRemove])
-            let _: Int = self.userGame.incrementGamePlayerMovesMade()
-            // do we need to make number 'inactive'?
-            if self.sudokuBoard.isNumberFullyUsedInGame(number: number) == false {
-                self.setCoordToSelectImage(coord: optionsToRemove[posnToRemove], number: number)
-                self.playPlacementSound(number: number)
-            } else {
-                self.setCoordToOriginImage(coord: optionsToRemove[posnToRemove], number: number)
-                self.setControlPanelToInactiveImageValue(coord: ((number - 1) / 2, column: (number - 1) % 2))
-                self.unsetSelectNumbersOnBoard()
-                self.resetControlPanelPosition()
-                self.playPlacementSound(number: number)
-                // have we completed the game
-                if self.sudokuBoard.isGameCompleted() {
-                    self.userCompletesGame()
-                }
-            }
-        }
-        return true
-    }
-    
-    //
-    // use the userSolution and compare against the 'Origin' board to see if we have incorrect placements
-    //
-    func incorrectNumbersPlacedOnBoard() -> [Coordinate] {
-        var incorrectCoords: [Coordinate] = []
-        let coordsInSolution: [Coordinate] = self.userSolution.getCoordinatesInSolution()
-        for coord in coordsInSolution {
-            if self.sudokuBoard.getNumberFromGame(coord: coord) != self.sudokuBoard.getNumberFromSolution(coord: coord) {
-                incorrectCoords.append(coord)
-            }
-        }
-        return incorrectCoords
-    }
-    
-    //----------------------------------------------------------------------------
     // things to do when the user completes the game
     //----------------------------------------------------------------------------
     func userCompletesGame() {
@@ -1472,21 +1565,6 @@ class ViewController: UIViewController {
     
     func timeInText(time:Int) -> String {
         return String(format: "%d", time / 60) + " minutes and " + String(format: "%d", time % 60) + " seconds"
-    }
-    
-    //----------------------------------------------------------------------------
-    // captures user pressing the 'Settings' button
-    //----------------------------------------------------------------------------
-    @IBAction func preferencesButtonPressed(_ sender: UIButton) {
-        // first save the current preferences
-        let pViewController: Preferences = Preferences()
-        pViewController.modalPresentationStyle = UIModalPresentationStyle.popover
-        pViewController.prefs = self.userPrefs
-        pViewController.state = self.userGame
-        self.present(pViewController, animated: true, completion: nil)
-        let popoverController = pViewController.popoverPresentationController
-        popoverController?.sourceView = sender
-        return
     }
     
     //----------------------------------------------------------------------------

@@ -23,21 +23,7 @@ class CellImages {
     private var size: (rows: Int, columns: Int) = (0,0)
 
     //
-    // for main board array where rows = cols
-    //
-    init (size: Int = 3) {
-        self.size.rows = size
-        if self.size.rows != 3  && self.size.rows != 4 {
-            self.size.rows = 3
-        }
-        self.size.columns = self.size.rows
-        self.allocateCellArray(size: self.size)
-        return
-    }
-
-    //
-    // for control panel where rows != cols
-    // allowed rows 3 -> 6, columns 2 -> 4
+    // allows for symmetric arrays (board), or non symmetric (ctrl panel)
     //
     init (size: (rows: Int, columns: Int)) {
         self.size.rows = size.rows

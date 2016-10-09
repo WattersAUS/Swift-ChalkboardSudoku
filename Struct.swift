@@ -7,6 +7,53 @@
 //
 
 import Foundation
+import UIKit
+
+//
+// device coordinate/size handling
+//
+struct ImagePosition {
+    var coord: (row:Int, column: Int)
+    var image: CGRect
+    
+    init(row: Int, column: Int, image: CGRect) {
+        self.coord.row    = row
+        self.coord.column = column
+        self.image        = image
+    }
+}
+
+struct Panel {
+
+    //
+    // array of CGRects for creating the board and/or ctrl panel later
+    //
+    var imageDetails: [ImagePosition]
+
+    //
+    // build the array row/column, we start at (yMargin, xMargin) and increment from there
+    //
+    init(hostFrame: CGRect, xOrigin: CGFloat, yOrigin: CGFloat, xMargin: CGFloat, yMargin: CGFloat, rows: Int, columns: Int) {
+        //
+        // derive image size
+        //
+        let iWidth: CGFloat  = (hostFrame.width - (xMargin * CGFloat(columns - 1)) - (xOrigin * 2)) / CGFloat(columns)
+        let iHeight: CGFloat = (hostFrame.height - (yMargin * CGFloat(rows - 1)) - (yOrigin * 2)) / CGFloat(rows)
+        //
+        // iterate thro rows/columns and create array of positions for images to be displayed in the host
+        //
+        self.imageDetails = []
+        var yCoord: CGFloat = yOrigin
+        for x: Int in 0 ..< rows {
+            var xCoord: CGFloat = xOrigin
+            for y: Int in 0 ..< columns {
+                self.imageDetails.append(ImagePosition(row: x, column: y, image: CGRect(x: xCoord, y: yCoord, width: iWidth, height: iHeight)))
+                xCoord += iWidth + xMargin
+            }
+            yCoord += iHeight + yMargin
+        }
+    }
+}
 
 //
 // user selected board/ctrl panel position
