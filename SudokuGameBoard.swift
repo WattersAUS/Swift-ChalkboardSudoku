@@ -682,7 +682,7 @@ class SudokuGameBoard {
             //
             // if we've repeatedly rewound then brute force the puzzle back to just after the first cell and try again
             //
-            if rewind < 1250 {
+            if rewind < 256 {
                 self.rewindSolution(input: &input, output: &output)
             } else {
                 rewind = 0

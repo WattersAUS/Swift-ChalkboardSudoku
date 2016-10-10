@@ -11,7 +11,6 @@ import Foundation
 class GameBoardImages {
     
     var gameImages: [[CellImages]]                  = []
-    //var boardCoordinates: [(row: Int, column: Int)] = []
     private var size: (rows: Int, columns: Int)     = (0,0)
     
     init (size: Int = 3) {
@@ -26,7 +25,6 @@ class GameBoardImages {
             for _: Int in 0 ..< rows {
                 var cells: [CellImages] = [CellImages(size: (rows, columns))]
                 for column: Int in 0 ..< columns {
-                    //self.boardCoordinates.append((row, column))
                     if column > 0 {
                         cells.append(CellImages(size: (rows, columns)))
                     }

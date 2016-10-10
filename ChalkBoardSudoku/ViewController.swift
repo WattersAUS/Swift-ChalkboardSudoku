@@ -12,7 +12,7 @@ import AVFoundation
 class ViewController: UIViewController {
     
     var applicationVersion: Int = 100
-    var debug: Int = 1
+    var debug: Int = 0
     var boardDimensions: Int = 3
     
     //
@@ -59,6 +59,11 @@ class ViewController: UIViewController {
     var resetImage: UIImage = UIImage(named:"ImageReset.png")!
     var prefsImage: UIImage = UIImage(named:"ImagePreferences.png")!
     var hintsImage: UIImage = UIImage(named:"ImageHint.png")!
+    
+    //
+    // start button
+    //
+    var startButton: UIButton!
     
     //
     // user selects board position
@@ -338,6 +343,7 @@ class ViewController: UIViewController {
         //
         self.userGame.loadGame()
         if self.userGame.getGameInPlay() {
+            self.startButton.setImage(self.resetImage, for: UIControlState.normal)
             self.continueSavedGame()
         }
         return
@@ -676,7 +682,7 @@ class ViewController: UIViewController {
         }
         return
     }
-    
+
     //
     // redisplay the whole current board
     //
@@ -843,7 +849,7 @@ class ViewController: UIViewController {
         //
         // start button
         //
-        let startButton: UIButton = UIButton()
+        self.startButton = UIButton()
         if self.view.frame.width > 1024 {
             startButton.frame = CGRect(x: 1129, y: 780, width: 145, height: 61)
         } else {
