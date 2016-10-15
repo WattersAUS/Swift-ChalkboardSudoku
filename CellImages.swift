@@ -83,22 +83,49 @@ class CellImages {
     //----------------------------------------------------------------------------
     // Get / set image and active states
     //----------------------------------------------------------------------------
-    func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates, activeState: activeStates) {
-        guard self.boundsCheck(coord: coord) else {
-            return
-        }
-        self.contents[coord.row][coord.column].imageView.image = imageToSet
-        self.contents[coord.row][coord.column].imageState      = imageState
-        self.contents[coord.row][coord.column].activeState     = activeState
-        return
-    }
-    
     func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
         guard self.boundsCheck(coord: coord) else {
             return
         }
         self.contents[coord.row][coord.column].imageView.image = imageToSet
         self.contents[coord.row][coord.column].imageState      = imageState
+        return
+    }
+    
+    func setImageWithAnimation(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
+        guard self.boundsCheck(coord: coord) else {
+            return
+        }
+        UIView.transition(with: self.contents[coord.row][coord.column].imageView,
+                          duration: 0.3,
+                          options: .transitionFlipFromLeft,
+                          animations: { self.contents[coord.row][coord.column].imageView.image = imageToSet },
+                          completion: nil)
+        self.contents[coord.row][coord.column].imageState      = imageState
+        return
+    }
+    
+    func clearImage(coord: (row: Int, column: Int)) {
+        guard self.boundsCheck(coord: coord) else {
+            return
+        }
+        self.contents[coord.row][coord.column].imageView.image = nil
+        self.contents[coord.row][coord.column].imageState      = imageStates.Blank
+        self.contents[coord.row][coord.column].activeState     = activeStates.Blank
+        return
+    }
+    
+    func clearImageWithAnimation(coord: (row: Int, column: Int)) {
+        guard self.boundsCheck(coord: coord) else {
+            return
+        }
+        UIView.transition(with: self.contents[coord.row][coord.column].imageView,
+                          duration: 0.3,
+                          options: .transitionFlipFromLeft,
+                          animations: { self.contents[coord.row][coord.column].imageView.image = nil },
+                          completion: nil)
+        self.contents[coord.row][coord.column].imageState      = imageStates.Blank
+        self.contents[coord.row][coord.column].activeState     = activeStates.Blank
         return
     }
     
@@ -129,16 +156,6 @@ class CellImages {
             return
         }
         self.contents[coord.row][coord.column].activeState = activeState
-        return
-    }
-    
-    func clearImage(coord: (row: Int, column: Int)) {
-        guard self.boundsCheck(coord: coord) else {
-            return
-        }
-        self.contents[coord.row][coord.column].imageView.image = nil
-        self.contents[coord.row][coord.column].imageState      = imageStates.Blank
-        self.contents[coord.row][coord.column].activeState     = activeStates.Blank
         return
     }
     

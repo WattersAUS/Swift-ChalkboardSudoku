@@ -1657,11 +1657,21 @@ class ViewController: UIViewController {
         return
     }
     
+    func setCoordToInactiveImageWithAnimation(coord: Coordinate, number: Int) {
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Inactive.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Inactive)
+        return
+    }
+    
     //
     // set numbers on the 'game' board to origin if they are also part of the origin board
     //
     func setCoordToOriginImage(coord: Coordinate, number: Int) {
         self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Origin)
+        return
+    }
+
+    func setCoordToOriginImageWithAnimation(coord: Coordinate, number: Int) {
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Origin)
         return
     }
     
@@ -1670,6 +1680,11 @@ class ViewController: UIViewController {
     //
     func setCoordToSelectImage(coord: Coordinate, number: Int) {
         self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
+        return
+    }
+    
+    func setCoordToSelectImageWithAnimation(coord: Coordinate, number: Int) {
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
         return
     }
     

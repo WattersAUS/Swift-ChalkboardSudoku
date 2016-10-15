@@ -122,12 +122,5 @@ class GameBoardImages {
         }
         return(coords)
     }
- 
-    //----------------------------------------------------------------------------
-    // Set background image colour (used in debug positioning)
-    //----------------------------------------------------------------------------
-    func setDebugBackGroundColour() {
-        return
-    }
     
 }
