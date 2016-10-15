@@ -28,9 +28,9 @@ class SudokuGameBoard {
     // internal representation of the game difficulty
     //
     enum gameDifficulty: Int {
-        case Easy   = 3
+        case Easy   = 4
         case Medium = 5
-        case Hard   = 7
+        case Hard   = 6
     }
     private var difficulty:    gameDifficulty = gameDifficulty.Medium
 

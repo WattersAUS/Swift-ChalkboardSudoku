@@ -16,15 +16,6 @@ class ViewController: UIViewController {
     var boardDimensions: Int = 3
     
     //
-    // enum for subviews (internal to this ViewController only)
-    //
-    enum subViewTags: Int {
-        case sudokuBoard = 0
-        case controlPanel = 1
-        case settingsPanel = 2
-    }
-    
-    //
     // the board background graphic accessed here
     //
     @IBOutlet weak var boardBackground: UIImageView!
@@ -750,7 +741,6 @@ class ViewController: UIViewController {
         }
         
         self.viewControlPanel = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
-        self.viewControlPanel.tag = subViewTags.controlPanel.rawValue
         self.view.addSubview(self.viewControlPanel)
         let ctrlPanel: Panel = Panel(hostFrame: self.viewControlPanel.frame, xOrigin: 0, yOrigin: 0, xMargin: offsetX, yMargin: offsetY, rows: 5, columns: 2)
         for image: ImagePosition in ctrlPanel.imageDetails {
@@ -1029,17 +1019,17 @@ class ViewController: UIViewController {
             //      2. go back to the start of the current game
             //      3. restart the game
             //
-            let alertController = UIAlertController(title: "Reset Options", message: "So you want to reset the puzzle?", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Reset Options", message: "Select an option to either restart this current puzzle, or start again?", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
                 // nothing to do here, user bailed on reseting the game
             }
             alertController.addAction(cancelAction)
-            let resetAction = UIAlertAction(title: "Restart this puzzle!", style: .default) { (action:UIAlertAction!) in
+            let resetAction = UIAlertAction(title: "Restart the puzzle?", style: .default) { (action:UIAlertAction!) in
                 self.resetControlPanelSelection()
                 self.finalPreparationForGameStart()
             }
             alertController.addAction(resetAction)
-            let restartAction = UIAlertAction(title: "New Puzzle!", style: .default) { (action:UIAlertAction!) in
+            let restartAction = UIAlertAction(title: "Or start a new puzzle?", style: .default) { (action:UIAlertAction!) in
                 self.createNewBoard()
             }
             alertController.addAction(restartAction)
@@ -1058,15 +1048,16 @@ class ViewController: UIViewController {
         self.gameTimer = UILabel()
         if self.view.frame.width > 1024 {
             self.gameTimer.frame = CGRect(x: 1112, y: 200, width: 179, height: 61)
+            self.gameTimer.font          = UIFont(name: "Chalkduster", size: CGFloat(48))
         } else {
             self.gameTimer.frame = CGRect(x: 834, y: 150, width: 134, height: 46)
+            self.gameTimer.font          = UIFont(name: "Chalkduster", size: CGFloat(36))
         }
         self.gameTimer.text          = "00:00"
         self.gameTimer.textAlignment = NSTextAlignment.natural
         self.gameTimer.textColor     = UIColor.white
         self.gameTimer.shadowColor   = UIColor.black
         self.gameTimer.shadowOffset  = CGSize(width: 4, height: 4)
-        self.gameTimer.font          = UIFont(name: "Chalkduster", size: CGFloat(36))
         self.view.addSubview(self.gameTimer)
         return
     }
@@ -1277,7 +1268,6 @@ class ViewController: UIViewController {
         let frameWidth: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
         let frameHeight: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
         self.viewSudokuBoard = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
-        self.viewSudokuBoard.tag = subViewTags.sudokuBoard.rawValue
         self.view.addSubview(self.viewSudokuBoard)
         addImagesViewsToSudokuBoard(boardRows: self.boardDimensions, boardColumns: self.boardDimensions, cellWidthMargin: kCellWidthMargin, cellDepthMargin: kCellDepthMargin)
         initialiseSudokuBoardUIViewToAcceptTouch(view: self.viewSudokuBoard)
@@ -1657,11 +1647,6 @@ class ViewController: UIViewController {
         return
     }
     
-    func setCoordToInactiveImageWithAnimation(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Inactive.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Inactive)
-        return
-    }
-    
     //
     // set numbers on the 'game' board to origin if they are also part of the origin board
     //
@@ -1670,21 +1655,11 @@ class ViewController: UIViewController {
         return
     }
 
-    func setCoordToOriginImageWithAnimation(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Origin.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Origin)
-        return
-    }
-    
     //
     // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
     //
     func setCoordToSelectImage(coord: Coordinate, number: Int) {
         self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
-        return
-    }
-    
-    func setCoordToSelectImageWithAnimation(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
         return
     }
     

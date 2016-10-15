@@ -83,16 +83,16 @@ class CellImages {
     //----------------------------------------------------------------------------
     // Get / set image and active states
     //----------------------------------------------------------------------------
-    func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
-        guard self.boundsCheck(coord: coord) else {
-            return
-        }
-        self.contents[coord.row][coord.column].imageView.image = imageToSet
-        self.contents[coord.row][coord.column].imageState      = imageState
-        return
-    }
+//    func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
+//        guard self.boundsCheck(coord: coord) else {
+//            return
+//        }
+//        self.contents[coord.row][coord.column].imageView.image = imageToSet
+//        self.contents[coord.row][coord.column].imageState      = imageState
+//        return
+//    }
     
-    func setImageWithAnimation(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
+    func setImage(coord: (row: Int, column: Int), imageToSet: UIImage, imageState: imageStates) {
         guard self.boundsCheck(coord: coord) else {
             return
         }
@@ -105,17 +105,17 @@ class CellImages {
         return
     }
     
-    func clearImage(coord: (row: Int, column: Int)) {
-        guard self.boundsCheck(coord: coord) else {
-            return
-        }
-        self.contents[coord.row][coord.column].imageView.image = nil
-        self.contents[coord.row][coord.column].imageState      = imageStates.Blank
-        self.contents[coord.row][coord.column].activeState     = activeStates.Blank
-        return
-    }
+//    func clearImage(coord: (row: Int, column: Int)) {
+//        guard self.boundsCheck(coord: coord) else {
+//            return
+//        }
+//        self.contents[coord.row][coord.column].imageView.image = nil
+//        self.contents[coord.row][coord.column].imageState      = imageStates.Blank
+//        self.contents[coord.row][coord.column].activeState     = activeStates.Blank
+//        return
+//    }
     
-    func clearImageWithAnimation(coord: (row: Int, column: Int)) {
+    func clearImage(coord: (row: Int, column: Int)) {
         guard self.boundsCheck(coord: coord) else {
             return
         }
