@@ -527,22 +527,22 @@ class SudokuGameBoard {
     // except when the Placement position is:
     //
     //  1. In the first cell
-    //  2. In the first cell row of the first row
-    //  3. In the first cell col of the first col
-    //  4. The first location of any cell i.e (0,0)
+    //  2. The first location of any cell i.e (0,0)
+    //  3. In the first cell row of the first row
+    //  4. In the first cell col of the first col
     //
     func getAdjacentNumberPlacements(origin: Placement) -> [Adjacent] {
         var adjacent: [Adjacent] = []
-        if origin.location.row == 0 && origin.location.cell.row == 0 {
-            return adjacent
-        }
-        if origin.location.column == 0 && origin.location.cell.column == 0 {
-            return adjacent
-        }
         if origin.location.row == 0 && origin.location.column == 0 {
             return adjacent
         }
         if origin.location.cell.row == 0 && origin.location.cell.column == 0 {
+            return adjacent
+        }
+        if origin.location.row == 0 && origin.location.cell.row == 0 {
+            return adjacent
+        }
+        if origin.location.column == 0 && origin.location.cell.column == 0 {
             return adjacent
         }
         //
@@ -682,12 +682,12 @@ class SudokuGameBoard {
             //
             // if we've repeatedly rewound then brute force the puzzle back to just after the first cell and try again
             //
-            if rewind < 256 {
+            if rewind < 192 {
                 self.rewindSolution(input: &input, output: &output)
             } else {
                 rewind = 0
                 reset = reset + 1
-                while (output.count > (self.size.rows * self.size.columns)) {
+                while ((output.count > (self.size.rows * self.size.columns))) {
                     self.rewindSolution(input: &input, output: &output)
                 }
             }
@@ -700,7 +700,7 @@ class SudokuGameBoard {
         var start:  [Placement] = getPlacementLocations()
         var board:  [Placement] = []
         let stime:  CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
-        var stall: Int = 0
+        var stall: Int = 1
         var times: Int = 0
         while start.count > 0 {
             placeNumbers(input: &start, output: &board, rewind: &stall, reset: &times)

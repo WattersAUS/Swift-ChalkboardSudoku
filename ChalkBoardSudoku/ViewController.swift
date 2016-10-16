@@ -60,6 +60,7 @@ class ViewController: UIViewController {
     // user selects board position
     //
     var userSelectImage: UIImage = UIImage(named:"UserSelect.png")!
+    var userErrorImage:  UIImage = UIImage(named:"UserError.png")!
     
     //
     // image library referenced [state][image set][number]
@@ -368,7 +369,7 @@ class ViewController: UIViewController {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(applicationMovingToBackground), name: NSNotification.Name.UIApplicationWillResignActive, object: nil)
         notificationCenter.addObserver(self, selector: #selector(applicationMovingToForeground), name: NSNotification.Name.UIApplicationDidBecomeActive, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(applicationToClose), name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(applicationToClose),            name: NSNotification.Name.UIApplicationWillTerminate, object: nil)
         return
     }
     
@@ -516,7 +517,7 @@ class ViewController: UIViewController {
         let _: Int = self.userGame.incrementGamePenaltyTime(increment: self.userGame.incrementGamePenaltyIncrementTime(increment: 1))
         return
     }
-
+    
     //----------------------------------------------------------------------------
     // start a new game for the user
     //----------------------------------------------------------------------------
@@ -696,7 +697,7 @@ class ViewController: UIViewController {
     func redrawCurrentCoordImage(coord: Coordinate) {
         let number: Int = self.sudokuBoard.getNumberFromGame(coord: coord)
         if number == 0 {
-            self.setCellToBlankImage(coord: coord)
+            self.setCoordToBlankImage(coord: coord)
         } else {
             var imageState: imageStates = self.displayBoard.gameImages[coord.row][coord.column].getImageState(coord: (coord.cell.row, coord.cell.column))
             if imageState == imageStates.Blank {
@@ -1002,18 +1003,18 @@ class ViewController: UIViewController {
     //
     func foundErrorsOnBoard(errorsFound: [Coordinate]) {
         var alertController: UIAlertController!
-        var msg: String = "Found "
+        var msg: String = ""
         if errorsFound.count == 1 {
-            msg = "an error on the board, I can uncover it?"
+            msg = "There is an incorrect placement on the board, I can uncover it?"
         } else {
-            msg = "\(errorsFound.count) errors on the board, I can uncover one of them?"
+            msg = "Found \(errorsFound.count) wrong placements on the board, I can uncover one of them?"
         }
-        alertController = UIAlertController(title: "Found Errors", message: msg, preferredStyle: .alert)
+        alertController = UIAlertController(title: "Wrong Numbers Placed", message: msg, preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
             // nothing to do here, user bailed on using a hint
         }
         alertController.addAction(cancelAction)
-        let useHintAction = UIAlertAction(title: "Remove an error from the board!", style: .default) { (action:UIAlertAction!) in
+        let useHintAction = UIAlertAction(title: "Remove a wrong number from the board!", style: .default) { (action:UIAlertAction!) in
             //
             // need to clear any ctrl posn and board cells already highlighted
             //
@@ -1210,7 +1211,7 @@ class ViewController: UIViewController {
             if number > 0 {
                 self.playRuboutSound()
                 self.sudokuBoard.clearGameBoardLocation(coord: boardPosn)
-                self.setCellToBlankImage(coord: boardPosn)
+                self.setCoordToBlankImage(coord: boardPosn)
                 self.userSolution.removeCoordinate(coord: boardPosn)
                 let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
                 //
@@ -1235,18 +1236,35 @@ class ViewController: UIViewController {
         //
         // defaults for positioning UIImageView components for main board (iPad width = 1024)
         //
-        var kMainViewMargin:  CGFloat
-        var kCellWidthMargin: CGFloat
-        var kCellDepthMargin: CGFloat
+        var kMainViewOriginX:     CGFloat
+        var kMainViewOriginY:     CGFloat
+        var kMainViewFrameWidth:  CGFloat
+        var kMainViewFrameHeight: CGFloat
+        var kCellWidthMargin:     CGFloat
+        var kCellDepthMargin:     CGFloat
         if self.view.frame.width > 1024 {
-            kMainViewMargin  = 52
-            kCellWidthMargin = 11.7
-            kCellDepthMargin = 9.33
+            kMainViewOriginX     = 58.5
+            kMainViewOriginY     = 50.0
+            kMainViewFrameWidth  = 960
+            kMainViewFrameHeight = 930
+            kCellWidthMargin     = 9.1
+            kCellDepthMargin     = 9.1
         } else {
-            kMainViewMargin  = 40.0
-            kCellWidthMargin = 8.8
-            kCellDepthMargin = 7
+            kMainViewOriginX     = 45.0
+            kMainViewOriginY     = 31.3
+            kMainViewFrameWidth  = 715
+            kMainViewFrameHeight = 715
+            kCellWidthMargin     = 7.0
+            kCellDepthMargin     = 7.0
         }
+        
+        //
+        // calc the default size of the UIView container for the image views
+        //
+        func calculateSizeOfSudokuBoard() {
+            return
+        }
+        
         //
         // add the image containers onto the board row by row
         //
@@ -1268,11 +1286,11 @@ class ViewController: UIViewController {
             
             let cellWidth: CGFloat = calculateBoardCellWidth(boardColumns: boardColumns * boardColumns, margin: cellWidthMargin)
             let cellDepth: CGFloat = calculateBoardCellDepth(boardRows: boardRows * boardRows, margin: cellWidthMargin)
-            var yStart: CGFloat = cellDepthMargin
+            var yStart: CGFloat    = 0
             for y: Int in 0 ..< boardRows {
                 var jStart: CGFloat = 0
                 for j: Int in 0 ..< boardColumns {
-                    var xStart: CGFloat = cellWidthMargin
+                    var xStart: CGFloat = 0
                     for x: Int in 0 ..< boardRows {
                         var kStart: CGFloat = 0
                         for k: Int in 0 ..< boardColumns {
@@ -1280,11 +1298,11 @@ class ViewController: UIViewController {
                             self.viewSudokuBoard.addSubview(self.displayBoard.gameImages[y][x].contents[j][k].imageView)
                             kStart += cellWidth + cellWidthMargin
                         }
-                        xStart += kStart + (cellWidthMargin * 2)
+                        xStart += kStart + cellWidthMargin
                     }
                     jStart += cellDepth + cellDepthMargin
                 }
-                yStart += jStart + (cellDepthMargin * 2)
+                yStart += jStart + cellDepthMargin
             }
             return
         }
@@ -1301,11 +1319,7 @@ class ViewController: UIViewController {
             return
         }
 
-        let originX: CGFloat = self.view.bounds.origin.x + kMainViewMargin
-        let originY: CGFloat = kMainViewMargin
-        let frameWidth: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
-        let frameHeight: CGFloat = self.view.bounds.height - (2 * kMainViewMargin)
-        self.viewSudokuBoard = UIView(frame: CGRect(x: originX, y: originY, width: frameWidth, height: frameHeight))
+        self.viewSudokuBoard = UIView(frame: CGRect(x: kMainViewOriginX, y: kMainViewOriginY, width: kMainViewFrameWidth, height: kMainViewFrameHeight))
         self.view.addSubview(self.viewSudokuBoard)
         addImagesViewsToSudokuBoard(boardRows: self.boardDimensions, boardColumns: self.boardDimensions, cellWidthMargin: kCellWidthMargin, cellDepthMargin: kCellDepthMargin)
         initialiseSudokuBoardUIViewToAcceptTouch(view: self.viewSudokuBoard)
@@ -1366,7 +1380,7 @@ class ViewController: UIViewController {
                 }
                 self.playRuboutSound()
                 self.sudokuBoard.clearGameBoardLocation(coord: posn)
-                self.setCellToBlankImage(coord: posn)
+                self.setCoordToBlankImage(coord: posn)
                 self.userSolution.removeCoordinate(coord: posn)
                 let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
                 self.resetBoardPosition()
@@ -1410,7 +1424,7 @@ class ViewController: UIViewController {
             }
             self.playRuboutSound()
             self.sudokuBoard.clearGameBoardLocation(coord: posn)
-            self.setCellToBlankImage(coord: posn)
+            self.setCoordToBlankImage(coord: posn)
             self.userSolution.removeCoordinate(coord: posn)
             let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
             self.resetBoardPosition()
@@ -1512,7 +1526,7 @@ class ViewController: UIViewController {
         //
         if currentPosn.isEqual(coord: previousPosn) {
             if self.sudokuBoard.isGameLocationUsed(coord: currentPosn) == false {
-                self.setCellToBlankImage(coord: currentPosn)
+                self.setCoordToBlankImage(coord: currentPosn)
             } else {
                 self.setCoordToOriginImage(coord: currentPosn, number: self.sudokuBoard.getNumberFromGame(coord: currentPosn))
             }
@@ -1520,7 +1534,7 @@ class ViewController: UIViewController {
         }
         if previousPosn.row != -1 {
             if self.sudokuBoard.isGameLocationUsed(coord: previousPosn) == false {
-                self.setCellToBlankImage(coord: previousPosn)
+                self.setCoordToBlankImage(coord: previousPosn)
             } else {
                 self.setCoordToOriginImage(coord: previousPosn, number: self.sudokuBoard.getNumberFromGame(coord: previousPosn))
             }
@@ -1664,16 +1678,24 @@ class ViewController: UIViewController {
     //
     // clear the current image at the coord
     //
-    func setCellToBlankImage(coord: Coordinate) {
-        self.displayBoard.gameImages[coord.row][coord.column].clearImage(coord: (coord.cell))
+    func setCoordToBlankImage(coord: Coordinate) {
+        self.displayBoard.gameImages[coord.row][coord.column].clearImageWithAnimationCrossDissolve(coord: (coord.cell))
         return
     }
-    
+
     //
     // set space on board to cell having been 'touched', we use this when the user selects the board cell first and not the control panel
     //
     func setCoordToTouchedImage(coord: Coordinate) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.userSelectImage, imageState: imageStates.Origin)
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimationCrossDissolve(coord: (coord.cell), imageToSet: self.userSelectImage, imageState: imageStates.Origin)
+        return
+    }
+    
+    //
+    // set space on board to cell having been 'touched' incorrectly, we use this when the user selects the board cell and it's wrong (only if the option is set in the preferences)
+    //
+    func setCoordToErrorImage(coord: Coordinate) {
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimationCrossDissolve(coord: (coord.cell), imageToSet: self.userSelectImage, imageState: imageStates.Origin)
         return
     }
     
@@ -1697,7 +1719,7 @@ class ViewController: UIViewController {
     // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
     //
     func setCoordToSelectImage(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimationFlipFromLeft(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
         return
     }
     
@@ -1705,7 +1727,7 @@ class ViewController: UIViewController {
     // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
     //
     func setCoordToDeleteImage(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Delete.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Delete)
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimationFlipFromLeft(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Delete.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Delete)
         return
     }
     
