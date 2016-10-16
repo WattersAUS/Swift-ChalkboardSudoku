@@ -903,36 +903,18 @@ class ViewController: UIViewController {
                 self.giveHint = true
             }
             alertController.addAction(userSelectAction)
-            //
-            // if we have detected numbers placed incorrectly give option to highlight (then pretend bin has been selected with restricted set)
-            //
-            let incorrectPlacements: [Coordinate] = self.incorrectNumbersPlacedOnBoard()
-            if incorrectPlacements.count > 0 {
-                var msg: String = ""
-                if incorrectPlacements.count == 1 {
-                    msg = "There is an incorrect number, show it!"
+            let useErrorsAction = UIAlertAction(title: "If there is an error, I could help!", style: .default) { (action:UIAlertAction!) in
+                //
+                // if we have detected numbers placed incorrectly give option to highlight (then pretend bin has been selected with restricted set)
+                //
+                let incorrectPlacements: [Coordinate] = self.incorrectNumbersPlacedOnBoard()
+                if incorrectPlacements.count == 0 {
+                    self.foundNoErrorsOnBoard()
                 } else {
-                    msg = "\(incorrectPlacements.count) incorrect numbers, show them!"
+                    self.foundErrorsOnBoard(errorsFound: incorrectPlacements)
                 }
-                let useHighlightAction = UIAlertAction(title: msg, style: .default) { (action:UIAlertAction!) in
-                    //
-                    // need to clear any ctrl posn and board cells already highlighted
-                    //
-                    if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
-                        self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
-                    }
-                    self.unsetSelectNumbersOnBoard()
-                    self.unsetDeleteNumbersOnBoard()
-                    //
-                    // highlight the incorrect numbers and the 'bin' as though the user had done it!
-                    //
-                    self.setControlPanelToDeleteImageValue(coord: (4, column: 1))
-                    self.setControlPanelPosition(coord: (4,1))
-                    self.setDeleteLocationsOnBoard(locations: incorrectPlacements)
-                    self.resetBoardPosition()
-                }
-                alertController.addAction(useHighlightAction)
             }
+            alertController.addAction(useErrorsAction)
         }
         self.present(alertController, animated: true, completion:nil)
         return
@@ -1002,8 +984,64 @@ class ViewController: UIViewController {
     }
     
     //
-    // and the start button
+    // The user asked, and we have no errors
     //
+    func foundNoErrorsOnBoard() {
+        var alertController: UIAlertController!
+        alertController = UIAlertController(title: "Hint Options", message: "There are no errors on the Board, keep going!", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+            // nothing to do here, user bailed on using a hint
+        }
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion:nil)
+        return
+    }
+    
+    //
+    // this time we found some
+    //
+    func foundErrorsOnBoard(errorsFound: [Coordinate]) {
+        var alertController: UIAlertController!
+        var msg: String = "Found "
+        if errorsFound.count == 1 {
+            msg = "an error on the board, I can uncover it?"
+        } else {
+            msg = "\(errorsFound.count) errors on the board, I can uncover one of them?"
+        }
+        alertController = UIAlertController(title: "Found Errors", message: msg, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction!) in //action -> Void in
+            // nothing to do here, user bailed on using a hint
+        }
+        alertController.addAction(cancelAction)
+        let useHintAction = UIAlertAction(title: "Remove an error from the board!", style: .default) { (action:UIAlertAction!) in
+            //
+            // need to clear any ctrl posn and board cells already highlighted
+            //
+            if self.userGame.currentGame.controlPosn.posn != (-1, -1) {
+                self.resetControlPanelImage(index: (self.userGame.currentGame.controlPosn.posn.row * 2) + self.userGame.currentGame.controlPosn.posn.column)
+            }
+            self.unsetSelectNumbersOnBoard()
+            self.unsetDeleteNumbersOnBoard()
+            //
+            // highlight the incorrect numbers and the 'bin' as though the user had done it!
+            //
+            self.setControlPanelToDeleteImageValue(coord: (4, column: 1))
+            self.setControlPanelPosition(coord: (4,1))
+            //
+            // choose a random error location and highlight it
+            //
+            let setError: Coordinate = errorsFound[Int(arc4random_uniform(UInt32(errorsFound.count)))]
+            self.setCoordToStateImage(coord: setError, number: self.sudokuBoard.getNumberFromGame(coord: setError), imageState: imageStates.Delete)
+            self.userGame.currentGame.boardPosn = setError
+        }
+        alertController.addAction(useHintAction)
+        self.present(alertController, animated: true, completion:nil)
+        return
+    }
+    
+    //----------------------------------------------------------------------------
+    // and the start button
+    //----------------------------------------------------------------------------
     func startButtonUsed(_ sender: UIButton) {
         //
         // if we have 'Start' button, build the board
@@ -1640,7 +1678,7 @@ class ViewController: UIViewController {
     }
     
     //
-    // set numbers on the 'game' board to inactive when all of that number has been used
+    // set numbers on the 'game' board to inactive
     //
     func setCoordToInactiveImage(coord: Coordinate, number: Int) {
         self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Inactive.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Inactive)
@@ -1659,7 +1697,7 @@ class ViewController: UIViewController {
     // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
     //
     func setCoordToSelectImage(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Selected.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Selected)
         return
     }
     
@@ -1667,7 +1705,7 @@ class ViewController: UIViewController {
     // set numbers on the 'game' board to highlighted if the user selects the 'number' from the control panel
     //
     func setCoordToDeleteImage(coord: Coordinate, number: Int) {
-        self.displayBoard.gameImages[coord.row][coord.column].setImage(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Delete.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Delete)
+        self.displayBoard.gameImages[coord.row][coord.column].setImageWithAnimation(coord: (coord.cell), imageToSet: self.imageLibrary[imageStates.Delete.rawValue][self.userPrefs.characterSetInUse][number - 1], imageState: imageStates.Delete)
         return
     }
     
