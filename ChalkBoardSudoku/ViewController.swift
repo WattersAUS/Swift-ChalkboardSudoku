@@ -786,15 +786,15 @@ class ViewController: UIViewController {
         
         if self.userGame.currentGame.boardPosn.row == -1 {
             self.setControlPanelPosition(coord: self.userSelectedControlPanelFirst(currentPosn: posn, previousPosn: self.userGame.currentGame.controlPosn.posn))
-        } else {
-            //
-            // user placing / removing is a one off deal, so reset positions when done
-            //
-            if self.userSelectBoardBeforeControlPanel(currentPosn: posn, previousPosn: self.userGame.currentGame.controlPosn.posn, boardPosn: self.userGame.currentGame.boardPosn) == true {
-                self.resetBoardPosition()
-            }
-            self.resetControlPanelPosition()
+            return
         }
+        //
+        // user placing / removing is a one off deal, so reset positions when done
+        //
+        if self.userSelectBoardBeforeControlPanel(currentPosn: posn, previousPosn: self.userGame.currentGame.controlPosn.posn, boardPosn: self.userGame.currentGame.boardPosn) == true {
+            self.resetBoardPosition()
+        }
+        self.resetControlPanelPosition()
         return
     }
     
@@ -1031,9 +1031,8 @@ class ViewController: UIViewController {
             //
             // choose a random error location and highlight it
             //
-            let setError: Coordinate = errorsFound[Int(arc4random_uniform(UInt32(errorsFound.count)))]
-            self.setCoordToStateImage(coord: setError, number: self.sudokuBoard.getNumberFromGame(coord: setError), imageState: imageStates.Delete)
-            self.userGame.currentGame.boardPosn = setError
+            self.userGame.currentGame.boardPosn = errorsFound[Int(arc4random_uniform(UInt32(errorsFound.count)))]
+            self.setCoordToStateImage(coord: self.userGame.currentGame.boardPosn, number: self.sudokuBoard.getNumberFromGame(coord: self.userGame.currentGame.boardPosn), imageState: imageStates.Delete)
         }
         alertController.addAction(useHintAction)
         self.present(alertController, animated: true, completion:nil)
@@ -1214,6 +1213,11 @@ class ViewController: UIViewController {
                 self.setCoordToBlankImage(coord: boardPosn)
                 self.userSolution.removeCoordinate(coord: boardPosn)
                 let _: Int = self.userGame.incrementGamePlayerMovesDeleted()
+                //
+                // need to remove delete highlight from 'bin' in case it was highlighted
+                //
+                self.setControlPanelToOriginImageValue(coord: (index / 2, column: index % 2))
+                //
                 //
                 // may need to reactivate 'inactive' control panel posn
                 //
