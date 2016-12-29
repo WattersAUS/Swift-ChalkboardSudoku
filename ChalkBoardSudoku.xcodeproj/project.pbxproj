@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		BF036EF71D68713F00B9290D /* NumberGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EF61D68713F00B9290D /* NumberGrid.swift */; };
 		BF036EFC1D68845A00B9290D /* SudokuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF036EFB1D68845A00B9290D /* SudokuCell.swift */; };
-		BF2AA4B01E154CB400FA0228 /* chalkboardsudoku.json in Resources */ = {isa = PBXBuildFile; fileRef = BF2AA4AF1E154CB400FA0228 /* chalkboardsudoku.json */; };
 		BF5017B21DA958FD00804D4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF5017B11DA958FD00804D4D /* Assets.xcassets */; };
 		BF5855A31DA128E000B60256 /* Adjacent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5855A21DA128E000B60256 /* Adjacent.swift */; };
 		BF5D4B7B1D7563F6007D776E /* GameHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5D4B7A1D7563F6007D776E /* GameHistory.swift */; };
@@ -43,6 +42,7 @@
 		BFDF0B6B1D66170F00D83F34 /* TrackSolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */; };
 		BFDF0B6E1D66179400D83F34 /* Enumeration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6C1D66179400D83F34 /* Enumeration.swift */; };
 		BFDF0B6F1D66179400D83F34 /* Struct.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDF0B6D1D66179400D83F34 /* Struct.swift */; };
+		BFFA05B11E154FEF00AC4E68 /* chalkboardsudoku.json in Resources */ = {isa = PBXBuildFile; fileRef = BFFA05B01E154FEF00AC4E68 /* chalkboardsudoku.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +58,6 @@
 /* Begin PBXFileReference section */
 		BF036EF61D68713F00B9290D /* NumberGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberGrid.swift; sourceTree = "<group>"; };
 		BF036EFB1D68845A00B9290D /* SudokuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SudokuCell.swift; sourceTree = "<group>"; };
-		BF2AA4AF1E154CB400FA0228 /* chalkboardsudoku.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = chalkboardsudoku.json; path = "../R & D/chalkboardsudoku.json"; sourceTree = "<group>"; };
 		BF5017B11DA958FD00804D4D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF5855A21DA128E000B60256 /* Adjacent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Adjacent.swift; sourceTree = "<group>"; };
 		BF5D4B7A1D7563F6007D776E /* GameHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameHistory.swift; sourceTree = "<group>"; };
@@ -96,6 +95,7 @@
 		BFDF0B6A1D66170F00D83F34 /* TrackSolution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrackSolution.swift; path = ChalkBoardSudoku/TrackSolution.swift; sourceTree = "<group>"; };
 		BFDF0B6C1D66179400D83F34 /* Enumeration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enumeration.swift; path = ../Enumeration.swift; sourceTree = "<group>"; };
 		BFDF0B6D1D66179400D83F34 /* Struct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Struct.swift; path = ../Struct.swift; sourceTree = "<group>"; };
+		BFFA05B01E154FEF00AC4E68 /* chalkboardsudoku.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = chalkboardsudoku.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,8 +206,8 @@
 		BFDF0B581D66167B00D83F34 /* Docs */ = {
 			isa = PBXGroup;
 			children = (
+				BFFA05B01E154FEF00AC4E68 /* chalkboardsudoku.json */,
 				BFDF0B591D66168600D83F34 /* Notes.rtf */,
-				BF2AA4AF1E154CB400FA0228 /* chalkboardsudoku.json */,
 			);
 			name = Docs;
 			sourceTree = "<group>";
@@ -313,7 +313,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF2AA4B01E154CB400FA0228 /* chalkboardsudoku.json in Resources */,
+				BFFA05B11E154FEF00AC4E68 /* chalkboardsudoku.json in Resources */,
 				BFDF0B511D6615D400D83F34 /* Triumph_001.aiff in Resources */,
 				BFDF0B251D6612D700D83F34 /* LaunchScreen.storyboard in Resources */,
 				BFDF0B4A1D6615D400D83F34 /* Write_005.aiff in Resources */,
