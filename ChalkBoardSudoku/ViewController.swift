@@ -373,7 +373,7 @@ class ViewController: UIViewController {
         return
     }
     
-    func applicationToClose() {
+    @objc func applicationToClose() {
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
         self.userGame.setOriginCells(cellArray: self.getCurrentOriginBoardState())
         self.userGame.setControlPanel(cellArray: self.getCurrentControlPanelState())
@@ -381,14 +381,14 @@ class ViewController: UIViewController {
         return
     }
     
-    func applicationMovingToForeground() {
+    @objc func applicationMovingToForeground() {
         if self.userGame.getGameInPlay() {
             self.startGameTimer()
         }
         return
     }
     
-    func applicationMovingToBackground() {
+    @objc func applicationMovingToBackground() {
         self.stopGameTimer()
         self.userGame.setGameCells(cellArray: self.getCurrentGameBoardState())
         self.userGame.setOriginCells(cellArray: self.getCurrentOriginBoardState())
@@ -497,7 +497,7 @@ class ViewController: UIViewController {
         return
     }
     
-    func updateGameTime() {
+    @objc func updateGameTime() {
         if self.timerActive == true {
             self.userGame.incrementTotalGameTimePlayed(diff: self.mapDifficulty(difficulty: self.userPrefs.difficultySet), increment: 1)
             if self.timerDisplay == true {
@@ -770,7 +770,7 @@ class ViewController: UIViewController {
     //
     // user interactiom with the control panel
     //
-    func detectedControlPanelUIViewTapped(recognizer: UITapGestureRecognizer) {
+    @objc func detectedControlPanelUIViewTapped(recognizer: UITapGestureRecognizer) {
         if recognizer.state != UIGestureRecognizerState.ended {
             return
         }
@@ -855,7 +855,7 @@ class ViewController: UIViewController {
     //
     // what happens when we use the prefs button
     //
-    func preferencesButtonUsed(_ sender: UIButton) {
+    @objc func preferencesButtonUsed(_ sender: UIButton) {
         // first save the current preferences
         let pViewController: Preferences = Preferences()
         pViewController.modalPresentationStyle = UIModalPresentationStyle.popover
@@ -870,7 +870,7 @@ class ViewController: UIViewController {
     //
     // a bit more can happen when the hints button is used (but only if the hints are turned on in the prefs panel)
     //
-    func hintButtonUsed(_ sender: UIButton) {
+    @objc func hintButtonUsed(_ sender: UIButton) {
         var alertController: UIAlertController!
         if self.userGame.getGameInPlay() == false {
             self.playErrorSound()
@@ -1042,7 +1042,7 @@ class ViewController: UIViewController {
     //----------------------------------------------------------------------------
     // and the start button
     //----------------------------------------------------------------------------
-    func startButtonUsed(_ sender: UIButton) {
+    @objc func startButtonUsed(_ sender: UIButton) {
         //
         // if we have 'Start' button, build the board
         //
@@ -1333,7 +1333,7 @@ class ViewController: UIViewController {
     //
     // handle user interaction with the game board
     //
-    func detectedSudokuBoardUIViewTapped(recognizer: UITapGestureRecognizer) {
+    @objc func detectedSudokuBoardUIViewTapped(recognizer: UITapGestureRecognizer) {
         if(recognizer.state != UIGestureRecognizerState.ended) {
             return
         }

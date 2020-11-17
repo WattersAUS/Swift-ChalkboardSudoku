@@ -96,11 +96,11 @@ class Preferences: UIViewController {
         prefs?.hintsOn       = self.userHints.isOn
         if prefs?.characterSetInUse != self.userCharacterSet.selectedSegmentIndex {
             prefs?.characterSetInUse = self.userCharacterSet.selectedSegmentIndex
-            for redrawFunction: (Void) -> () in (prefs?.drawFunctions)! {
+            for redrawFunction: () -> () in (prefs?.drawFunctions)! {
                 redrawFunction()
             }
         }
-        for saveFunction: (Void) -> () in (prefs?.saveFunctions)! {
+        for saveFunction: () -> () in (prefs?.saveFunctions)! {
             saveFunction()
         }
         self.dismiss(animated: true, completion: nil)

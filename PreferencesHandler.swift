@@ -22,8 +22,8 @@ protocol PreferencesDelegate: class {
     var soundOn:                   Bool { get set }
     var hintsOn:                   Bool { get set }
     // if we swap the char set redraw the board
-    var drawFunctions: [(Void) -> ()] { get set }
-    var saveFunctions: [(Void) -> ()] { get set }
+    var drawFunctions: [() -> ()] { get set }
+    var saveFunctions: [() -> ()] { get set }
 }
 
 class PreferencesHandler: NSObject, PreferencesDelegate {
@@ -33,12 +33,12 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
     var gameModeInUse:              Int = 0
     var soundOn:                   Bool = true
     var hintsOn:                   Bool = false
-    var drawFunctions:   [(Void) -> ()] = []
-    var saveFunctions:   [(Void) -> ()] = []
+    var drawFunctions:   [() -> ()] = []
+    var saveFunctions:   [() -> ()] = []
     
     let userDefaults: UserDefaults = UserDefaults.standard
 
-    init(redrawFunctions: [(Void) -> ()]) {
+    init(redrawFunctions: [() -> ()]) {
         super.init()
         //
         // get the difficulty first, if we get 0 then the prefs have never been saved. so save them
@@ -61,7 +61,7 @@ class PreferencesHandler: NSObject, PreferencesDelegate {
             self.hintsOn           = false
             self.savePreferences()
         }
-        for functionName: (Void) -> () in redrawFunctions {
+        for functionName: () -> () in redrawFunctions {
             self.drawFunctions.append(functionName)
         }
         self.saveFunctions = [ self.savePreferences ]
